@@ -78,23 +78,24 @@ export function PurchaseRequisitionTemplateList () {
   ];
 
   return (
-    <div>
-      <h2>Purchase Template</h2>
-      <Row>
-        <Col span={14}>
-          <div className="table-responsive">
-            <div className="my-2 d-flex justify-content-end">
-              <Input.Search allowClear bordered={false} style={{ width: '40%', borderBottom: '1px solid #d9d9d9' }}  />
+    <div className="m-2">
+      <h3>Purchase Template</h3>
+      <div className="mx-3">
+        <Row>
+          <Col span={14}>
+            <div className="table-responsive">
+              <div className="my-2 d-flex justify-content-end">
+                <Input.Search allowClear bordered={false} style={{ width: '40%', borderBottom: '1px solid #d9d9d9' }}  />
+              </div>
+              <Table columns={purchaseRequisitionTemplateItemsTableColumns} 
+                dataSource={purchasrRequisitionTemplateItems} 
+                rowKey="id" bordered />
             </div>
-            <Table columns={purchaseRequisitionTemplateItemsTableColumns} 
-              dataSource={purchasrRequisitionTemplateItems} 
-              rowKey="id" bordered />
-          </div>
-        </Col>
-        <Col span={10}>
-        </Col>
-      </Row>
-      
+          </Col>
+          <Col span={10}>
+          </Col>
+        </Row>
+      </div>
     </div>
   )
 }

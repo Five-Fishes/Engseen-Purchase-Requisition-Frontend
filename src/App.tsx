@@ -9,7 +9,7 @@ const App: React.FC = () => {
   return (
     <div>
       <Title type="secondary">Title</Title>
-      <Button type="primary">Button</Button>
+      <Button type="primary">Primary Styled Button</Button>
       <Routes />
     </div>
   );

@@ -1,17 +1,16 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import NoMatch from "./shared/NoMatch";
+import PurchaseRequisitionTemplateRoute from './purchase-requisition-template/pages';
 
 const Routes: React.FC = () => {
   return (
     <Router>
       <Switch>
         <Route exact path="/">
-          <div style={{background:'black'}}>not logged in</div>
+          <div>home</div>
         </Route>
-        <Route path="/purchase-requisition-template">
-          <h2>Page 1</h2>
-        </Route>
+        <Route path="/purchase-requisition-template" component={PurchaseRequisitionTemplateRoute} />
         <Route path="/purchase-requisition-request">
           <h2>Page 2</h2>
         </Route>

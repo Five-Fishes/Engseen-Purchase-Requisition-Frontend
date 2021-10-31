@@ -7,7 +7,7 @@ const Routes: React.FC = () => {
     <Router>
       <Switch>
         <Route exact path="/">
-          <div>not logged in</div>
+          <div style={{background:'black'}}>not logged in</div>
         </Route>
         <Route path="/purchase-requisition-template">
           <h2>Page 1</h2>

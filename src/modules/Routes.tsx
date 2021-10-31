@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import NoMatch from "./shared/NoMatch";
+import PurchaseRequisitionTemplateRoute from '../pages/purchase-requisition-template';
 
 const Routes: React.FC = () => {
   return (
@@ -9,9 +10,7 @@ const Routes: React.FC = () => {
         <Route exact path="/">
           <div>not logged in</div>
         </Route>
-        <Route path="/purchase-requisition-template">
-          <h2>Page 1</h2>
-        </Route>
+        <Route path="/purchase-requisition-template" component={PurchaseRequisitionTemplateRoute} />
         <Route path="/purchase-requisition-request">
           <h2>Page 2</h2>
         </Route>

@@ -1,15 +1,14 @@
 import React from "react";
 import { Button, Col, Input, Row, Table } from "antd";
-import { DeleteOutlined } from '@ant-design/icons';
-import { IPurchaseRequisitionTemplateItem } from "../../dto/i-purchase-requisition-template-item.dto";
-import { IPurchaseRequisitionTemplate } from "../../dto/i-purchase-requisition-template.dto";
+import { DeleteOutlined } from "@ant-design/icons";
+import { IPurchaseRequisitionTemplateItem } from "../../../dto/i-purchase-requisition-template-item.dto";
 import { ColumnsType } from "antd/lib/table";
 
-export function PurchaseRequisitionTemplateList () {
-
-  const deleteTemplateItem = function(templateItemId: number) {
+export function PurchaseRequisitionTemplateList() {
+  // eslint-disable-next-line
+  const deleteTemplateItem = function (templateItemId: number) {
     // TODO: API to delete template item
-  }
+  };
 
   const purchaseRequisitionTemplateItemsTableColumns: ColumnsType<IPurchaseRequisitionTemplateItem> = [
     {
@@ -24,7 +23,9 @@ export function PurchaseRequisitionTemplateList () {
       key: "component",
       align: "center",
       render: (text: string, record: IPurchaseRequisitionTemplateItem) => (
-        <span>{text} - {record.componentName}</span>
+        <span>
+          {text} - {record.componentName}
+        </span>
       ),
     },
     {
@@ -33,7 +34,9 @@ export function PurchaseRequisitionTemplateList () {
       key: "vendor",
       align: "center",
       render: (text: string, record: IPurchaseRequisitionTemplateItem) => (
-        <span>{text} - {record.vendorName}</span>
+        <span>
+          {text} - {record.vendorName}
+        </span>
       ),
     },
     {
@@ -52,29 +55,29 @@ export function PurchaseRequisitionTemplateList () {
           <DeleteOutlined />
         </Button>
       ),
-    }
+    },
   ];
 
   // TODO: Dummy data, should get data via API
   const purchasrRequisitionTemplateItems: IPurchaseRequisitionTemplateItem[] = [
     {
       id: 1,
-      componentCode: 'DBECO',
-      componentName: 'Disperse Black ECO',
-      vendorId: 'BLP',
-      vendorName: 'BLP Sdn Bhd',
+      componentCode: "DBECO",
+      componentName: "Disperse Black ECO",
+      vendorId: "BLP",
+      vendorName: "BLP Sdn Bhd",
       packagingSize: 25,
-      sequence: 1
+      sequence: 1,
     },
     {
       id: 2,
-      componentCode: 'DBECO',
-      componentName: 'Disperse Black ECO',
-      vendorId: 'DyeChem',
-      vendorName: 'DyeChem Sdn Bhd',
+      componentCode: "DBECO",
+      componentName: "Disperse Black ECO",
+      vendorId: "DyeChem",
+      vendorName: "DyeChem Sdn Bhd",
       packagingSize: 30,
-      sequence: 2
-    }
+      sequence: 2,
+    },
   ];
 
   return (
@@ -85,17 +88,23 @@ export function PurchaseRequisitionTemplateList () {
           <Col span={14}>
             <div className="table-responsive">
               <div className="my-2 d-flex justify-content-end">
-                <Input.Search allowClear bordered={false} style={{ width: '40%', borderBottom: '1px solid #d9d9d9' }}  />
+                <Input.Search
+                  allowClear
+                  bordered={false}
+                  style={{ width: "40%", borderBottom: "1px solid #d9d9d9" }}
+                />
               </div>
-              <Table columns={purchaseRequisitionTemplateItemsTableColumns} 
-                dataSource={purchasrRequisitionTemplateItems} 
-                rowKey="id" bordered />
+              <Table
+                columns={purchaseRequisitionTemplateItemsTableColumns}
+                dataSource={purchasrRequisitionTemplateItems}
+                rowKey="id"
+                bordered
+              />
             </div>
           </Col>
-          <Col span={10}>
-          </Col>
+          <Col span={10}></Col>
         </Row>
       </div>
     </div>
-  )
+  );
 }

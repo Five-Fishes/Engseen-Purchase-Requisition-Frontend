@@ -8,7 +8,7 @@ import "antd/dist/antd.less";
 const App: React.FC = () => {
   return (
     <div>
-      <Title type="secondary">Title</Title>
+      <Title type="secondary">Purchase Requisition Management App</Title>
       <Button type="primary">Primary Styled Button</Button>
       <Routes />
     </div>

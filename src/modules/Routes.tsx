@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import NoMatch from "./shared/NoMatch";
+import NoMatch from "./shared/components/NoMatch";
 import PurchaseRequisitionTemplateRoute from './purchase-requisition-template/pages';
 
 const Routes: React.FC = () => {

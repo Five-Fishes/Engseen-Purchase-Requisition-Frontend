@@ -1,6 +1,6 @@
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
-import { IPurchaseRequisitionRequest } from "../dto/i-purchase-requisition-request.dto";
+import { IPurchaseRequisitionRequest } from "@dto/i-purchase-requisition-request.dto";
 
 const PURCHASE_REQUISITION_REQUEST: string = "purchase-requisition/request";
 

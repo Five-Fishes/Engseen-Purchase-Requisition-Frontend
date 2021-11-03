@@ -1,7 +1,7 @@
+import { createPurchaseReqiosition } from "@api/purchase-requisition-template.api";
+import { IPurchaseRequisitionRequest } from "@dto/i-purchase-requisition-request.dto";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { createPurchaseReqiosition } from "../../../api/purchase-requisition-template.api";
-import { IPurchaseRequisitionRequest } from "../../../dto/i-purchase-requisition-request.dto";
 
 const NoMatch: React.FC = () => {
   useEffect(() => {

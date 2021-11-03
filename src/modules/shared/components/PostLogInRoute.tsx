@@ -7,13 +7,15 @@ const PostLogInRoute: React.FC<IPostLogInRouteProps> = (props) => {
   const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
-    const loggeInStatus = Boolean(localStorage.getItem("loggedIn"));
-    setLoggedIn(loggeInStatus);
+    setInterval(() => {
+      const loggeInStatus = Boolean(localStorage.getItem("loggedIn"));
+      setLoggedIn(loggeInStatus);
+    }, 500);
   }, [loggedIn]);
 
   return (
     <>
-      <Route {...props}>{loggedIn && <Redirect to="/" />}</Route>
+      <Route {...props}>{!loggedIn && <Redirect to="/" />}</Route>
     </>
   );
 };

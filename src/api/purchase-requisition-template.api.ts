@@ -1,30 +1,230 @@
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 import { IPurchaseRequisitionRequest } from "@dto/i-purchase-requisition-request.dto";
+import { IPurchaseRequisitionTemplate } from "@dto/i-purchase-requisition-template.dto";
 
-const PURCHASE_REQUISITION_REQUEST: string = "purchase-requisition/request";
+const PURCHASE_REQUISITION_TEMPLATE: string = "purchase-requisition/template";
 
 const mock = new MockAdapter(axios);
 
-mock.onPost(PURCHASE_REQUISITION_REQUEST).reply<IPurchaseRequisitionRequest>(200, {
+mock.onPost(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate>(200, {
   id: 1,
-  createdDate: new Date(),
-  templateId: 1,
-  purchaseRequisitionRequestItems: [
+  templateName: "template 1",
+  templateItems: [
     {
-      componentCode: 1,
-      componentName: "abc",
-      vendorName: "abc",
-      stockBalance: 100,
+      id: 1,
+      sequence: 1,
+      componentCode: "AAA",
+      componentName: "Component AAA",
+      vendorId: "VA",
+      vendorName: "Vendor A",
       packagingSize: 100,
-      noOfPacks: 100,
-      quantity: 10000,
-      deliveryDate: new Date(),
+    },
+    {
+      id: 2,
+      sequence: 2,
+      componentCode: "BBB",
+      componentName: "Component BBB",
+      vendorId: "VA",
+      vendorName: "Vendor A",
+      packagingSize: 100,
+    },
+    {
+      id: 3,
+      sequence: 3,
+      componentCode: "CCC",
+      componentName: "Component CCC",
+      vendorId: "VA",
+      vendorName: "Vendor A",
+      packagingSize: 100,
+    },
+    {
+      id: 4,
+      sequence: 4,
+      componentCode: "DDD",
+      componentName: "Component DDD",
+      vendorId: "VA",
+      vendorName: "Vendor A",
+      packagingSize: 100,
     },
   ],
-  remarks: "abc",
 });
 
+mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(200, [
+  {
+    id: 1,
+    templateName: "template 1",
+    templateItems: [
+      {
+        id: 1,
+        sequence: 1,
+        componentCode: "AAA",
+        componentName: "Component AAA",
+        vendorId: "VA",
+        vendorName: "Vendor A",
+        packagingSize: 100,
+      },
+      {
+        id: 2,
+        sequence: 2,
+        componentCode: "BBB",
+        componentName: "Component BBB",
+        vendorId: "VA",
+        vendorName: "Vendor A",
+        packagingSize: 100,
+      },
+      {
+        id: 3,
+        sequence: 3,
+        componentCode: "CCC",
+        componentName: "Component CCC",
+        vendorId: "VA",
+        vendorName: "Vendor A",
+        packagingSize: 100,
+      },
+      {
+        id: 4,
+        sequence: 4,
+        componentCode: "DDD",
+        componentName: "Component DDD",
+        vendorId: "VA",
+        vendorName: "Vendor A",
+        packagingSize: 100,
+      },
+    ],
+  },
+  {
+    id: 1,
+    templateName: "template 1",
+    templateItems: [
+      {
+        id: 1,
+        sequence: 1,
+        componentCode: "AAA",
+        componentName: "Component AAA",
+        vendorId: "VA",
+        vendorName: "Vendor A",
+        packagingSize: 100,
+      },
+      {
+        id: 2,
+        sequence: 2,
+        componentCode: "BBB",
+        componentName: "Component BBB",
+        vendorId: "VA",
+        vendorName: "Vendor A",
+        packagingSize: 100,
+      },
+      {
+        id: 3,
+        sequence: 3,
+        componentCode: "CCC",
+        componentName: "Component CCC",
+        vendorId: "VA",
+        vendorName: "Vendor A",
+        packagingSize: 100,
+      },
+      {
+        id: 4,
+        sequence: 4,
+        componentCode: "DDD",
+        componentName: "Component DDD",
+        vendorId: "VA",
+        vendorName: "Vendor A",
+        packagingSize: 100,
+      },
+    ],
+  },
+  {
+    id: 1,
+    templateName: "template 1",
+    templateItems: [
+      {
+        id: 1,
+        sequence: 1,
+        componentCode: "AAA",
+        componentName: "Component AAA",
+        vendorId: "VA",
+        vendorName: "Vendor A",
+        packagingSize: 100,
+      },
+      {
+        id: 2,
+        sequence: 2,
+        componentCode: "BBB",
+        componentName: "Component BBB",
+        vendorId: "VA",
+        vendorName: "Vendor A",
+        packagingSize: 100,
+      },
+      {
+        id: 3,
+        sequence: 3,
+        componentCode: "CCC",
+        componentName: "Component CCC",
+        vendorId: "VA",
+        vendorName: "Vendor A",
+        packagingSize: 100,
+      },
+      {
+        id: 4,
+        sequence: 4,
+        componentCode: "DDD",
+        componentName: "Component DDD",
+        vendorId: "VA",
+        vendorName: "Vendor A",
+        packagingSize: 100,
+      },
+    ],
+  },
+  {
+    id: 1,
+    templateName: "template 1",
+    templateItems: [
+      {
+        id: 1,
+        sequence: 1,
+        componentCode: "AAA",
+        componentName: "Component AAA",
+        vendorId: "VA",
+        vendorName: "Vendor A",
+        packagingSize: 100,
+      },
+      {
+        id: 2,
+        sequence: 2,
+        componentCode: "BBB",
+        componentName: "Component BBB",
+        vendorId: "VA",
+        vendorName: "Vendor A",
+        packagingSize: 100,
+      },
+      {
+        id: 3,
+        sequence: 3,
+        componentCode: "CCC",
+        componentName: "Component CCC",
+        vendorId: "VA",
+        vendorName: "Vendor A",
+        packagingSize: 100,
+      },
+      {
+        id: 4,
+        sequence: 4,
+        componentCode: "DDD",
+        componentName: "Component DDD",
+        vendorId: "VA",
+        vendorName: "Vendor A",
+        packagingSize: 100,
+      },
+    ],
+  },
+]);
+
 export async function createPurchaseReqiosition(purchaseRequisitionRequest: IPurchaseRequisitionRequest) {
-  return await axios.post<IPurchaseRequisitionRequest>(PURCHASE_REQUISITION_REQUEST, purchaseRequisitionRequest);
+  return await axios.post<IPurchaseRequisitionTemplate>(PURCHASE_REQUISITION_TEMPLATE, purchaseRequisitionRequest);
+}
+
+export async function getPurchaseRequisitionTemplate() {
+  return await axios.get<IPurchaseRequisitionTemplate[]>(PURCHASE_REQUISITION_TEMPLATE);
 }

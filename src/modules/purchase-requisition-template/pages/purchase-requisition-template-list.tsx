@@ -1,15 +1,38 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Col, Input, Row, Table } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import { IPurchaseRequisitionTemplateItem } from "../../../dto/i-purchase-requisition-template-item.dto";
 import { ColumnsType } from "antd/lib/table";
+import { IPurchaseRequisitionTemplate } from "@dto/i-purchase-requisition-template.dto";
+import { getPurchaseRequisitionTemplateList } from "@api/purchase-requisition-template.api";
 
-export function PurchaseRequisitionTemplateList() {
+const PurchaseRequisitionTemplateList: React.FC = () => {
+  const [purchaseRequisitionTemplateList, setPurchaseRequisitionTemplateList] = useState<IPurchaseRequisitionTemplate[]>([]);
+  const [selectedPurchaseRequisitionTemplate, setSelectedPurchaseRequisitionTemplate] = useState<IPurchaseRequisitionTemplate>({} as IPurchaseRequisitionTemplate);
+  const [selectedPurchaseRequisitionTemplateItems, setSelectedPurchaseRequisitionTemplateItems] = useState<IPurchaseRequisitionTemplateItem[]>([]);
   // eslint-disable-next-line
   const deleteTemplateItem = (itemIndex: number) => () => {
-    purchasrRequisitionTemplateItems.splice(itemIndex, 1);
-    setPurchasrRequisitionTemplateItems([...purchasrRequisitionTemplateItems]);
+    selectedPurchaseRequisitionTemplateItems.splice(itemIndex, 1);
+    console.log(selectedPurchaseRequisitionTemplateItems);
+    setSelectedPurchaseRequisitionTemplateItems([...selectedPurchaseRequisitionTemplateItems]);
   };
+
+  useEffect(() => {
+    const getList = async () => {
+      try {
+        const res = await getPurchaseRequisitionTemplateList();
+        console.log(res);
+        setPurchaseRequisitionTemplateList(res.data);
+        if (res.data.length > 0) {
+          setSelectedPurchaseRequisitionTemplate(res.data[0]);
+          setSelectedPurchaseRequisitionTemplateItems(res.data[0].templateItems);
+        }
+      } catch (error) {
+        console.error(error);
+      }  
+    }
+    getList()
+  }, []);
 
   const purchaseRequisitionTemplateItemsTableColumns: ColumnsType<IPurchaseRequisitionTemplateItem> = [
     {
@@ -17,6 +40,9 @@ export function PurchaseRequisitionTemplateList() {
       dataIndex: "sequence",
       key: "row",
       align: "center",
+      render: (id: number, record: IPurchaseRequisitionTemplateItem, index: number) => (
+        <span>{index + 1}</span>
+      ),
     },
     {
       title: "Component",
@@ -59,37 +85,6 @@ export function PurchaseRequisitionTemplateList() {
     },
   ];
 
-  // TODO: Dummy data, should get data via API
-  const [purchasrRequisitionTemplateItems, setPurchasrRequisitionTemplateItems] = useState<IPurchaseRequisitionTemplateItem[]>([
-    {
-      id: 1,
-      componentCode: "DBECO",
-      componentName: "Disperse Black ECO",
-      vendorId: "BLP",
-      vendorName: "BLP Sdn Bhd",
-      packagingSize: 25,
-      sequence: 1,
-    },
-    {
-      id: 2,
-      componentCode: "DBECO",
-      componentName: "Disperse Black ECO",
-      vendorId: "DyeChem",
-      vendorName: "DyeChem Sdn Bhd",
-      packagingSize: 30,
-      sequence: 2,
-    },
-    {
-      id: 3,
-      componentCode: "ECO",
-      componentName: "Black ECO",
-      vendorId: "BLP",
-      vendorName: "BLP Sdn Bhd",
-      packagingSize: 20,
-      sequence: 3,
-    },
-  ]);
-
   return (
     <div className="m-2">
       <h3>Purchase Requisition Template</h3>
@@ -98,7 +93,7 @@ export function PurchaseRequisitionTemplateList() {
           <Col span={14}>
             <div className="table-responsive">
               <div className="my-3 position-relative">
-                <b>Template Name</b>
+                <b>{selectedPurchaseRequisitionTemplate.templateName}</b>
                 <Input.Search
                   allowClear
                   bordered={false}
@@ -107,10 +102,9 @@ export function PurchaseRequisitionTemplateList() {
               </div>
               <Table
                 columns={purchaseRequisitionTemplateItemsTableColumns}
-                dataSource={purchasrRequisitionTemplateItems}
+                dataSource={selectedPurchaseRequisitionTemplateItems}
                 rowKey="id"
                 bordered
-                pagination={false}
               />
             </div>
           </Col>
@@ -120,3 +114,5 @@ export function PurchaseRequisitionTemplateList() {
     </div>
   );
 }
+
+export default PurchaseRequisitionTemplateList;

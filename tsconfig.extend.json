@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "@api/*": ["api/*"],
+      "@constant/*": ["constant/*"],
+      "@dto/*": ["dto/*"],
+      "@utils/*": ["utils/*"],
+      "@module/*": ["modules/*"]
+    }
+  }
+}

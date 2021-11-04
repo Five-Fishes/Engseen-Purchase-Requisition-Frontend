@@ -4,23 +4,22 @@ import { ApiResponseStatus } from "@constant/api-status";
 import { IPurchaseRequisitionTemplate } from "@dto/i-purchase-requisition-template.dto";
 import { useEffect, useState } from "react";
 import { Button } from "antd";
+import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
 
 interface IPurchaseRequisitionTemplateProps {
   setSelectedTemplate: (template: IPurchaseRequisitionTemplate) => void;
 }
 
 const PurchaseRequisitionTemplateBrowser: React.FC<IPurchaseRequisitionTemplateProps> = (props) => {
-  const [purchaseRequisitionTemplates, setPurchaseRequisitionTemplates] = useState([] as IPurchaseRequisitionTemplate[]);
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [purchaseRequisitionTemplates, setPurchaseRequisitionTemplates] = useState<IPurchaseRequisitionTemplate[]>();
+  const [selectedIndex, setSelectedIndex] = useState(-1);
 
   useEffect(() => {
     const getTemplates = async () => {
       const apiResponse = await getPurchaseRequisitionTemplate();
-      const apiResponse2 = await getPurchaseRequisitionTemplate();
-      const apiResponse3 = await getPurchaseRequisitionTemplate();
 
       if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
-        setPurchaseRequisitionTemplates([...apiResponse.data, ...apiResponse2.data, ...apiResponse3.data]);
+        setPurchaseRequisitionTemplates(apiResponse.data);
       }
     };
 
@@ -30,7 +29,7 @@ const PurchaseRequisitionTemplateBrowser: React.FC<IPurchaseRequisitionTemplateP
   return (
     <>
       <div className="scrollable-menu d-flex">
-        {purchaseRequisitionTemplates.length > 0 &&
+        {purchaseRequisitionTemplates &&
           purchaseRequisitionTemplates.map((template, index) => {
             return (
               <Button
@@ -41,7 +40,8 @@ const PurchaseRequisitionTemplateBrowser: React.FC<IPurchaseRequisitionTemplateP
                 size="large"
                 onClick={() => {
                   setSelectedIndex(index);
-                  props.setSelectedTemplate(template);
+                  const deepCopy: IPurchaseRequisitionTemplate = CLONING_LIB.deepClone(template);
+                  props.setSelectedTemplate(deepCopy);
                 }}
               >
                 {template.templateName}

@@ -30,7 +30,7 @@ const App: React.FC = () => {
           <AppSider sideBarOpened={sideBarOpened} />
           <Layout>
             <Header triggerSideBar={triggerSideBar} sideBarOpened={sideBarOpened} loggedIn={loggedIn} triggerLoggedIn={triggerLoggedIn} />
-            <Content className="h-100 px-3 pt-3" style={{ backgroundColor: "#ffffff" }}>
+            <Content className="h-100 px-3 pt-3 page" style={{ backgroundColor: "#ffffff" }}>
               <Routes />
             </Content>
           </Layout>

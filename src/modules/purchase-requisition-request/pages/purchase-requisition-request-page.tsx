@@ -4,7 +4,7 @@ import PurchaseRequisitionTemplateBrowser from "../components/templateBrowser/te
 import Title from "antd/lib/typography/Title";
 
 const PurchaseRequisitionRequestPage: React.FC = () => {
-  const [selectedTemplate, setSelectedTemplate] = useState({} as IPurchaseRequisitionTemplate);
+  const [selectedTemplate, setSelectedTemplate] = useState<IPurchaseRequisitionTemplate>();
 
   return (
     <>

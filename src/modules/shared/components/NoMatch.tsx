@@ -1,26 +1,15 @@
-import { createPurchaseReqiosition } from "@api/purchase-requisition-template.api";
-import { IPurchaseRequisitionRequest } from "@dto/i-purchase-requisition-request.dto";
-import { useEffect } from "react";
+import Title from "antd/lib/typography/Title";
 import { useLocation } from "react-router-dom";
 
 const NoMatch: React.FC = () => {
-  useEffect(() => {
-    const create = async () => {
-      try {
-        const res = await createPurchaseReqiosition({} as IPurchaseRequisitionRequest);
-        console.log(res);
-      } catch (error) {
-        console.error(error);
-      }  
-    }
-    create()
-  }, []);
-
   const location = useLocation();
+  const sanitisedPath: string = location.pathname.replace(/\/|-/g, " ").trim() + " page";
 
   return (
-    <div>
-      <h1>{location.pathname} is not available</h1>
+    <div className="d-flex justify-content-center h-100">
+      <Title className="align-self-center text-center p-5" type="secondary">
+        {sanitisedPath} is not available
+      </Title>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, Col, Input, Row, Table } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import { IPurchaseRequisitionTemplateItem } from "../../../dto/i-purchase-requisition-template-item.dto";
@@ -6,8 +6,9 @@ import { ColumnsType } from "antd/lib/table";
 
 export function PurchaseRequisitionTemplateList() {
   // eslint-disable-next-line
-  const deleteTemplateItem = function (templateItemId: number) {
-    // TODO: API to delete template item
+  const deleteTemplateItem = (itemIndex: number) => () => {
+    purchasrRequisitionTemplateItems.splice(itemIndex, 1);
+    setPurchasrRequisitionTemplateItems([...purchasrRequisitionTemplateItems]);
   };
 
   const purchaseRequisitionTemplateItemsTableColumns: ColumnsType<IPurchaseRequisitionTemplateItem> = [
@@ -50,8 +51,8 @@ export function PurchaseRequisitionTemplateList() {
       dataIndex: "id",
       key: "action",
       align: "center",
-      render: (id: number) => (
-        <Button type="text">
+      render: (id: number, record: IPurchaseRequisitionTemplateItem, index: number) => (
+        <Button type="text" onClick={deleteTemplateItem(index)}>
           <DeleteOutlined />
         </Button>
       ),
@@ -59,7 +60,7 @@ export function PurchaseRequisitionTemplateList() {
   ];
 
   // TODO: Dummy data, should get data via API
-  const purchasrRequisitionTemplateItems: IPurchaseRequisitionTemplateItem[] = [
+  const [purchasrRequisitionTemplateItems, setPurchasrRequisitionTemplateItems] = useState<IPurchaseRequisitionTemplateItem[]>([
     {
       id: 1,
       componentCode: "DBECO",
@@ -78,20 +79,30 @@ export function PurchaseRequisitionTemplateList() {
       packagingSize: 30,
       sequence: 2,
     },
-  ];
+    {
+      id: 3,
+      componentCode: "ECO",
+      componentName: "Black ECO",
+      vendorId: "BLP",
+      vendorName: "BLP Sdn Bhd",
+      packagingSize: 20,
+      sequence: 3,
+    },
+  ]);
 
   return (
     <div className="m-2">
-      <h3>Purchase Template</h3>
+      <h3>Purchase Requisition Template</h3>
       <div className="mx-3">
         <Row>
           <Col span={14}>
             <div className="table-responsive">
-              <div className="my-2 d-flex justify-content-end">
+              <div className="my-3 position-relative">
+                <b>Template Name</b>
                 <Input.Search
                   allowClear
                   bordered={false}
-                  style={{ width: "40%", borderBottom: "1px solid #d9d9d9" }}
+                  style={{ width: "40%", borderBottom: "1px solid #d9d9d9", position: "absolute", right: "5px" }}
                 />
               </div>
               <Table
@@ -99,6 +110,7 @@ export function PurchaseRequisitionTemplateList() {
                 dataSource={purchasrRequisitionTemplateItems}
                 rowKey="id"
                 bordered
+                pagination={false}
               />
             </div>
           </Col>

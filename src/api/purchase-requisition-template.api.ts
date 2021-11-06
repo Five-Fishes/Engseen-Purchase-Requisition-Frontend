@@ -534,7 +534,3 @@ export async function createPurchaseReqiosition(purchaseRequisitionRequest: IPur
 export async function getPurchaseRequisitionTemplate() {
   return await axios.get<IPurchaseRequisitionTemplate[]>(PURCHASE_REQUISITION_TEMPLATE);
 }
-
-export async function getPurchaseRequisitionTemplateList() {
-  return await axios.get<IPurchaseRequisitionTemplate[]>(PURCHASE_REQUISITION_TEMPLATE);
-}

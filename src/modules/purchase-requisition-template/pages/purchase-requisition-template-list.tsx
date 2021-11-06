@@ -1,37 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Col, Input, Row, Button } from "antd";
-import { IPurchaseRequisitionTemplateItem } from "../../../dto/i-purchase-requisition-template-item.dto";
 import PurchaseRequisitionTemplateTable from "../components/template-table";
 import { IPurchaseRequisitionTemplate } from "@dto/i-purchase-requisition-template.dto";
-import { getPurchaseRequisitionTemplateList } from "@api/purchase-requisition-template.api";
 import Title from "antd/lib/typography/Title";
 import PurchaseRequisitionTemplateBrowser from "../components/template-browser";
+import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
 
 const PurchaseRequisitionTemplateList: React.FC = () => {
-  const [purchaseRequisitionTemplateList, setPurchaseRequisitionTemplateList] = useState<IPurchaseRequisitionTemplate[]>([]);
   const [selectedPurchaseRequisitionTemplate, setSelectedPurchaseRequisitionTemplate] = useState<IPurchaseRequisitionTemplate>({} as IPurchaseRequisitionTemplate);
-  const [selectedPurchaseRequisitionTemplateItems, setSelectedPurchaseRequisitionTemplateItems] = useState<IPurchaseRequisitionTemplateItem[]>([]);
   const [searchText, setSearchText] = useState<string>();
-  // eslint-disable-next-line
-  const deleteTemplateItem = (itemIndex: number) => () => {
-    selectedPurchaseRequisitionTemplateItems.splice(itemIndex, 1);
-    console.log(selectedPurchaseRequisitionTemplateItems);
-    setSelectedPurchaseRequisitionTemplateItems([...selectedPurchaseRequisitionTemplateItems]);
-  };
 
-  useEffect(() => {
-    const getList = async () => {
-      try {
-        const res = await getPurchaseRequisitionTemplateList();
-        console.log(res);
-        setPurchaseRequisitionTemplateList(res.data);
-        
-      } catch (error) {
-        console.error(error);
-      }  
-    }
-    getList()
-  }, []);
+  const deleteTemplateItem = (itemIndex: number) => {
+    selectedPurchaseRequisitionTemplate.templateItems.splice(itemIndex, 1);
+    const deepCopy: IPurchaseRequisitionTemplate = CLONING_LIB.deepClone(selectedPurchaseRequisitionTemplate);
+    setSelectedPurchaseRequisitionTemplate(deepCopy);
+  };
 
   return (
     <>
@@ -59,11 +42,14 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
                 </div>
                 
               </div>
-              <PurchaseRequisitionTemplateTable currentTemplate={selectedPurchaseRequisitionTemplate} />
+              <PurchaseRequisitionTemplateTable
+                currentTemplate={selectedPurchaseRequisitionTemplate}
+                deleteTemplateComponent={deleteTemplateItem} />
             </div>
           </Col>
           <Col span={10}>
-            <PurchaseRequisitionTemplateBrowser setSelectedTemplate={setSelectedPurchaseRequisitionTemplate} />
+            <PurchaseRequisitionTemplateBrowser
+              setSelectedTemplate={setSelectedPurchaseRequisitionTemplate} />
             <hr/>
             {/* Excel Upload */}
             <Row>

@@ -2,8 +2,8 @@ import { getPurchaseRequisitionTemplate } from "@api/purchase-requisition-templa
 import { ApiResponseStatus } from "@constant/api-status";
 import { IPurchaseRequisitionTemplate } from "@dto/i-purchase-requisition-template.dto";
 import { useEffect, useState } from "react";
-import { Button, Input, Row, Col } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
+import { Button, Input, Row, Col, Modal } from "antd";
+import { DeleteOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
 
 interface IPurchaseRequisitionTemplateProps {
@@ -26,6 +26,52 @@ const PurchaseRequisitionTemplateBrowser: React.FC<IPurchaseRequisitionTemplateP
     getTemplates();
   }, []);
 
+  const showConfirmDeleteTemplate = (): void => {
+    Modal.confirm({
+      title: 'Are you sure?',
+      icon: <ExclamationCircleOutlined />,
+      content: 'You won\'t be able to revert it',
+      okText: 'Delete',
+      okType: 'primary',
+      cancelText: 'Cancel',
+      onOk() {
+        deleteTemplate();
+      },
+    });
+  };
+
+  const createNewTemplate = () => {
+    const newTemplate: IPurchaseRequisitionTemplate = {
+      id: 0,
+      templateName: newTemplateText,
+      templateItems: []
+    }
+    if (purchaseRequisitionTemplates === undefined || purchaseRequisitionTemplates.length === 0) {
+      setPurchaseRequisitionTemplates([newTemplate]);
+    } else {
+      purchaseRequisitionTemplates.push(newTemplate);
+      const deepCopy: IPurchaseRequisitionTemplate[] = CLONING_LIB.deepClone(purchaseRequisitionTemplates);
+      setPurchaseRequisitionTemplates(deepCopy);
+    }
+    setNewTemplateText("");
+  }
+  
+  const deleteTemplate = () => {
+    if (purchaseRequisitionTemplates === undefined || selectedIndex  === -1) {
+      return;
+    }
+    const selectedPurchaseRequisitionTemplate = purchaseRequisitionTemplates[selectedIndex];
+    if (selectedPurchaseRequisitionTemplate.id > 0) {
+      // API request to Delete Template
+    } else {
+      purchaseRequisitionTemplates.splice(selectedIndex, 1);
+      const deepCopy: IPurchaseRequisitionTemplate[] = CLONING_LIB.deepClone(purchaseRequisitionTemplates);
+      setPurchaseRequisitionTemplates(deepCopy);
+    }
+    setSelectedIndex(-1);
+    props.setSelectedTemplate({} as IPurchaseRequisitionTemplate);
+  }
+
   return (
     <>
       <Row>
@@ -44,19 +90,17 @@ const PurchaseRequisitionTemplateBrowser: React.FC<IPurchaseRequisitionTemplateP
               className="input-group-btn mx-1"
               key="create-new-template-button"
               type="primary"
-              onClick={() => {
-                console.log("Create New Template");
-              }}>Create</Button>
+              onClick={() => createNewTemplate()}
+            >Create</Button>
           </div>
         </Col>
         <Col span={8} offset={2}>
           <Button
-            className="input-group-btn float-end"
+            className="input-group-btn float-end d-inline-flex align-items-center"
             key="create-new-template-button"
             type="default"
-            onClick={() => {
-              console.log("Delete Template");
-            }}><DeleteOutlined />Delete Template</Button>
+            onClick={() => showConfirmDeleteTemplate()}
+          ><DeleteOutlined />Delete Template</Button>
         </Col>
       </Row>
       <div className="scrollable-menu d-inline-block text-center">

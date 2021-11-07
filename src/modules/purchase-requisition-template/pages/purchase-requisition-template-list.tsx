@@ -1,20 +1,46 @@
 import React, { useState } from "react";
-import { Col, Input, Row, Button } from "antd";
+import { Col, Form, Input, Row, Button, InputNumber } from "antd";
 import PurchaseRequisitionTemplateTable from "../components/template-table";
 import { IPurchaseRequisitionTemplate } from "@dto/i-purchase-requisition-template.dto";
 import Title from "antd/lib/typography/Title";
 import PurchaseRequisitionTemplateBrowser from "../components/template-browser";
 import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
+import readXlsxFile from "read-excel-file";
+import { IPurchaseRequisitionTemplateItem } from "@dto/i-purchase-requisition-template-item.dto";
 
 const PurchaseRequisitionTemplateList: React.FC = () => {
   const [selectedPurchaseRequisitionTemplate, setSelectedPurchaseRequisitionTemplate] = useState<IPurchaseRequisitionTemplate>({} as IPurchaseRequisitionTemplate);
-  const [searchText, setSearchText] = useState<string>();
+  const [searchText, setSearchText] = useState<string>("");
+  const [excelFile, setExcelFile] = useState<File>();
+  const [excelData, setExcelData] = useState<Array<any>>([]);
 
   const deleteTemplateItem = (itemIndex: number) => {
     selectedPurchaseRequisitionTemplate.templateItems.splice(itemIndex, 1);
     const deepCopy: IPurchaseRequisitionTemplate = CLONING_LIB.deepClone(selectedPurchaseRequisitionTemplate);
     setSelectedPurchaseRequisitionTemplate(deepCopy);
   };
+
+  const uploadExcelFile = (): void => {
+    if (excelFile !== undefined) {
+      readXlsxFile(excelFile).then((rows) => {
+        // Convert to Array of JSON Object
+        setExcelData(rows);
+      })
+    }
+  };
+
+  const loadDatabaseWithExcelData = (): void => {
+    console.log("Load Database");
+    console.log(excelData);
+  };
+
+  const addNewComponentAsTemplateItem = (values: any): void => {
+    console.log("Add Component to Template ", values);
+  }
+
+  const formValidationFailed = (errorInfo: any): void => {
+    console.log("Failed ", errorInfo);
+  }
 
   return (
     <>
@@ -34,9 +60,7 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
                     placeholder="Search"
                     bordered={false}
                     value={searchText}
-                    onChange={(e: any) => {
-                      setSearchText(e.target.value);
-                    }}
+                    onChange={(e: any) => setSearchText(e.target.value)}
                     style={{ width: "40%", borderBottom: "1px solid #d9d9d9", position: "absolute", right: "5px" }}
                   />
                 </div>
@@ -59,18 +83,14 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
                     className="form-control"
                     key="template-excel-input"
                     type="file"
-                    onChange={(e: any) => {
-                      console.log("File Changed");
-                      // setExcelFile(e.target.value);
-                    }}
+                    onChange={(e: any) => setExcelFile(e.target.files[0])}
                   />
                   <Button
                     className="input-group-btn mx-1"
                     key="upload-excel-button"
                     type="default"
-                    onClick={() => {
-                      console.log("Excel Upload");
-                    }}>Upload</Button>
+                    onClick={() => uploadExcelFile()}
+                  >Upload</Button>
                 </div>
               </Col>
               <Col span={6} offset={2}>
@@ -78,59 +98,56 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
                   className="input-group-btn float-end"
                   key="load-database-button"
                   type="primary"
-                  onClick={() => {
-                    console.log("Load Database");
-                  }}>Load Database</Button>
+                  onClick={() => loadDatabaseWithExcelData()}
+                >Load Database</Button>
               </Col>
             </Row>
             {/* Add Component */}
             <div className="mt-5">
-              <Row>
-                <Col span={16}>
-                  <div className="input-group">
-                    <Input
-                      className="form-control"
-                      key="component-input"
-                      type="text"
-                      placeholder="Component"
-                      onChange={(e: any) => {
-                        console.log("Component Text");
-                      }}
-                    />
-                  </div>
-                  <div className="input-group mt-2">
-                    <Input
-                      className="form-control"
-                      key="vendor-input"
-                      type="text"
-                      placeholder="Vendor"
-                      onChange={(e: any) => {
-                        console.log("Vendor Text");
-                      }}
-                    />
-                  </div>
-                  <div className="input-group mt-2">
-                    <Input
-                      className="form-control"
-                      key="packing-size-input"
-                      type="number"
-                      placeholder="Pakcing Size"
-                      onChange={(e: any) => {
-                        console.log("Packing Size Text");
-                      }}
-                    />
-                  </div>
-                </Col>
-                <Col span={6} offset={2}>
-                  <Button
-                    className="input-group-btn float-end"
-                    key="load-database-button"
-                    type="primary"
-                    onClick={() => {
-                      console.log("Add Component");
-                    }}>Add Component</Button>
-                </Col>
-              </Row>
+              <Form onFinish={addNewComponentAsTemplateItem} onFinishFailed={formValidationFailed}>
+                <Row>
+                  <Col span={16}>
+                    <Form.Item className="input-group" name="componentCode" rules={[
+                      { required: true, message: "Enter component code"},
+                    ]}>
+                      <Input
+                        key="component-input"
+                        type="text"
+                        placeholder="Component"
+                      />
+                    </Form.Item>
+                    <Form.Item className="input-group" name="vendorId" rules={[
+                      { required: true, message: "Enter vendor ID"},
+                    ]}>
+                      <Input
+                        key="vendor-input"
+                        type="text"
+                        placeholder="Vendor"
+                      />
+                    </Form.Item>
+                    <Form.Item className="input-group" name="packingSize" rules={[
+                      { required: true, message: "Enter packing size"},
+                      { type: "number", min: 1, message: "Packing Size must be positive"}
+                    ]}>
+                      <InputNumber
+                        className="w-100"
+                        key="packing-size-input"
+                        placeholder="Packing Size"
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col span={6} offset={2}>
+                    <Form.Item>
+                      <Button
+                        className="input-group-btn float-end"
+                        key="load-database-button"
+                        type="primary"
+                        htmlType="submit"
+                      >Add Component</Button>
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </Form>
             </div>
             <hr/>
             <Button

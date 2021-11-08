@@ -29,6 +29,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
+console.log(analytics);
 
 const App: React.FC = () => {
   const [sideBarOpened, setSideBarOpened] = useState(true);

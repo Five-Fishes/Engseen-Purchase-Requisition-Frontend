@@ -6,7 +6,6 @@ import Title from "antd/lib/typography/Title";
 import PurchaseRequisitionTemplateBrowser from "../components/template-browser";
 import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
 import readXlsxFile from "read-excel-file";
-import { IPurchaseRequisitionTemplateItem } from "@dto/i-purchase-requisition-template-item.dto";
 
 const PurchaseRequisitionTemplateList: React.FC = () => {
   const [selectedPurchaseRequisitionTemplate, setSelectedPurchaseRequisitionTemplate] = useState<IPurchaseRequisitionTemplate>({} as IPurchaseRequisitionTemplate);

@@ -4,14 +4,24 @@ import PurchaseRequisitionTemplateTable from "../components/template-table";
 import { IPurchaseRequisitionTemplate } from "@dto/i-purchase-requisition-template.dto";
 import Title from "antd/lib/typography/Title";
 import PurchaseRequisitionTemplateBrowser from "../components/template-browser";
+import { genereateIndex } from "../components/template-indexer";
 import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
 import readXlsxFile from "read-excel-file";
+import { SearchEngine } from "@utils/search/native-search";
+import { IPurchaseRequisitionTemplateItem } from "@dto/i-purchase-requisition-template-item.dto";
 
 const PurchaseRequisitionTemplateList: React.FC = () => {
   const [selectedPurchaseRequisitionTemplate, setSelectedPurchaseRequisitionTemplate] = useState<IPurchaseRequisitionTemplate>({} as IPurchaseRequisitionTemplate);
+  const [filteredTemplateItems, setFilteredTemplateItems] = useState<IPurchaseRequisitionTemplateItem[]>();
   const [searchText, setSearchText] = useState<string>("");
   const [excelFile, setExcelFile] = useState<File>();
   const [excelData, setExcelData] = useState<Array<any>>([]);
+  const searchEngine: SearchEngine<IPurchaseRequisitionTemplateItem> = new SearchEngine([], genereateIndex);
+
+  const search = () => {
+    const filteredData = searchEngine.updateEngine(selectedPurchaseRequisitionTemplate.templateItems).search(searchText);
+    setFilteredTemplateItems(filteredData);
+  };
 
   const deleteTemplateItem = (itemIndex: number) => {
     selectedPurchaseRequisitionTemplate.templateItems.splice(itemIndex, 1);
@@ -60,6 +70,7 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
                     bordered={false}
                     value={searchText}
                     onChange={(e: any) => setSearchText(e.target.value)}
+                    onSearch={search}
                     style={{ width: "40%", borderBottom: "1px solid #d9d9d9", position: "absolute", right: "5px" }}
                   />
                 </div>
@@ -67,7 +78,8 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
               </div>
               <PurchaseRequisitionTemplateTable
                 currentTemplate={selectedPurchaseRequisitionTemplate}
-                deleteTemplateComponent={deleteTemplateItem} />
+                deleteTemplateComponent={deleteTemplateItem}
+                filteredItems={filteredTemplateItems} />
             </div>
           </Col>
           <Col span={10}>

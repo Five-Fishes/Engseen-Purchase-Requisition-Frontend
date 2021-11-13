@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Col, Form, Input, Row, Button, InputNumber } from "antd";
+import { Col, Form, Input, Row, Button, InputNumber, Modal } from "antd";
 import PurchaseRequisitionTemplateTable from "../components/template-table";
 import { IPurchaseRequisitionTemplate } from "@dto/i-purchase-requisition-template.dto";
 import Title from "antd/lib/typography/Title";
@@ -17,11 +17,26 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
   const [excelFile, setExcelFile] = useState<File>();
   const [excelData, setExcelData] = useState<Array<any>>([]);
   const searchEngine: SearchEngine<IPurchaseRequisitionTemplateItem> = new SearchEngine([], genereateIndex);
+  const [editTemplateNameModal, setEditTemplateNameModal] = useState<boolean>(false);
+  const [newTemplateName, setNewTemplateName] = useState<string>("");
 
   const search = () => {
     const filteredData = searchEngine.updateEngine(selectedPurchaseRequisitionTemplate.templateItems).search(searchText);
     setFilteredTemplateItems(filteredData);
   };
+
+  const changeTemplateNameModal = () => {
+    setEditTemplateNameModal(true);
+    setNewTemplateName(selectedPurchaseRequisitionTemplate.templateName);
+  }
+
+  const editTemplateName = () => {
+    if (newTemplateName.trim() !== "") {
+      selectedPurchaseRequisitionTemplate.templateName = newTemplateName;
+      const deepCopy: IPurchaseRequisitionTemplate = CLONING_LIB.deepClone(selectedPurchaseRequisitionTemplate);
+      setSelectedPurchaseRequisitionTemplate(deepCopy);
+    }
+  }
 
   const deleteTemplateItem = (itemIndex: number) => {
     selectedPurchaseRequisitionTemplate.templateItems.splice(itemIndex, 1);
@@ -62,7 +77,7 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
           <Col span={14}>
             <div className="border-right-2 mx-2">
               <div className="my-2 position-relative">
-                <b>{selectedPurchaseRequisitionTemplate.templateName}</b>
+                <b onClick={changeTemplateNameModal}>{selectedPurchaseRequisitionTemplate.templateName}</b>
                 <div className="col d-flex flex-column justify-content-center">
                   <Input.Search
                     allowClear
@@ -174,6 +189,17 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
         </Row>
       </div>
     </div>
+    <Modal title="Edit Template Name"
+      key="edit-templateName-modal"
+      visible={editTemplateNameModal} 
+      onOk={editTemplateName}
+      okText="Submit">
+      <Form>
+        <Form.Item label='Template Name'>
+          <Input placeholder='name' value={selectedPurchaseRequisitionTemplate.templateName} onChange={(e: any) => setNewTemplateName(e.target.value)}/>
+        </Form.Item>
+      </Form>
+    </Modal>
     </>
   );
 }

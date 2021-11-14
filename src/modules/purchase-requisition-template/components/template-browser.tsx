@@ -41,19 +41,21 @@ const PurchaseRequisitionTemplateBrowser: React.FC<IPurchaseRequisitionTemplateP
   };
 
   const createNewTemplate = () => {
-    const newTemplate: IPurchaseRequisitionTemplate = {
-      id: 0,
-      templateName: newTemplateText,
-      templateItems: []
+    if (newTemplateText.trim() !== "") {
+      const newTemplate: IPurchaseRequisitionTemplate = {
+        id: 0,
+        templateName: newTemplateText,
+        templateItems: []
+      }
+      if (purchaseRequisitionTemplates === undefined || purchaseRequisitionTemplates.length === 0) {
+        setPurchaseRequisitionTemplates([newTemplate]);
+      } else {
+        purchaseRequisitionTemplates.push(newTemplate);
+        const deepCopy: IPurchaseRequisitionTemplate[] = CLONING_LIB.deepClone(purchaseRequisitionTemplates);
+        setPurchaseRequisitionTemplates(deepCopy);
+      }
+      setNewTemplateText("");
     }
-    if (purchaseRequisitionTemplates === undefined || purchaseRequisitionTemplates.length === 0) {
-      setPurchaseRequisitionTemplates([newTemplate]);
-    } else {
-      purchaseRequisitionTemplates.push(newTemplate);
-      const deepCopy: IPurchaseRequisitionTemplate[] = CLONING_LIB.deepClone(purchaseRequisitionTemplates);
-      setPurchaseRequisitionTemplates(deepCopy);
-    }
-    setNewTemplateText("");
   }
   
   const deleteTemplate = () => {

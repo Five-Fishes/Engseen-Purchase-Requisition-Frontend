@@ -9,6 +9,7 @@ import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
 import readXlsxFile from "read-excel-file";
 import { SearchEngine } from "@utils/search/native-search";
 import { IPurchaseRequisitionTemplateItem } from "@dto/i-purchase-requisition-template-item.dto";
+import { EditOutlined } from "@ant-design/icons";
 
 const PurchaseRequisitionTemplateList: React.FC = () => {
   const [selectedPurchaseRequisitionTemplate, setSelectedPurchaseRequisitionTemplate] = useState<IPurchaseRequisitionTemplate>({} as IPurchaseRequisitionTemplate);
@@ -78,7 +79,10 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
           <Col span={14}>
             <div className="border-right-2 mx-2">
               <div className="my-2 position-relative">
-                <b onClick={changeTemplateNameModal}>{selectedPurchaseRequisitionTemplate.templateName}</b>
+                <b className="d-inline-flex align-items-center">
+                  {selectedPurchaseRequisitionTemplate.templateName}&nbsp;
+                  <EditOutlined className="cursor-pointer" onClick={changeTemplateNameModal}  hidden={selectedPurchaseRequisitionTemplate.templateName === undefined} />
+                </b>
                 <div className="col d-flex flex-column justify-content-center">
                   <Input.Search
                     allowClear

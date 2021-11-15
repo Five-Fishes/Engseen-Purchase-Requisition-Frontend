@@ -8,6 +8,7 @@ import React from "react";
 interface IPurchaseRequisitionTemplateTableProps {
   readonly currentTemplate?: IPurchaseRequisitionTemplate;
   deleteTemplateComponent: (itemIndex: number) => void;
+  filteredItems?: IPurchaseRequisitionTemplateItem[];
 }
 
 const PurchaseRequisitionTemplateTable: React.FC<IPurchaseRequisitionTemplateTableProps> = (props) => {
@@ -74,7 +75,7 @@ const PurchaseRequisitionTemplateTable: React.FC<IPurchaseRequisitionTemplateTab
   ];
 
   if (props.currentTemplate && props.currentTemplate.templateName != null) {
-    const templateItems = props.currentTemplate.templateItems;
+    const templateItems = props.filteredItems === undefined ? props.currentTemplate.templateItems : props.filteredItems;
     return (
       <>
         <Table

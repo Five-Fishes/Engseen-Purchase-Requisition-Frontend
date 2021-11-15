@@ -5,6 +5,7 @@ import { Sort } from "@constant/sort.enum";
 import { QueryParamsBuilder } from "@utils/api/query-params-builder";
 
 const PURCHASE_REQUISITION_REQUEST: string = "purchase-requisition/request";
+const PURCHASE_REQUISITION_REQUEST_REGEX: RegExp = new RegExp(`${PURCHASE_REQUISITION_REQUEST}*`);
 
 const mock = new MockAdapter(axios);
 
@@ -27,7 +28,7 @@ mock.onPost(PURCHASE_REQUISITION_REQUEST).reply<IPurchaseRequisitionRequest>(200
   remarks: "abc",
 });
 
-mock.onGet(PURCHASE_REQUISITION_REQUEST).reply<IPurchaseRequisitionRequest[]>(200, [
+mock.onGet(PURCHASE_REQUISITION_REQUEST_REGEX).reply<IPurchaseRequisitionRequest[]>(200, [
   {
     id: 1,
     createdDate: new Date(),

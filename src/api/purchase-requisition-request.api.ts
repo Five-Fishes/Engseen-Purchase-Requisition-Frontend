@@ -31,7 +31,7 @@ mock.onPost(PURCHASE_REQUISITION_REQUEST).reply<IPurchaseRequisitionRequest>(200
 mock.onGet(PURCHASE_REQUISITION_REQUEST_REGEX).reply<IPurchaseRequisitionRequest[]>(200, [
   {
     id: 1,
-    createdDate: new Date(),
+    createdDate: new Date("2022-01-01"),
     templateId: 1,
     purchaseRequisitionRequestItems: [
       {
@@ -193,7 +193,7 @@ mock.onGet(PURCHASE_REQUISITION_REQUEST_REGEX).reply<IPurchaseRequisitionRequest
   },
   {
     id: 10,
-    createdDate: new Date(),
+    createdDate: new Date("2021-11-01"),
     templateId: 1,
     purchaseRequisitionRequestItems: [
       {

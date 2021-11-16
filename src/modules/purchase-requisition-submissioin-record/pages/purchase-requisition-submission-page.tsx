@@ -10,34 +10,108 @@ import { genereateIndex } from "../components/submission-indexer";
 import { IPurchaseRequisitionRequestItem } from "@dto/i-purchase-requisition-request-item.dto";
 import { convertToLocalString } from "@utils/date-time/date-time-format";
 import { Sort } from "@constant/sort.enum";
+import { useEffect } from "react";
+import { getPurchaseRequisitionRequest } from "@api/purchase-requisition-request.api";
+import { ApiResponseStatus } from "@constant/api-status";
 
 const PurchaseRequisitionSubmissionPage: React.FC = () => {
+  const [purchaseRequisitionSubmissios, setPurchaseRequisitionSubmissions] = useState<IPurchaseRequisitionRequest[]>();
+  const [filteredPurchaseRequisitionSubmissios, setFilteredPurchaseRequisitionSubmissions] = useState<IPurchaseRequisitionRequest[]>();
   const [selectedSubmissionRequest, setSelectedSubmissionRequest] = useState<IPurchaseRequisitionRequest>({} as IPurchaseRequisitionRequest);
   const [filteredSubmissionItems, setFilteredSubmissionItems] = useState<IPurchaseRequisitionRequestItem[]>();
   const [searchText, setSearchText] = useState<string>("");
   const searchEngine: SearchEngine<IPurchaseRequisitionRequestItem> = new SearchEngine([], genereateIndex);
+  const [startDateFilterCriteria, setStartDateFilterCriteria] = useState<Date>();
+  const [endDateFilterCriteria, setEndDateFilterCriteria] = useState<Date>();
+  const [sortCriteria, setSortCriteria] = useState<Sort>(Sort.DES);
+
+  useEffect(() => {
+    const getSubmissions = async () => {
+      const apiResponse = await getPurchaseRequisitionRequest(new Date(), new Date(), Sort.ASC);
+
+      if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
+        setPurchaseRequisitionSubmissions(apiResponse.data);
+        setFilteredPurchaseRequisitionSubmissions(apiResponse.data);
+      }
+    };
+
+    getSubmissions();
+  }, []);
 
   const search = () => {
     const filteredData = searchEngine.updateEngine(selectedSubmissionRequest.purchaseRequisitionRequestItems).search(searchText);
     setFilteredSubmissionItems(filteredData);
   };
 
+  const filterStartDate = (startDate: string) => {
+    setStartDateFilterCriteria(new Date(startDate));
+    filterSubmissionRequest();
+  };
+
+  const filterEndDate = (endDate: string) => {
+    setEndDateFilterCriteria(new Date(endDate));
+    filterSubmissionRequest();
+  };
+
+  const filterSubmissionRequest = () => {
+    const filteredResult = purchaseRequisitionSubmissios?.filter(submission => {
+      const submissionCreatedDate = new Date(submission.createdDate);
+      if (startDateFilterCriteria !== undefined && submissionCreatedDate < startDateFilterCriteria) {
+        return false;
+      } else if (endDateFilterCriteria !== undefined && submissionCreatedDate > endDateFilterCriteria) {
+        return false;
+      }
+      return true;
+    });
+    setFilteredPurchaseRequisitionSubmissions(filteredResult);
+  };
+
+  const sortDate = (sort: Sort) => {
+    setSortCriteria(sort);
+    filteredPurchaseRequisitionSubmissios?.sort((submission1, submission2) => {
+      if (sort === Sort.ASC) {
+        return submission1.createdDate < submission2.createdDate ? -1 : 1;
+      } else if (sort === Sort.DES) {
+        return submission1.createdDate > submission2.createdDate ? -1 : 1;
+      }
+      return 0;
+    })
+  };
+
+  const resetSortingAndFilter = () => {
+    setFilteredPurchaseRequisitionSubmissions(purchaseRequisitionSubmissios);
+    let startDateInput = document.getElementById("startDateFilter") as HTMLInputElement;
+    console.log(startDateInput)
+    setStartDateFilterCriteria(undefined);
+    setEndDateFilterCriteria(undefined);
+    filterSubmissionRequest();
+
+    setSortCriteria(Sort.DES);
+    sortDate(Sort.DES);
+  }
+
   return (
     <>
       <div className="container-fluid h-100">
         <div>
-          <div>
+          <div className="mb-2 w-100">
             <Title className="d-inline-block" level={4}>Purchase Requisition Submission Record</Title>
             <Button className="d-inline-flex align-items-center float-end back-button">
               <span>Purchase Requisition</span>
               <ArrowRightOutlined />
             </Button>
           </div>
-          <div className="d-inline-flex flex-row align-items-center">
-            <label>Advance Sorting/Filtering</label>
-            <Input type="date" />
-            <Input type="date" />
-            <Select defaultValue={Sort.DES}>
+          <div className="d-inline-flex flex-row align-items-center" style={{ gap: "15px", width: "max-content" }}>
+            <label style={{ width: "125%" }}>Advance Sorting / Filtering</label>
+            <Input key="filter-start-date-input" type="date"
+              value={startDateFilterCriteria?.toISOString().substring(0, 10)}
+              onChange={(e) => filterStartDate(e.target.value)} />
+            <Input key="filter-end-date-input" type="date"
+              value={endDateFilterCriteria?.toISOString().substring(0, 10)}
+              onChange={(e) => filterEndDate(e.target.value)} />
+            <Select key="sort-submission-request-select"
+              value={sortCriteria}
+              onChange={(value) => sortDate(value)}>
               <Select.Option value={Sort.DES}>
                 Created Date Desc
               </Select.Option>
@@ -45,14 +119,16 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
                 Created Date Asc
               </Select.Option>
             </Select>
-            <Button className="d-inline-flex align-items-center">
+            <Button className="d-inline-flex align-items-center" onClick={resetSortingAndFilter}>
               <ReloadOutlined />
               Reset
             </Button>
           </div>
           <div className="mx-2 d-inline-flex border-top mt-4">
             <div>
-              <PurchaseRequisitionSubmissionBrowser setSelectedSubmissionRecord={setSelectedSubmissionRequest} />
+              <PurchaseRequisitionSubmissionBrowser
+                setSelectedSubmissionRecord={setSelectedSubmissionRequest}
+                purchaseRequisitionSubmissios={filteredPurchaseRequisitionSubmissios ?? []} />
             </div>
             <div className="my-2 mx-4 position-relative">
               <span hidden={selectedSubmissionRequest === undefined}>

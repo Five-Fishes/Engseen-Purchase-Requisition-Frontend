@@ -6,7 +6,7 @@ export const convertToLocalString: any = (dateTime?: any) => {
   if (!(dateTimeValue instanceof Date) || dateTimeValue.toString() === "Invalid Date") {
     return "";
   }
-  const localeDate = dateTimeValue.getDate() + "/" + dateTimeValue.getMonth() + "/" + dateTimeValue.getFullYear();
+  const localeDate = dateTimeValue.getDate() + "/" + Number(dateTimeValue.getMonth() + 1) + "/" + dateTimeValue.getFullYear();
   const localeTime = dateTimeValue.toLocaleTimeString();
   return localeDate + " " + localeTime;
 }

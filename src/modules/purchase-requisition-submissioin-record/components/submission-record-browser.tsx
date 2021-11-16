@@ -1,35 +1,20 @@
-import { getPurchaseRequisitionRequest } from "@api/purchase-requisition-request.api";
-import { ApiResponseStatus } from "@constant/api-status";
 import { IPurchaseRequisitionRequest } from "@dto/i-purchase-requisition-request.dto";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "antd";
 import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
-import { Sort } from "@constant/sort.enum";
 import { convertToLocalString } from "@utils/date-time/date-time-format";
 
 interface IPurchaseRequisitionSubmissionProps {
   setSelectedSubmissionRecord: (submissionRecord: IPurchaseRequisitionRequest) => void;
+  purchaseRequisitionSubmissios: IPurchaseRequisitionRequest[];
 }
 
 const PurchaseRequisitionSubmissionBrowser: React.FC<IPurchaseRequisitionSubmissionProps> = (props) => {
-  const [purchaseRequisitionSubmissios, setPurchaseRequisitionSubmissions] = useState<IPurchaseRequisitionRequest[]>();
   const [selectedIndex, setSelectedIndex] = useState(-1);
-
-  useEffect(() => {
-    const getSubmissions = async () => {
-      const apiResponse = await getPurchaseRequisitionRequest(new Date(), new Date(), Sort.ASC);
-
-      if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
-        setPurchaseRequisitionSubmissions(apiResponse.data);
-      }
-    };
-
-    getSubmissions();
-  }, []);
-
+  const { purchaseRequisitionSubmissios } = props;
   return (
     <>
-      <div>
+      <div className="text-center d-flex flex-column py-2" style={{ overflowY: "scroll" }}>
         {purchaseRequisitionSubmissios &&
           purchaseRequisitionSubmissios.map((submission, index) => {
             return (

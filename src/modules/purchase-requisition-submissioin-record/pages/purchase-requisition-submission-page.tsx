@@ -54,15 +54,24 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
   };
 
   const filterSubmissionRequest = () => {
-    const filteredResult = purchaseRequisitionSubmissios?.filter(submission => {
+    const filteredResult: IPurchaseRequisitionRequest[] = [];
+    purchaseRequisitionSubmissios?.forEach(submission => {
       const submissionCreatedDate = new Date(submission.createdDate);
       if (startDateFilterCriteria !== undefined && submissionCreatedDate < startDateFilterCriteria) {
-        return false;
       } else if (endDateFilterCriteria !== undefined && submissionCreatedDate > endDateFilterCriteria) {
-        return false;
+      } else {
+        filteredResult.push(submission);
       }
-      return true;
     });
+    // const filteredResult = purchaseRequisitionSubmissios?.filter(submission => {
+    //   const submissionCreatedDate = new Date(submission.createdDate);
+    //   if (startDateFilterCriteria !== undefined && submissionCreatedDate < startDateFilterCriteria) {
+    //     return false;
+    //   } else if (endDateFilterCriteria !== undefined && submissionCreatedDate > endDateFilterCriteria) {
+    //     return false;
+    //   }
+    //   return true;
+    // });
     setFilteredPurchaseRequisitionSubmissions(filteredResult);
   };
 
@@ -80,8 +89,6 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
 
   const resetSortingAndFilter = () => {
     setFilteredPurchaseRequisitionSubmissions(purchaseRequisitionSubmissios);
-    let startDateInput = document.getElementById("startDateFilter") as HTMLInputElement;
-    console.log(startDateInput)
     setStartDateFilterCriteria(undefined);
     setEndDateFilterCriteria(undefined);
     filterSubmissionRequest();
@@ -96,7 +103,8 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
         <div>
           <div className="mb-2 w-100">
             <Title className="d-inline-block" level={4}>Purchase Requisition Submission Record</Title>
-            <Button className="d-inline-flex align-items-center float-end back-button">
+            <Button className="d-inline-flex align-items-center float-end back-button"
+              role="link" href="/purchase-requisition-request">
               <span>Purchase Requisition</span>
               <ArrowRightOutlined />
             </Button>
@@ -125,7 +133,7 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
             </Button>
           </div>
           <div className="mx-2 d-inline-flex border-top mt-4">
-            <div>
+            <div className="my-3 mb-2" style={{ alignContent: "start", maxHeight: "500px" }}>
               <PurchaseRequisitionSubmissionBrowser
                 setSelectedSubmissionRecord={setSelectedSubmissionRequest}
                 purchaseRequisitionSubmissios={filteredPurchaseRequisitionSubmissios ?? []} />

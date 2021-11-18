@@ -11,6 +11,9 @@ export const convertToLocalString: any = (dateTime?: any) => {
     const localeTime = dateTimeValue.toLocaleTimeString();
     return localeDate + " " + localeTime;
   } catch (error) {
+    console.log("Error while convertToLocalString");
+    console.log("Input value: " + dateTime);
+    console.log(error);
     return "";
   }
 }

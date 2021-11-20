@@ -6,6 +6,7 @@ import PurchaseRequisitionTemplateRoute from "./purchase-requisition-template/pa
 import PostLogInRoute from "./shared/components/PostLogInRoute";
 import PurchaseRequisitionRequestPage from "./purchase-requisition-request/pages/purchase-requisition-request-page";
 import PurchaseRequisitionSubmissionPage from "./purchase-requisition-submissioin-record/pages/purchase-requisition-submission-page";
+import PurchaseOrderPage from "./purchase-order/pages/purchase-order-page";
 
 const Routes: React.FC = () => {
   return (
@@ -16,8 +17,8 @@ const Routes: React.FC = () => {
       <PostLogInRoute path="/purchase-requisition-submission-record" component={PurchaseRequisitionSubmissionPage}/>
       {/*       
       <PostLogInRoute path="/purchase-requisition-approval" component={PurchaseRequisitionRequestPage}/>
-      <PostLogInRoute path="/purchase-order" component={PurchaseRequisitionRequestPage}/> 
       */}
+      <PostLogInRoute path="/purchase-order" component={PurchaseOrderPage}/> 
       <Route path="*">
         <NoMatch />
       </Route>

@@ -1,12 +1,13 @@
-import "./App.less";
-import "antd/dist/antd.less";
 import React, { useState } from "react";
-import Routes from "./modules/Routes";
+import "antd/dist/antd.less";
 import Layout, { Content } from "antd/lib/layout/layout";
-
+import Routes from "./modules/Routes";
 import { BrowserRouter as Router } from "react-router-dom";
+
+import "./App.less";
 import Header from "@module/layout/component/header/header";
 import AppSider from "@module/layout/component/sider/sider";
+import mock from "@api/api-mocks.api";
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
@@ -30,6 +31,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 console.log(analytics);
+console.log(mock)
 
 const App: React.FC = () => {
   const [sideBarOpened, setSideBarOpened] = useState(true);

@@ -66,11 +66,13 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
   };
 
   const filterStartDate = (startDate: string) => {
-    setStartDateFilterCriteria(new Date(startDate));
+    const date = startDate === '' ? undefined : new Date(startDate);
+    setStartDateFilterCriteria(date);
   };
 
   const filterEndDate = (endDate: string) => {
-    setEndDateFilterCriteria(new Date(endDate));
+    const date = endDate === '' ? undefined : new Date(endDate);
+    setEndDateFilterCriteria(date);
   };
 
   const filterSubmissionRequest = () => {
@@ -130,13 +132,13 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
             <Input
               key="filter-start-date-input"
               type="date"
-              value={startDateFilterCriteria ? startDateFilterCriteria?.toISOString().substring(0, 10) : undefined}
+              value={startDateFilterCriteria?.toISOString().substring(0, 10)}
               onChange={(e) => filterStartDate(e.target.value)}
             />
             <Input
               key="filter-end-date-input"
               type="date"
-              value={endDateFilterCriteria ? endDateFilterCriteria?.toISOString().substring(0, 10) : undefined}
+              value={endDateFilterCriteria?.toISOString().substring(0, 10)}
               onChange={(e) => filterEndDate(e.target.value)}
             />
             <Select key="sort-submission-request-select" value={sortCriteria} onChange={(value) => setSortCriteria(value)}>

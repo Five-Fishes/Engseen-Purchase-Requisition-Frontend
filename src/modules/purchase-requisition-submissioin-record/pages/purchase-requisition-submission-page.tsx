@@ -54,7 +54,7 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
     console.log("Sorting list after sort is set >>: ", {
       sortCriteria,
     });
-    filterSubmissionRequest();
+    sortSubmissionRequestByDate(sortCriteria);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortCriteria]);
 
@@ -88,7 +88,7 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
     setFilteredPurchaseRequisitionSubmissions(filteredResult);
   };
 
-  const sortDate = (sort: Sort) => {
+  const sortSubmissionRequestByDate = (sort: Sort) => {
     const sortedResult = CLONING_LIB.deepClone(filteredPurchaseRequisitionSubmissios)?.sort((submission1, submission2) => {
       if (sort === Sort.ASC) {
         return submission1.createdDate < submission2.createdDate ? -1 : 1;
@@ -109,7 +109,7 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
     filterSubmissionRequest();
 
     setSortCriteria(Sort.DES);
-    sortDate(Sort.DES);
+    sortSubmissionRequestByDate(Sort.DES);
   };
 
   return (

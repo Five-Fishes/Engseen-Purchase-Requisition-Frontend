@@ -72,7 +72,7 @@ const PurchaseRequisitionSubmissionTable: React.FC<IPurchaseRequisitionSubmissio
     );
   } else {
     return (
-      <div className="d-flex flex-column justify-content-center my-4">
+      <div className="d-flex flex-column justify-content-center my-4 w-100">
         <span className="text-center">No Submission Selected</span>
       </div>
     );

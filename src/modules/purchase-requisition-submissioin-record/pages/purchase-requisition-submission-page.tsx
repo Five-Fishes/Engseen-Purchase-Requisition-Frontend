@@ -13,6 +13,7 @@ import { Sort } from "@constant/sort.enum";
 import { useEffect } from "react";
 import { getPurchaseRequisitionRequest } from "@api/purchase-requisition-request.api";
 import { ApiResponseStatus } from "@constant/api-status";
+import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
 
 const PurchaseRequisitionSubmissionPage: React.FC = () => {
   const [purchaseRequisitionSubmissios, setPurchaseRequisitionSubmissions] = useState<IPurchaseRequisitionRequest[]>();
@@ -39,14 +40,23 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    console.group(PurchaseRequisitionSubmissionPage.name);
     console.log("Filtering list after filters are set >>: ", {
       startDateFilterCriteria,
       endDateFilterCriteria,
+    });
+    filterSubmissionRequest();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [startDateFilterCriteria, endDateFilterCriteria]);
+
+  useEffect(() => {
+    console.group(PurchaseRequisitionSubmissionPage.name);
+    console.log("Sorting list after sort is set >>: ", {
       sortCriteria,
     });
     filterSubmissionRequest();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [startDateFilterCriteria, endDateFilterCriteria, sortCriteria]);
+  }, [sortCriteria]);
 
   const search = () => {
     if (selectedSubmissionRequest) {
@@ -74,12 +84,12 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
       }
     });
     console.log("Filtered result >>:", filteredResult);
+    console.groupEnd();
     setFilteredPurchaseRequisitionSubmissions(filteredResult);
   };
 
   const sortDate = (sort: Sort) => {
-    setSortCriteria(sort);
-    filteredPurchaseRequisitionSubmissios?.sort((submission1, submission2) => {
+    const sortedResult = CLONING_LIB.deepClone(filteredPurchaseRequisitionSubmissios)?.sort((submission1, submission2) => {
       if (sort === Sort.ASC) {
         return submission1.createdDate < submission2.createdDate ? -1 : 1;
       } else if (sort === Sort.DES) {
@@ -87,6 +97,9 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
       }
       return 0;
     });
+    console.log("Sorted result", sortedResult);
+    console.groupEnd();
+    setFilteredPurchaseRequisitionSubmissions(sortedResult);
   };
 
   const resetSortingAndFilter = () => {
@@ -114,9 +127,19 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
           </div>
           <div className="d-inline-flex flex-row align-items-center" style={{ gap: "15px", width: "max-content" }}>
             <label style={{ width: "125%" }}>Advance Sorting / Filtering</label>
-            <Input key="filter-start-date-input" type="date" value={startDateFilterCriteria?.toISOString().substring(0, 10)} onChange={(e) => filterStartDate(e.target.value)} />
-            <Input key="filter-end-date-input" type="date" value={endDateFilterCriteria?.toISOString().substring(0, 10)} onChange={(e) => filterEndDate(e.target.value)} />
-            <Select key="sort-submission-request-select" value={sortCriteria} onChange={(value) => sortDate(value)}>
+            <Input
+              key="filter-start-date-input"
+              type="date"
+              value={startDateFilterCriteria ? startDateFilterCriteria?.toISOString().substring(0, 10) : undefined}
+              onChange={(e) => filterStartDate(e.target.value)}
+            />
+            <Input
+              key="filter-end-date-input"
+              type="date"
+              value={endDateFilterCriteria ? endDateFilterCriteria?.toISOString().substring(0, 10) : undefined}
+              onChange={(e) => filterEndDate(e.target.value)}
+            />
+            <Select key="sort-submission-request-select" value={sortCriteria} onChange={(value) => setSortCriteria(value)}>
               <Select.Option value={Sort.DES}>Created Date Desc</Select.Option>
               <Select.Option value={Sort.ASC}>Created Date Asc</Select.Option>
             </Select>
@@ -131,7 +154,7 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
             </div>
             <div className="my-2 mx-4 position-relative w-100">
               <span>
-                Submission Date: <b color="primary">{selectedSubmissionRequest ? convertToLocalString(selectedSubmissionRequest.createdDate) : ''}</b>
+                Submission Date: <b color="primary">{selectedSubmissionRequest ? convertToLocalString(selectedSubmissionRequest.createdDate) : ""}</b>
               </span>
               <div className="d-flex flex-column justify-content-center">
                 <Input.Search

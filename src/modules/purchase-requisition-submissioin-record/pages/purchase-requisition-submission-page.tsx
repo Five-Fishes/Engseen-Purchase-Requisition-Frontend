@@ -38,6 +38,12 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
     getSubmissions();
   }, []);
 
+  useEffect(() => {
+    console.log('Filtering list after filters are set >>: ', {startDateFilterCriteria, endDateFilterCriteria, sortCriteria});
+    filterSubmissionRequest();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [startDateFilterCriteria, endDateFilterCriteria, sortCriteria])
+
   const search = () => {
     const filteredData = searchEngine.updateEngine(selectedSubmissionRequest.purchaseRequisitionRequestItems).search(searchText);
     setFilteredSubmissionItems(filteredData);
@@ -45,12 +51,10 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
 
   const filterStartDate = (startDate: string) => {
     setStartDateFilterCriteria(new Date(startDate));
-    filterSubmissionRequest();
   };
 
   const filterEndDate = (endDate: string) => {
     setEndDateFilterCriteria(new Date(endDate));
-    filterSubmissionRequest();
   };
 
   const filterSubmissionRequest = () => {
@@ -63,15 +67,7 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
         filteredResult.push(submission);
       }
     });
-    // const filteredResult = purchaseRequisitionSubmissios?.filter(submission => {
-    //   const submissionCreatedDate = new Date(submission.createdDate);
-    //   if (startDateFilterCriteria !== undefined && submissionCreatedDate < startDateFilterCriteria) {
-    //     return false;
-    //   } else if (endDateFilterCriteria !== undefined && submissionCreatedDate > endDateFilterCriteria) {
-    //     return false;
-    //   }
-    //   return true;
-    // });
+    console.log('Filtered result >>:', filteredResult);
     setFilteredPurchaseRequisitionSubmissions(filteredResult);
   };
 

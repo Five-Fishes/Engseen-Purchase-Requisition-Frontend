@@ -1,6 +1,6 @@
 import { IPurchaseOrder } from "@dto/i-purchase-order.dto";
 import { useState } from "react";
-import { Button, Input } from "antd";
+import { Button } from "antd";
 import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
 import { convertToLocalString } from "@utils/date-time/date-time-format";
 
@@ -12,10 +12,10 @@ interface IPurchaseOrderProps {
 const PurchaseOrderBrowser: React.FC<IPurchaseOrderProps> = (props) => {
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const { purchaseOrders } = props;
-  
+
   return (
     <>
-      <div className="text-center d-flex flex-column py-2" style={{ overflowY: "scroll", maxHeight: "85%" }}>
+      <div className="text-center d-flex flex-column py-2" style={{ overflowY: "scroll"}}>
         {purchaseOrders &&
           purchaseOrders.map((purchaseOrder, index) => {
             return (

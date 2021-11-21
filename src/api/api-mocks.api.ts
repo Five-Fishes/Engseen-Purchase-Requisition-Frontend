@@ -1,8 +1,9 @@
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
-import { PURCHASE_REQUISITION_REQUEST, PURCHASE_REQUISITION_REQUEST_REGEX, PURCHASE_REQUISITION_TEMPLATE } from "@constant/api-endpoints";
+import { PURCHASE_REQUISITION_REQUEST, PURCHASE_REQUISITION_REQUEST_REGEX, PURCHASE_REQUISITION_TEMPLATE, PURCHASE_ORDER, PURCHASE_ORDER_REGEX } from "@constant/api-endpoints";
 import { IPurchaseRequisitionRequest } from "@dto/i-purchase-requisition-request.dto";
 import { IPurchaseRequisitionTemplate } from "@dto/i-purchase-requisition-template.dto";
+import { IPurchaseOrder } from "@dto/i-purchase-order.dto";
 
 const mock = new MockAdapter(axios);
 
@@ -726,6 +727,52 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
       },
     ],
   },
+]);
+
+mock.onPost(PURCHASE_ORDER).reply<IPurchaseOrder>(200, {
+  id: 1,
+  purchaseRequisitionApprovalId: 1,
+  email: "vendor@email.com",
+  vendorId: 1,
+  revisionDate: new Date(),
+  purchaseOrderItems: [
+    {
+      id: 1,
+      componentCode: 1,
+      componentName: "Component DDD",
+      packagingSize: 100,
+      noOfPacks: 10,
+      quantity: 1000,
+      deliveryDate: new Date(),
+      purchaseOrderId: 1,
+    },
+  ],
+  emailed: true,
+  downloaded: true,
+});
+
+mock.onGet(PURCHASE_ORDER_REGEX).reply<IPurchaseOrder[]>(200, [
+  {
+    id: 1,
+    purchaseRequisitionApprovalId: 1,
+    email: "vendor@email.com",
+    vendorId: 1,
+    revisionDate: new Date(),
+    purchaseOrderItems: [
+      {
+        id: 1,
+        componentCode: 1,
+        componentName: "Component AAA",
+        packagingSize: 100,
+        noOfPacks: 10,
+        quantity: 1000,
+        deliveryDate: new Date(),
+        purchaseOrderId: 1,
+      },
+    ],
+    emailed: false,
+    downloaded: false,
+  }
 ]);
 
 export default mock;

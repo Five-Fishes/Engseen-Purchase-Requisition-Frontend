@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Input } from "antd";
+import { Input, Divider, Button } from "antd";
 import Title from "antd/lib/typography/Title";
 import { IPurchaseRequisitionTemplate } from "@dto/i-purchase-requisition-template.dto";
 import PurchaseRequisitionTemplateBrowser from "../components/templateBrowser/template-browser";
@@ -33,6 +33,20 @@ const PurchaseRequisitionRequestPage: React.FC = () => {
         <div className="row">
           <div className="col">
             <PurchaseRequisitionRequestConstructor currentTemplate={selectedTemplate} />
+          </div>
+        </div>
+
+        <Divider />
+        
+        <div className="row">
+          <div className="col">
+            <Button type="primary" size="large">
+              Submit Request
+            </Button>
+          </div>
+          <div className="col row ml-auto">
+            <span className="w-25">Remarks</span>
+            <Input className="col" placeholder="Remarks here"></Input>
           </div>
         </div>
       </div>

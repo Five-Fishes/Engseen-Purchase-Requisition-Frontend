@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "antd/dist/antd.less";
 import Layout, { Content } from "antd/lib/layout/layout";
 import Routes from "./modules/Routes";
-import { BrowserRouter as Router } from "react-router-dom";
+import { HashRouter as Router } from "react-router-dom";
 
 import "./App.less";
 import Header from "@module/layout/component/header/header";
@@ -24,14 +24,14 @@ const firebaseConfig = {
   storageBucket: "engseen-purchaserequisition.appspot.com",
   messagingSenderId: "936694149752",
   appId: "1:936694149752:web:7ca5674682789b3e21b38d",
-  measurementId: "G-2Z0L5N2FQH"
+  measurementId: "G-2Z0L5N2FQH",
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 console.log(analytics);
-console.log(mock)
+console.log(mock);
 
 const App: React.FC = () => {
   const [sideBarOpened, setSideBarOpened] = useState(true);

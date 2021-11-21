@@ -10,7 +10,7 @@ interface IPurchaseRequisitionSubmissionProps {
 }
 
 const PurchaseRequisitionSubmissionBrowser: React.FC<IPurchaseRequisitionSubmissionProps> = (props) => {
-  const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [selectedIndex, setSelectedIndex] = useState<number>(-1);
   const [selectedRemarks, setSelectedRemarks] = useState<string>();
   const { purchaseRequisitionSubmissios } = props;
   return (

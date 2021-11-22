@@ -8,6 +8,7 @@ import PostLogInRoute from "./shared/components/PostLogInRoute";
 import LoginPage from "./login/pages/login";
 import PurchaseRequisitionTemplateRoute from "./purchase-requisition-template/pages";
 import PurchaseRequisitionRequestPage from "./purchase-requisition-request/pages/purchase-requisition-request-page";
+import PurchaseRequisitionApprovalPage from "./purchase-requisition-approval/pages/purchase-requisition-approval-page";
 import PurchaseRequisitionSubmissionPage from "./purchase-requisition-submissioin-record/pages/purchase-requisition-submission-page";
 
 const Routes: React.FC = () => {
@@ -19,10 +20,8 @@ const Routes: React.FC = () => {
       <PostLogInRoute path="/purchase-requisition-template" component={PurchaseRequisitionTemplateRoute} />
       <PostLogInRoute path="/purchase-requisition-request" component={PurchaseRequisitionRequestPage} />
       <PostLogInRoute path="/purchase-requisition-submission-record" component={PurchaseRequisitionSubmissionPage}/>
-      {/*       
-      <PostLogInRoute path="/purchase-requisition-approval" component={PurchaseRequisitionRequestPage}/>
-      <PostLogInRoute path="/purchase-order" component={PurchaseRequisitionRequestPage}/> 
-      */}
+      <PostLogInRoute path="/purchase-requisition-approval" component={PurchaseRequisitionApprovalPage}/>
+      {/* <PostLogInRoute path="/purchase-order" component={PurchaseRequisitionRequestPage}/>  */}
       <Route path="*">
         <NoMatch />
       </Route>

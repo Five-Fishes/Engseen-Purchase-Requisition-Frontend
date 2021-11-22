@@ -33,11 +33,6 @@ const analytics = getAnalytics(app);
 console.log(analytics);
 console.log(mock);
 
-fetch("/api/greet")
-  .then((res) => res.text())
-  .then(console.log)
-  .catch(console.error);
-
 const App: React.FC = () => {
   const [sideBarOpened, setSideBarOpened] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);

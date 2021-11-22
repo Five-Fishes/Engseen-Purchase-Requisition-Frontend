@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "antd/dist/antd.less";
 import Layout, { Content } from "antd/lib/layout/layout";
 import Routes from "./modules/Routes";
-import { HashRouter as Router } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 
 import "./App.less";
 import Header from "@module/layout/component/header/header";
@@ -32,6 +32,11 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 console.log(analytics);
 console.log(mock);
+
+fetch("/api/greet")
+  .then((res) => res.text())
+  .then(console.log)
+  .catch(console.error);
 
 const App: React.FC = () => {
   const [sideBarOpened, setSideBarOpened] = useState(true);

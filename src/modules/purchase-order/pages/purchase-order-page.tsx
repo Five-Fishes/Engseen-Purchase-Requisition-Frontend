@@ -107,8 +107,8 @@ const PurchaseOrderPage: React.FC = () => {
     sortPurchaseOrderByDate(Sort.DES);
 
     filterPurchaseOrders();
-    popNotification("Hello", NotificationType.success);
-  }
+    popNotification("Success Reset Sorting & Filtering", NotificationType.success);
+  };
 
   return (
     <>

@@ -73,6 +73,20 @@ const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
     },
   ];
 
+  const downloadPO = (purchaseOrder: IPurchaseOrder) => {
+    console.group(PurchaseOrderTable.name);
+    console.log("Download PO");
+    console.log("Purchase Order: ", purchaseOrder);
+    console.groupEnd();
+  };
+
+  const emailPO = (purchaseOrder: IPurchaseOrder) => {
+    console.group(PurchaseOrderTable.name);
+    console.log("Email PO");
+    console.log("Purchase Order: ", purchaseOrder);
+    console.groupEnd();
+  };
+
   const { currentPurchaseOrderRecord, filteredItems } = props;
 
   if (currentPurchaseOrderRecord && currentPurchaseOrderRecord != null) {

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "antd/dist/antd.less";
 import Layout, { Content } from "antd/lib/layout/layout";
 import Routes from "./modules/Routes";
-import { HashRouter as Router } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 
 import "./App.less";
 import Header from "@module/layout/component/header/header";

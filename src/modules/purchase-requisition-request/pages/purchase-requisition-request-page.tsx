@@ -11,7 +11,7 @@ const PurchaseRequisitionRequestPage: React.FC = () => {
 
   return (
     <>
-      <div className="container-fluid h-100">
+      <div className="container-fluid h-100 pb-2">
         <div className="row">
           <div className="col d-flex flex-column justify-content-center">
             <Title level={4}>Purchase Requisition</Title>
@@ -46,7 +46,7 @@ const PurchaseRequisitionRequestPage: React.FC = () => {
           </div>
           <div className="col row ml-auto">
             <span className="w-25">Remarks</span>
-            <Input className="col" placeholder="Remarks here"></Input>
+            <Input.TextArea className="col" rows={3} placeholder="Remarks here"></Input.TextArea>
           </div>
         </div>
       </div>

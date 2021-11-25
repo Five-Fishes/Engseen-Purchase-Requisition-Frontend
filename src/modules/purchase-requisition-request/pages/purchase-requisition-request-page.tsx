@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Input } from "antd";
+import { Input, Divider, Button } from "antd";
 import Title from "antd/lib/typography/Title";
 import { IPurchaseRequisitionTemplate } from "@dto/i-purchase-requisition-template.dto";
 import PurchaseRequisitionTemplateBrowser from "../components/templateBrowser/template-browser";
@@ -11,7 +11,7 @@ const PurchaseRequisitionRequestPage: React.FC = () => {
 
   return (
     <>
-      <div className="container-fluid h-100">
+      <div className="container-fluid h-100 pb-2">
         <div className="row">
           <div className="col d-flex flex-column justify-content-center">
             <Title level={4}>Purchase Requisition</Title>
@@ -33,6 +33,20 @@ const PurchaseRequisitionRequestPage: React.FC = () => {
         <div className="row">
           <div className="col">
             <PurchaseRequisitionRequestConstructor currentTemplate={selectedTemplate} />
+          </div>
+        </div>
+
+        <Divider />
+        
+        <div className="row">
+          <div className="col">
+            <Button type="primary" size="large">
+              Submit Request
+            </Button>
+          </div>
+          <div className="col row ml-auto">
+            <span className="w-25">Remarks</span>
+            <Input.TextArea className="col" rows={3} placeholder="Remarks here"></Input.TextArea>
           </div>
         </div>
       </div>

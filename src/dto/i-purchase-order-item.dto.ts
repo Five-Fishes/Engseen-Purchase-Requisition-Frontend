@@ -7,4 +7,6 @@ export interface IPurchaseOrderItem {
   noOfPacks: number;
   quantity: number;
   deliveryDate: Date;
+  itemCost: number;
+  uom?: string;
 }

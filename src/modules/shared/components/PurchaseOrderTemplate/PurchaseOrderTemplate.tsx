@@ -1,14 +1,8 @@
 import React from "react";
-import fs from "fs";
-import path from "path";
-import POBackground1 from "./po_background1.jpg";
-import POBackground2 from "./po_background2.jpg";
-import { Document, Page, Image, View, Text } from "@react-pdf/renderer";
+import { Document, Page, View, Text } from "@react-pdf/renderer";
 import { IPurchaseOrderItem } from "@dto/i-purchase-order-item.dto";
 import { styles } from "./PurchaseOrderTemplate.style";
 import { convertToLocalString } from "@utils/date-time/date-time-format";
-
-console.log(POBackground1);
 
 interface IPurchaseOrderTemplateProps {
   purchaseOrderDate: string,
@@ -25,16 +19,12 @@ const PurchaseOrderTemplate: React.FC<IPurchaseOrderTemplateProps> = (props) => 
     purchaseOrderVendorName, purchaseOrderVendorAddressLine1, purchaseOrderVendorAddressLine2,
     purchaseOrderItems
   } = props;
-
-  // const localImage = fs.readFileSync(path.join(__dirname, './po_background1.jpg'));
   
   return (
     <Document>
       <View style={{ position: "absolute", left: "50%", marginLeft: "-297px", top: "0px", width: "595px", height: "842px", borderStyle: "solid", overflow:"hidden" }}>
         <Page size="A4">
           <View style={{ left: "0px", top: "0px" }}>
-            <img src={POBackground1} style={{ width: "595px", height: "842px"}} />
-            {/* <Image src={window.location.origin + '/po_background1.jpg'} style={{ width: "595px", height: "842px"}} /> */}
             <View style={{ position:"absolute", left: "24.00px", top: "28.14px", ...styles.cls_002 }}>
               <Text style={styles.cls_002}>Engseen Bleaching &#38; Dyeing Sdn Bhd</Text>
             </View>
@@ -83,17 +73,15 @@ const PurchaseOrderTemplate: React.FC<IPurchaseOrderTemplateProps> = (props) => 
             <View style={{ position: "absolute", left: "474.00px", top: "107.46px", ...styles.cls_003 }}>
               <Text style={styles.cls_003}>1</Text>
             </View>
-            <View style={{ position: "absolute", left: "23.01px", top: "142.38px", ...styles.cls_005 }}>
-              <Text style={styles.cls_005}>VENDOR</Text>
+            <View style={{ position: "absolute", left: "17.01px", top: "142.38px", ...styles.darkBackground }}>
+              <View style={{ paddingLeft: "6px", ...styles.cls_005 }}>
+                <Text style={styles.cls_005}>VENDOR</Text>
+              </View>
             </View>
-            <View style={{ position: "absolute", left: "341.01px", top: "142.38px", ...styles.cls_005 }}>
-              <Text style={styles.cls_005}>SHIP TO / PLACE OF DELIVERY</Text>
-            </View>
-            <View style={{ position: "absolute", left: "23.01px", top: "142.38px", ...styles.cls_005 }}>
-              <Text style={styles.cls_005}>VENDOR</Text>
-            </View>
-            <View style={{ position: "absolute", left: "341.01px", top: "142.38px", ...styles.cls_005 }}>
-              <Text style={styles.cls_005}>SHIP TO / PLACE OF DELIVERY</Text>
+            <View style={{ position: "absolute", left: "335.01px", top: "142.38px", ...styles.darkBackground}}>
+              <View style={{ paddingLeft: "6px", ...styles.cls_005 }}>
+                <Text style={styles.cls_005}>SHIP TO / PLACE OF DELIVERY</Text>
+              </View>
             </View>
             <View style={{ position: "absolute", left: "24.00px", top: "153.96px", ...styles.cls_003 }}>
               <Text style={styles.cls_003}>{purchaseOrderVendorName}</Text>
@@ -134,55 +122,60 @@ const PurchaseOrderTemplate: React.FC<IPurchaseOrderTemplateProps> = (props) => 
             <View style={{ position: "absolute", left: "21.00px", top: "268.20px", ...styles.cls_003 }}>
               <Text style={styles.cls_003}>FOB:</Text>
             </View>
-            <View style={{ position: "absolute", left: "23.28px", top: "314.64px", ...styles.cls_004 }}>
-              <Text style={styles.cls_004}>Line</Text>
-            </View>
-            <View style={{ position: "absolute", left: "51.00px", top: "314.64px", ...styles.cls_004 }}>
-              <Text style={styles.cls_004}>Item</Text>
-            </View>
-            <View style={{ position: "absolute", left: "300.48px", top: "314.64px", ...styles.cls_004 }}>
-              <Text style={styles.cls_004}>Quantity</Text>
-            </View>
-            <View style={{ position: "absolute", left: "353.16px", top: "314.64px", ...styles.cls_004 }}>
-              <Text style={styles.cls_004}>UOM</Text>
-            </View>
-            <View style={{ position: "absolute", left: "390.00px", top: "314.64px", ...styles.cls_004 }}>
-              <Text style={styles.cls_004}>Delivery Date</Text>
-            </View>
-            <View style={{ position: "absolute", left: "463.32px", top: "314.64px", ...styles.cls_004 }}>
-              <Text style={styles.cls_004}>Unit Price</Text>
-            </View>
-            <View style={{ position: "absolute", left: "544.14px", top: "314.64px", ...styles.cls_004 }}>
-              <Text style={styles.cls_004}>Total</Text>
-            </View>
             {/* TODO: Show Purchase Order Items here */}
-            {purchaseOrderItems && purchaseOrderItems.map((purchaseOrderItem: IPurchaseOrderItem, index) => {
-              return (
-                <>
-                  <View style={{ position: "absolute", left: "25.44px", top: "326.04px", ...styles.cls_003 }}>
-                    <Text style={styles.cls_003}>00{index + 1}</Text>
+            <View style={{ position: "absolute", left: "20.00px", top: "315.00px",...styles.table }}>
+              <View style={{ ...styles.tableRow }}>
+                <View style={{ width: "30px", ...styles.cell, ...styles.textLeft, ...styles.cls_004 }}>
+                  <Text style={styles.cls_004}>Line</Text>
+                </View>
+                <View style={{ width: "300px", ...styles.cell, ...styles.textLeft, ...styles.cls_004 }}>
+                  <Text style={styles.cls_004}>Item</Text>
+                </View>
+                <View style={{ width: "65px", ...styles.cell, ...styles.textCenter, ...styles.cls_004 }}>
+                  <Text style={styles.cls_004}>Quantity</Text>
+                </View>
+                <View style={{ width: "35px", ...styles.cell, ...styles.textCenter, ...styles.cls_004 }}>
+                  <Text style={styles.cls_004}>UOM</Text>
+                </View>
+                <View style={{ width: "80px", ...styles.cell, ...styles.textCenter, ...styles.cls_004 }}>
+                  <Text style={styles.cls_004}>Delivery Date</Text>
+                </View>
+                <View style={{ width: "55px", ...styles.cell, ...styles.textCenter, ...styles.cls_004 }}>
+                  <Text style={styles.cls_004}>Unit Price</Text>
+                </View>
+                <View style={{ width: "70px", ...styles.cell, ...styles.textRight, ...styles.cls_004 }}>
+                  <Text style={styles.cls_004}>Total</Text>
+                </View>
+              </View>
+              {purchaseOrderItems && purchaseOrderItems.map((purchaseOrderItem: IPurchaseOrderItem, index) => {
+                return (
+                  <View style={{ ...styles.tableRow }}>
+                    <View style={{ width: "30px", ...styles.cell, ...styles.textLeft, ...styles.cls_003 }}>
+                      <Text style={styles.cls_003}>00{index + 1}</Text>
+                    </View>
+                    <View style={{ width: "300px", ...styles.cell, ...styles.textLeft, ...styles.cls_003 }}>
+                      <Text style={styles.cls_003}>{purchaseOrderItem.componentName}</Text>
+                    </View>
+                    <View style={{ width: "65px", ...styles.cell, ...styles.textCenter, ...styles.cls_003 }}>
+                      <Text style={styles.cls_003}>{purchaseOrderItem.quantity}</Text>
+                    </View>
+                    <View style={{ width: "35px", ...styles.cell, ...styles.textCenter, ...styles.cls_003 }}>
+                      <Text style={styles.cls_003}>{purchaseOrderItem.uom ?? "-"}</Text>
+                    </View>
+                    <View style={{ width: "80px", ...styles.cell, ...styles.textCenter, ...styles.cls_003 }}>
+                      <Text style={styles.cls_003}>{convertToLocalString(purchaseOrderItem.deliveryDate, true)}</Text>
+                    </View>
+                    <View style={{ width: "55px", ...styles.cell, ...styles.textRight, ...styles.cls_003 }}>
+                      <Text style={styles.cls_003}>{purchaseOrderItem.itemCost}</Text>
+                    </View>
+                    <View style={{ width: "70px", ...styles.cell, ...styles.textRight, ...styles.cls_003 }}>
+                      <Text style={styles.cls_003}>{purchaseOrderItem.quantity * purchaseOrderItem.itemCost}</Text>
+                    </View>
                   </View>
-                  <View style={{ position: "absolute", left: "51.00px", top: "326.04px", ...styles.cls_003 }}>
-                    <Text style={styles.cls_003}>{purchaseOrderItem.componentName}</Text>
-                  </View>
-                  <View style={{ position: "absolute", left: "303.72px", top: "326.04px", ...styles.cls_003 }}>
-                    <Text style={styles.cls_003}>{purchaseOrderItem.quantity}</Text>
-                  </View>
-                  <View style={{ position: "absolute", left: "357.24px", top: "326.04px", ...styles.cls_003 }}>
-                    <Text style={styles.cls_003}>KG</Text>
-                  </View>
-                  <View style={{ position: "absolute", left: "389.99px", top: "326.04px", ...styles.cls_003 }}>
-                    <Text style={styles.cls_003}>{convertToLocalString(purchaseOrderItem.deliveryDate, true)}</Text>
-                  </View>
-                  <View style={{ position: "absolute", left: "484.32px", top: "326.04px", ...styles.cls_003 }}>
-                    <Text style={styles.cls_003}>{purchaseOrderItem.noOfPacks}</Text>
-                  </View>
-                  <View style={{ position: "absolute", left: "526.68px", top: "326.04px", ...styles.cls_003 }}>
-                    <Text style={styles.cls_003}>{purchaseOrderItem.packagingSize}</Text>
-                  </View>
-                </>
-              )
-            })}
+                )
+              })}
+            </View>
+            
             <View style={{ position: "absolute", left: "442.80px", top: "685.14px", ...styles.cls_004 }}>
               <Text style={styles.cls_004}>Total (RM):</Text>
             </View>
@@ -212,10 +205,10 @@ const PurchaseOrderTemplate: React.FC<IPurchaseOrderTemplateProps> = (props) => 
             </View>
           </View>
         </Page>
+
         <Page size="A4">
           <View style={{ position: "absolute", left: "50%", marginLeft: "-297px", top: "852px", width: "595px", height: "842px", borderStyle: "solid", overflow:"hidden" }}>
-            <View style={{ position: "absolute", left: "0px", top: "0px" }}>
-              <Image src={POBackground2} source={POBackground2} style={{ width: "595", height: "842"}} />
+            <View style={{ left: "0px", top: "0px" }}>
               <View style={{ position: "absolute", left: "215.82px", top: "35.10px", ...styles.cls_012 }}>
                 <Text style={styles.cls_012}>GENERAL PURCHASE TERMS AND CONDITIONS (GPTC)</Text>
               </View>

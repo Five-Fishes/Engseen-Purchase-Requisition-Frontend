@@ -745,6 +745,7 @@ mock.onPost(PURCHASE_ORDER).reply<IPurchaseOrder>(200, {
       quantity: 1000,
       deliveryDate: new Date(),
       purchaseOrderId: 1,
+      itemCost: 250
     },
   ],
   emailed: true,
@@ -768,6 +769,7 @@ mock.onGet(PURCHASE_ORDER_REGEX).reply<IPurchaseOrder[]>(200, [
         quantity: 1000,
         deliveryDate: new Date(),
         purchaseOrderId: 1,
+        itemCost: 250
       },
     ],
     emailed: false,
@@ -789,6 +791,7 @@ mock.onGet(PURCHASE_ORDER_REGEX).reply<IPurchaseOrder[]>(200, [
         quantity: 900,
         deliveryDate: new Date(),
         purchaseOrderId: 2,
+        itemCost: 250
       },
     ],
     emailed: false,
@@ -810,6 +813,7 @@ mock.onGet(PURCHASE_ORDER_REGEX).reply<IPurchaseOrder[]>(200, [
         quantity: 800,
         deliveryDate: new Date(),
         purchaseOrderId: 3,
+        itemCost: 250
       },
     ],
     emailed: false,
@@ -831,6 +835,7 @@ mock.onGet(PURCHASE_ORDER_REGEX).reply<IPurchaseOrder[]>(200, [
         quantity: 700,
         deliveryDate: new Date(),
         purchaseOrderId: 4,
+        itemCost: 250
       },
     ],
     emailed: false,
@@ -852,6 +857,7 @@ mock.onGet(PURCHASE_ORDER_REGEX).reply<IPurchaseOrder[]>(200, [
         quantity: 600,
         deliveryDate: new Date(),
         purchaseOrderId: 5,
+        itemCost: 250
       },
     ],
     emailed: false,
@@ -873,6 +879,7 @@ mock.onGet(PURCHASE_ORDER_REGEX).reply<IPurchaseOrder[]>(200, [
         quantity: 250,
         deliveryDate: new Date(),
         purchaseOrderId: 6,
+        itemCost: 250
       },
     ],
     emailed: true,
@@ -894,6 +901,7 @@ mock.onGet(PURCHASE_ORDER_REGEX).reply<IPurchaseOrder[]>(200, [
         quantity: 200,
         deliveryDate: new Date(),
         purchaseOrderId: 7,
+        itemCost: 250
       },
     ],
     emailed: true,
@@ -915,6 +923,7 @@ mock.onGet(PURCHASE_ORDER_REGEX).reply<IPurchaseOrder[]>(200, [
         quantity: 225,
         deliveryDate: new Date(),
         purchaseOrderId: 8,
+        itemCost: 250
       },
     ],
     emailed: true,

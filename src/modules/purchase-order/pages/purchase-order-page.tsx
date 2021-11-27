@@ -145,7 +145,18 @@ const PurchaseOrderPage: React.FC = () => {
               purchaseOrderNumber="PO-27392" 
               purchaseOrderVendorAddressLine1="No 123" 
               purchaseOrderVendorAddressLine2="Taman A" 
-              purchaseOrderVendorName="Vendor ABC" />}
+              purchaseOrderVendorName="Vendor ABC"
+              purchaseOrderItems={[{
+                id: 2,
+                componentCode: 2,
+                componentName: "Component BBB",
+                packagingSize: 90,
+                noOfPacks: 10,
+                quantity: 900,
+                deliveryDate: new Date(),
+                purchaseOrderId: 2,
+                itemCost: 2.5,
+              }]} />}
               style={{ height: "100vh", width: "100%" }}>
               {({ blob, url, loading, error }) =>
                 loading ? 'Loading document...' : 'Download now!'

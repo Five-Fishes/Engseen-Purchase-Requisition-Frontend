@@ -24,14 +24,14 @@ const firebaseConfig = {
   storageBucket: "engseen-purchaserequisition.appspot.com",
   messagingSenderId: "936694149752",
   appId: "1:936694149752:web:7ca5674682789b3e21b38d",
-  measurementId: "G-2Z0L5N2FQH"
+  measurementId: "G-2Z0L5N2FQH",
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 console.log(analytics);
-console.log(mock)
+console.log(mock);
 
 const App: React.FC = () => {
   const [sideBarOpened, setSideBarOpened] = useState(true);

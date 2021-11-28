@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Input, Button, Select } from "antd";
+import { Input, Button, Select, DatePicker } from "antd";
 import Title from "antd/lib/typography/Title";
 import { ReloadOutlined } from "@ant-design/icons";
 import { SearchEngine } from "@utils/search/native-search";
+import { IPurchaseApprovalOrder } from "@dto/i-purchase-approval-order.dto";
 import { IPurchaseOrder } from "@dto/i-purchase-order.dto";
 import { IPurchaseOrderItem } from "@dto/i-purchase-order-item.dto";
 import { convertToLocalString } from "@utils/date-time/date-time-format";
@@ -17,29 +18,33 @@ import { popNotification } from "@module/shared/components/notification";
 import { NotificationType } from "@constant/notification-enum";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import PurchaseOrderTemplate from "@module/shared/components/PurchaseOrderTemplate/PurchaseOrderTemplate";
+import moment from "moment";
 
 const PurchaseOrderPage: React.FC = () => {
-  const [purchaseOrders, setPurchaseOrders] = useState<IPurchaseOrder[]>();
+  const [purchaseApprovalOrders, setPurchaseApprovalOrders] = useState<IPurchaseApprovalOrder[]>();
+  const [filteredPurchaseApprovalOrders, setFilteredPurchaseApprovalOrders] = useState<IPurchaseApprovalOrder[]>();
+  const [selectedPurchaseApprovalOrder, setSelectedPurchaseApprovalOrder] = useState<IPurchaseApprovalOrder>();
+
   const [filteredPurchaseOrders, setFilteredPurchaseOrders] = useState<IPurchaseOrder[]>();
-  const [selectedPurchaseOrder, setSelectedPurchaseOrder] = useState<IPurchaseOrder>();
-  const [filteredPurchaseOrderItems, setFilteredPurchaseOrderItems] = useState<IPurchaseOrderItem[]>();
+  
   const [searchText, setSearchText] = useState<string>("");
   const searchEngine: SearchEngine<IPurchaseOrder> = new SearchEngine([], genereateIndex);
+  
   const [startDateFilterCriteria, setStartDateFilterCriteria] = useState<Date>();
   const [endDateFilterCriteria, setEndDateFilterCriteria] = useState<Date>();
   const [sortCriteria, setSortCriteria] = useState<Sort>(Sort.DES);
 
   useEffect(() => {
-    const getPurchaseOrderList = async () => {
+    const getPurchaseApprovalOrderList = async () => {
       const apiResponse = await getPurchaseOrders(new Date(), new Date(), Sort.ASC);
 
       if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
-        setPurchaseOrders(apiResponse.data);
-        setFilteredPurchaseOrders(apiResponse.data);
+        setPurchaseApprovalOrders(apiResponse.data);
+        setFilteredPurchaseApprovalOrders(apiResponse.data);
       }
     };
 
-    getPurchaseOrderList();
+    getPurchaseApprovalOrderList();
   }, []);
 
   useEffect(() => {
@@ -48,7 +53,7 @@ const PurchaseOrderPage: React.FC = () => {
       startDateFilterCriteria,
       endDateFilterCriteria,
     });
-    filterPurchaseOrders();
+    filterPurchaseApprovalOrders();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startDateFilterCriteria, endDateFilterCriteria]);
 
@@ -57,58 +62,57 @@ const PurchaseOrderPage: React.FC = () => {
     console.log("Sorting list after sort is set >>: ", {
       sortCriteria,
     });
-    sortPurchaseOrderByDate(sortCriteria);
+    sortPurchaseApprovalOrderByDate(sortCriteria);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortCriteria]);
+
   const search = () => {
-    const filteredData = searchEngine.updateEngine(purchaseOrders ?? []).search(searchText);
+    const filteredData = searchEngine.updateEngine(selectedPurchaseApprovalOrder?.purchaseOrders ?? []).search(searchText);
     setFilteredPurchaseOrders(filteredData);
   };
 
-  const filterStartDate = (startDate: string) => {
-    setStartDateFilterCriteria(new Date(startDate));
-    filterPurchaseOrders();
-  };
+  const filterByDateRange = (startDate?: string, endDate?: string) => {
+    setStartDateFilterCriteria(startDate === undefined ? startDate : new Date(startDate));
+    setEndDateFilterCriteria(endDate === undefined ? endDate : new Date(endDate));
+    filterPurchaseApprovalOrders();
+  }
 
-  const filterEndDate = (endDate: string) => {
-    setEndDateFilterCriteria(new Date(endDate));
-    filterPurchaseOrders();
-  };
-
-  const filterPurchaseOrders = () => {
-    const filteredResult: IPurchaseOrder[] = [];
-    purchaseOrders?.forEach(purchaseOrder => {
-      const purchaseOrderRevisionDate = new Date(purchaseOrder.revisionDate);
-      if (startDateFilterCriteria !== undefined && purchaseOrderRevisionDate < startDateFilterCriteria) {
-      } else if (endDateFilterCriteria !== undefined && purchaseOrderRevisionDate > endDateFilterCriteria) {
+  const filterPurchaseApprovalOrders = () => {
+    const filteredResult: IPurchaseApprovalOrder[] = [];
+    purchaseApprovalOrders?.forEach(purchaseApprovalOrder => {
+      const purchaseApprovalOrderCreatedDate = new Date(purchaseApprovalOrder.createdDate);
+      if (startDateFilterCriteria !== undefined && purchaseApprovalOrderCreatedDate < startDateFilterCriteria) {
+      } else if (endDateFilterCriteria !== undefined && purchaseApprovalOrderCreatedDate > endDateFilterCriteria) {
       } else {
-        filteredResult.push(purchaseOrder);
+        filteredResult.push(purchaseApprovalOrder);
       }
     });
-    setFilteredPurchaseOrders(filteredResult);
+    console.log("Filtered result >>:", filteredResult);
+    console.groupEnd();
+    setFilteredPurchaseApprovalOrders(filteredResult);
   };
 
-  const sortPurchaseOrderByDate = (sort: Sort) => {
+  const sortPurchaseApprovalOrderByDate = (sort: Sort) => {
     setSortCriteria(sort);
-    filteredPurchaseOrders?.sort((purchaseOrder1, purchaseOrder2) => {
+    filteredPurchaseApprovalOrders?.sort((purchaseApprovalOrder1, purchaseApprovalOrder2) => {
       if (sort === Sort.ASC) {
-        return purchaseOrder1.revisionDate < purchaseOrder2.revisionDate ? -1 : 1;
+        return purchaseApprovalOrder1.createdDate < purchaseApprovalOrder2.createdDate ? -1 : 1;
       } else if (sort === Sort.DES) {
-        return purchaseOrder1.revisionDate > purchaseOrder2.revisionDate ? -1 : 1;
+        return purchaseApprovalOrder1.createdDate > purchaseApprovalOrder2.createdDate ? -1 : 1;
       }
       return 0;
     })
   };
 
   const resetSortingAndFilter = () => {
-    setFilteredPurchaseOrders(purchaseOrders);
+    setFilteredPurchaseApprovalOrders(purchaseApprovalOrders);
 
     setStartDateFilterCriteria(undefined);
     setEndDateFilterCriteria(undefined);
     setSortCriteria(Sort.DES);
-    sortPurchaseOrderByDate(Sort.DES);
+    sortPurchaseApprovalOrderByDate(Sort.DES);
 
-    filterPurchaseOrders();
+    filterPurchaseApprovalOrders();
     popNotification("Success Reset Sorting & Filtering", NotificationType.success);
   };
 
@@ -120,18 +124,13 @@ const PurchaseOrderPage: React.FC = () => {
             <Title className="d-inline-block" level={4}>Purchase Order Download &#38; Email to Vendors</Title>
           </div>
           <div className="d-inline-flex flex-row align-items-center" style={{ gap: "15px", width: "max-content" }}>
-            <label style={{ width: "125%" }}>Advance Sorting / Filtering</label>
-            <Input
-              key="filter-start-date-input"
-              type="date"
-              value={startDateFilterCriteria?.toISOString().substring(0, 10)}
-              onChange={(e) => filterStartDate(e.target.value)} />
-            <Input
-              key="filter-end-date-input"
-              type="date"
-              value={endDateFilterCriteria?.toISOString().substring(0, 10)}
-              onChange={(e) => filterEndDate(e.target.value)} />
-            <Select key="sort-submission-request-select" value={sortCriteria} onChange={(value) => sortPurchaseOrderByDate(value)}>
+            <label>Advance Sorting / Filtering</label>
+            <DatePicker.RangePicker 
+              format="DD/MM/YYYY" 
+              allowEmpty={[true, true]}
+              value={[startDateFilterCriteria === undefined ? null : moment(startDateFilterCriteria), endDateFilterCriteria === undefined ? null : moment(endDateFilterCriteria)]}
+              onChange={(dateValues) => filterByDateRange(dateValues != null ? dateValues[0]?.toString() : undefined, dateValues != null ? dateValues[1]?.toString() : undefined)} />
+            <Select key="sort-submission-request-select" value={sortCriteria} onChange={(value) => sortPurchaseApprovalOrderByDate(value)}>
               <Select.Option value={Sort.DES}>Created Date Desc</Select.Option>
               <Select.Option value={Sort.ASC}>Created Date Asc</Select.Option>
             </Select>
@@ -165,11 +164,14 @@ const PurchaseOrderPage: React.FC = () => {
           </PDFDownloadLink> */}
           <div className="mx-2 d-inline-flex border-top mt-4 w-100">
             <div className="my-3 mb-2" style={{ alignContent: "start", maxHeight: "500px" }}>
-              <PurchaseOrderBrowser setSelectedPurchaseOrder={setSelectedPurchaseOrder} purchaseOrders={purchaseOrders ?? []} />
+              <PurchaseOrderBrowser
+                setSelectedPurchaseApprovalOrder={setSelectedPurchaseApprovalOrder} 
+                purchaseApprovalOrders={filteredPurchaseApprovalOrders ?? []}
+                setFilteredPurchaseOrders={setFilteredPurchaseOrders} />
             </div>
             <div className="my-2 mx-4 position-relative w-100">
               <span>
-                Submission Date: <b color="primary">{convertToLocalString(selectedPurchaseOrder?.revisionDate)}</b>
+                Submission Date: <b color="primary">{convertToLocalString(selectedPurchaseApprovalOrder?.createdDate)}</b>
               </span>
               <div className="d-flex flex-column justify-content-center">
                 <Input.Search
@@ -187,7 +189,7 @@ const PurchaseOrderPage: React.FC = () => {
                   }}
                 />
               </div>
-              <PurchaseOrderTable currentPurchaseOrderRecord={selectedPurchaseOrder} filteredItems={filteredPurchaseOrderItems} />
+              <PurchaseOrderTable currentPurchaseApprovalOrderRecord={selectedPurchaseApprovalOrder} filteredItems={filteredPurchaseOrders} />
             </div>
             
           </div>

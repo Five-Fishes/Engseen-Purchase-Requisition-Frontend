@@ -2,22 +2,22 @@ import { Button, Table } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import React from "react";
 import { IPurchaseOrder } from "@dto/i-purchase-order.dto";
-import { IPurchaseOrderItem } from "@dto/i-purchase-order-item.dto";
+import { IPurchaseApprovalOrder } from "@dto/i-purchase-approval-order.dto";
 import { DownloadOutlined, MailOutlined } from "@ant-design/icons";
 
 interface IPurchaseOrderTableProps {
-  readonly currentPurchaseOrderRecord?: IPurchaseOrder;
-  filteredItems?: IPurchaseOrderItem[];
+  readonly currentPurchaseApprovalOrderRecord?: IPurchaseApprovalOrder;
+  filteredItems?: IPurchaseOrder[];
 }
 
 const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
-  const PURCHASE_ORDER_TABLE_COLUMN: ColumnsType<IPurchaseOrderItem> = [
+  const PURCHASE_ORDER_TABLE_COLUMN: ColumnsType<IPurchaseOrder> = [
     {
       title: "PO Number",
-      dataIndex: "id",
+      dataIndex: "poNumber",
       key: "poNumber",
       align: "center",
-      render: (text: string, record: IPurchaseOrderItem) => (
+      render: (text: string, record: IPurchaseOrder) => (
         <span>
           {text}
         </span>
@@ -28,7 +28,7 @@ const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
       dataIndex: "vendorId",
       key: "vendor",
       align: "center",
-      render: (text: string, record: IPurchaseOrderItem) => (
+      render: (text: string, record: IPurchaseOrder) => (
         <span>
           {text}
         </span>
@@ -39,7 +39,7 @@ const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
       dataIndex: "id",
       key: "generatePdf",
       align: "center",
-      render: (text: string, record: IPurchaseOrderItem) => (
+      render: (text: string, record: IPurchaseOrder) => (
         <Button className="d-inline-flex align-items-center po-action-button">
           <DownloadOutlined onClick={() => {
             console.log("DOWNLOAD PDF")
@@ -52,7 +52,7 @@ const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
       dataIndex: "id",
       key: "filename",
       align: "center",
-      render: (text: string, record: IPurchaseOrderItem) => (
+      render: (text: string, record: IPurchaseOrder) => (
         <span>
           {text}
         </span>
@@ -63,7 +63,7 @@ const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
       dataIndex: "id",
       key: "email",
       align: "center",
-      render: (text: string, record: IPurchaseOrderItem) => (
+      render: (text: string, record: IPurchaseOrder) => (
         <Button className="d-inline-flex align-items-center po-action-button">
           <MailOutlined onClick={() => {
             console.log("EMAIL VENDOR")
@@ -87,10 +87,10 @@ const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
     console.groupEnd();
   };
 
-  const { currentPurchaseOrderRecord, filteredItems } = props;
+  const { currentPurchaseApprovalOrderRecord, filteredItems } = props;
 
-  if (currentPurchaseOrderRecord && currentPurchaseOrderRecord != null) {
-    const submissionItems = filteredItems === undefined ? currentPurchaseOrderRecord.purchaseOrderItems : filteredItems;
+  if (currentPurchaseApprovalOrderRecord && currentPurchaseApprovalOrderRecord != null) {
+    const submissionItems = filteredItems === undefined ? currentPurchaseApprovalOrderRecord.purchaseOrders : filteredItems;
     return (
       <>
         <Table

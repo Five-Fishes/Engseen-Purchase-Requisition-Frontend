@@ -1,7 +1,7 @@
 export interface IPurchaseOrderItem {
   id: number;
   purchaseOrderId: number;
-  componentCode: number;
+  componentCode: string;
   componentName: string;
   packagingSize: number;
   noOfPacks: number;

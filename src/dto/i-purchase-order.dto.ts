@@ -4,9 +4,10 @@ export interface IPurchaseOrder {
   id: number;
   purchaseRequisitionApprovalId?: number;
   email: string;
-  vendorId: number;
+  vendorId: string;
   revisionDate: Date;
-  purchaseOrderItems: IPurchaseOrderItem[];
+  poNumber: string;
+  purchaseOrderItems?: IPurchaseOrderItem[];
   emailed: boolean;
   downloaded: boolean;
 }

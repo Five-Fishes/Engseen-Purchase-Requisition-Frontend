@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Input, Button, Select } from "antd";
+import { Input, Button, Select, DatePicker } from "antd";
 import Title from "antd/lib/typography/Title";
 import { IPurchaseRequisitionRequest } from "@dto/i-purchase-requisition-request.dto";
 import { ArrowRightOutlined, ReloadOutlined } from "@ant-design/icons";
@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import { getPurchaseRequisitionRequest } from "@api/purchase-requisition-request.api";
 import { ApiResponseStatus } from "@constant/api-status";
 import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
+import moment from "moment";
 
 const PurchaseRequisitionSubmissionPage: React.FC = () => {
   const [purchaseRequisitionSubmissios, setPurchaseRequisitionSubmissions] = useState<IPurchaseRequisitionRequest[]>();
@@ -64,15 +65,11 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
       setFilteredSubmissionItems(filteredData);
     }
   };
-
-  const filterStartDate = (startDate: string) => {
-    const date = startDate === '' ? undefined : new Date(startDate);
-    setStartDateFilterCriteria(date);
-  };
-
-  const filterEndDate = (endDate: string) => {
-    const date = endDate === '' ? undefined : new Date(endDate);
-    setEndDateFilterCriteria(date);
+  
+  const filterByDateRange = (startDate?: string, endDate?: string) => {
+    setStartDateFilterCriteria(startDate === undefined ? startDate : new Date(startDate));
+    setEndDateFilterCriteria(endDate === undefined ? endDate : new Date(endDate));
+    filterSubmissionRequest();
   };
 
   const filterSubmissionRequest = () => {
@@ -129,17 +126,11 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
           </div>
           <div className="d-inline-flex flex-row align-items-center" style={{ gap: "15px", width: "max-content" }}>
             <label style={{ width: "125%" }}>Advance Sorting / Filtering</label>
-            <Input
-              key="filter-start-date-input"
-              type="date"
-              value={startDateFilterCriteria?.toISOString().substring(0, 10)}
-              onChange={(e) => filterStartDate(e.target.value)}
-            />
-            <Input
-              key="filter-end-date-input"
-              type="date"
-              value={endDateFilterCriteria?.toISOString().substring(0, 10)}
-              onChange={(e) => filterEndDate(e.target.value)}
+            <DatePicker.RangePicker 
+              format="DD/MM/YYYY" 
+              allowEmpty={[true, true]}
+              value={[startDateFilterCriteria === undefined ? null : moment(startDateFilterCriteria), endDateFilterCriteria === undefined ? null : moment(endDateFilterCriteria)]}
+              onChange={(dateValues) => filterByDateRange(dateValues != null ? dateValues[0]?.toString() : undefined, dateValues != null ? dateValues[1]?.toString() : undefined)}
             />
             <Select key="sort-submission-request-select" value={sortCriteria} onChange={(value) => setSortCriteria(value)}>
               <Select.Option value={Sort.DES}>Created Date Desc</Select.Option>
@@ -152,7 +143,11 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
           </div>
           <div className="mx-2 d-inline-flex border-top mt-4 w-100">
             <div className="my-3 mb-2" style={{ alignContent: "start", maxHeight: "500px" }}>
-              <PurchaseRequisitionSubmissionBrowser setSelectedSubmissionRecord={setSelectedSubmissionRequest} purchaseRequisitionSubmissios={filteredPurchaseRequisitionSubmissios ?? []} />
+              <PurchaseRequisitionSubmissionBrowser
+                setSelectedSubmissionRecord={setSelectedSubmissionRequest} 
+                purchaseRequisitionSubmissios={filteredPurchaseRequisitionSubmissios ?? []} 
+                setFilteredSubmissionsItems={setFilteredSubmissionItems}
+              />
             </div>
             <div className="my-2 mx-4 position-relative w-100">
               <span>

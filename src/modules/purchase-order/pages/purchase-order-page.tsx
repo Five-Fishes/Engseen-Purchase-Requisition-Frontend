@@ -67,15 +67,17 @@ const PurchaseOrderPage: React.FC = () => {
   }, [sortCriteria]);
 
   const search = () => {
-    const filteredData = searchEngine.updateEngine(selectedPurchaseApprovalOrder?.purchaseOrders ?? []).search(searchText);
-    setFilteredPurchaseOrders(filteredData);
+    if (selectedPurchaseApprovalOrder) {
+      const filteredData = searchEngine.updateEngine(selectedPurchaseApprovalOrder.purchaseOrders ?? []).search(searchText);
+      setFilteredPurchaseOrders(filteredData);
+    }
   };
 
   const filterByDateRange = (startDate?: string, endDate?: string) => {
     setStartDateFilterCriteria(startDate === undefined ? startDate : new Date(startDate));
     setEndDateFilterCriteria(endDate === undefined ? endDate : new Date(endDate));
     filterPurchaseApprovalOrders();
-  }
+  };
 
   const filterPurchaseApprovalOrders = () => {
     const filteredResult: IPurchaseApprovalOrder[] = [];
@@ -129,7 +131,8 @@ const PurchaseOrderPage: React.FC = () => {
               format="DD/MM/YYYY" 
               allowEmpty={[true, true]}
               value={[startDateFilterCriteria === undefined ? null : moment(startDateFilterCriteria), endDateFilterCriteria === undefined ? null : moment(endDateFilterCriteria)]}
-              onChange={(dateValues) => filterByDateRange(dateValues != null ? dateValues[0]?.toString() : undefined, dateValues != null ? dateValues[1]?.toString() : undefined)} />
+              onChange={(dateValues) => filterByDateRange(dateValues != null ? dateValues[0]?.toString() : undefined, dateValues != null ? dateValues[1]?.toString() : undefined)}
+            />
             <Select key="sort-submission-request-select" value={sortCriteria} onChange={(value) => sortPurchaseApprovalOrderByDate(value)}>
               <Select.Option value={Sort.DES}>Created Date Desc</Select.Option>
               <Select.Option value={Sort.ASC}>Created Date Asc</Select.Option>
@@ -167,7 +170,8 @@ const PurchaseOrderPage: React.FC = () => {
               <PurchaseOrderBrowser
                 setSelectedPurchaseApprovalOrder={setSelectedPurchaseApprovalOrder} 
                 purchaseApprovalOrders={filteredPurchaseApprovalOrders ?? []}
-                setFilteredPurchaseOrders={setFilteredPurchaseOrders} />
+                setFilteredPurchaseOrders={setFilteredPurchaseOrders}
+              />
             </div>
             <div className="my-2 mx-4 position-relative w-100">
               <span>

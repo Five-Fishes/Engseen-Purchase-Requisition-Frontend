@@ -15,6 +15,7 @@ import PurchaseOrderBrowser from "../components/purchase-order-record-browser";
 import PurchaseOrderTable from "../components/purchase-order-table";
 import { popNotification } from "@module/shared/components/notification";
 import { NotificationType } from "@constant/notification-enum";
+import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
 // import { PDFDownloadLink } from "@react-pdf/renderer";
 // import PurchaseOrderTemplate from "@module/shared/components/PurchaseOrderTemplate/PurchaseOrderTemplate";
 
@@ -37,8 +38,9 @@ const PurchaseOrderPage: React.FC = () => {
       const apiResponse = await getPurchaseOrders(new Date(), new Date(), Sort.ASC);
 
       if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
-        setPurchaseApprovalOrders(apiResponse.data);
-        setFilteredPurchaseApprovalOrders(apiResponse.data);
+        const deepCopy: IPurchaseApprovalOrder[] = CLONING_LIB.deepClone(getPurchaseApprovalOrdersProgress(apiResponse.data));
+        setPurchaseApprovalOrders(deepCopy);
+        setFilteredPurchaseApprovalOrders(deepCopy);
       }
     };
 
@@ -63,6 +65,15 @@ const PurchaseOrderPage: React.FC = () => {
     sortPurchaseApprovalOrderByDate(sortCriteria);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortCriteria]);
+
+  const getPurchaseApprovalOrdersProgress = (purchaseApprovalOrders: IPurchaseApprovalOrder[]) => {
+    const purchaseApprovalOrderProgress = purchaseApprovalOrders.map(purchaseApprovalOrder => {
+      const incompletePO = purchaseApprovalOrder.purchaseOrders.filter(purchaseOrder => !(purchaseOrder.emailed || purchaseOrder.downloaded) )
+      purchaseApprovalOrder.completed = incompletePO.length === 0;
+      return purchaseApprovalOrder;
+    })
+    return purchaseApprovalOrderProgress;
+  };
 
   const search = () => {
     if (selectedPurchaseApprovalOrder) {

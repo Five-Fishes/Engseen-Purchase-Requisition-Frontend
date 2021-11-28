@@ -62,7 +62,7 @@ const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
       key: "email",
       align: "center",
       render: (text: string, record: IPurchaseOrder) => (
-        <Button className="d-inline-flex align-items-center po-action-button" onClick={() => emailPO(record)}>
+        <Button disabled={record.emailed} className="d-inline-flex align-items-center po-action-button" onClick={() => emailPO(record)}>
           <MailOutlined />&nbsp;Email
         </Button>
       ),
@@ -134,9 +134,9 @@ const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
                 </Table.Summary.Cell>
                 <Table.Summary.Cell index={3}></Table.Summary.Cell>
                 <Table.Summary.Cell index={4} align="center">
-                <Button className="d-inline-flex align-items-center po-action-button" onClick={() => emailAllPO()}>
-                  <MailOutlined />&nbsp;Email All
-                </Button>
+                  <Button disabled={currentPurchaseApprovalOrderRecord.completed} className="d-inline-flex align-items-center po-action-button" onClick={() => emailAllPO()}>
+                    <MailOutlined />&nbsp;Email All
+                  </Button>
                 </Table.Summary.Cell>
               </Table.Summary.Row>
             </Table.Summary>

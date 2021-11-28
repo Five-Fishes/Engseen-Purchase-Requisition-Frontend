@@ -140,28 +140,29 @@ const PurchaseOrderPage: React.FC = () => {
               Reset
             </Button>
           </div>
-            <PDFDownloadLink document={<PurchaseOrderTemplate 
-              purchaseOrderDate="11/10/2021" 
-              purchaseOrderNumber="PO-27392" 
-              purchaseOrderVendorAddressLine1="No 123" 
-              purchaseOrderVendorAddressLine2="Taman A" 
-              purchaseOrderVendorName="Vendor ABC"
-              purchaseOrderItems={[{
-                id: 2,
-                componentCode: 2,
-                componentName: "Component BBB",
-                packagingSize: 90,
-                noOfPacks: 10,
-                quantity: 900,
-                deliveryDate: new Date(),
-                purchaseOrderId: 2,
-                itemCost: 2.5,
-              }]} />}
-              style={{ height: "100vh", width: "100%" }}>
-              {({ blob, url, loading, error }) =>
-                loading ? 'Loading document...' : 'Download now!'
-              }
-            </PDFDownloadLink>
+          {/* Exploring on PDF Download [WIP] */}
+          {/* <PDFDownloadLink document={<PurchaseOrderTemplate 
+            purchaseOrderDate="11/10/2021" 
+            purchaseOrderNumber="PO-27392" 
+            purchaseOrderVendorAddressLine1="No 123" 
+            purchaseOrderVendorAddressLine2="Taman A" 
+            purchaseOrderVendorName="Vendor ABC"
+            purchaseOrderItems={[{
+              id: 2,
+              componentCode: 2,
+              componentName: "Component BBB",
+              packagingSize: 90,
+              noOfPacks: 10,
+              quantity: 900,
+              deliveryDate: new Date(),
+              purchaseOrderId: 2,
+              itemCost: 2.5,
+            }]} />}
+            style={{ height: "100vh", width: "100%" }}>
+            {({ blob, url, loading, error }) =>
+              loading ? 'Loading document...' : 'Download now!'
+            }
+          </PDFDownloadLink> */}
           <div className="mx-2 d-inline-flex border-top mt-4 w-100">
             <div className="my-3 mb-2" style={{ alignContent: "start", maxHeight: "500px" }}>
               <PurchaseOrderBrowser setSelectedPurchaseOrder={setSelectedPurchaseOrder} purchaseOrders={purchaseOrders ?? []} />

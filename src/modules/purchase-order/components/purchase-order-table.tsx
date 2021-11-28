@@ -40,10 +40,8 @@ const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
       key: "generatePdf",
       align: "center",
       render: (text: string, record: IPurchaseOrder) => (
-        <Button className="d-inline-flex align-items-center po-action-button">
-          <DownloadOutlined onClick={() => {
-            console.log("DOWNLOAD PDF")
-          }} />&nbsp;Download
+        <Button className="d-inline-flex align-items-center po-action-button" onClick={() => downloadPO(record)}>
+          <DownloadOutlined />&nbsp;Download
         </Button>
       ),
     },
@@ -64,10 +62,8 @@ const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
       key: "email",
       align: "center",
       render: (text: string, record: IPurchaseOrder) => (
-        <Button className="d-inline-flex align-items-center po-action-button">
-          <MailOutlined onClick={() => {
-            console.log("EMAIL VENDOR")
-          }} />&nbsp;Email
+        <Button className="d-inline-flex align-items-center po-action-button" onClick={() => emailPO(record)}>
+          <MailOutlined />&nbsp;Email
         </Button>
       ),
     },

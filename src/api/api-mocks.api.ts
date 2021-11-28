@@ -3,7 +3,6 @@ import MockAdapter from "axios-mock-adapter";
 import { PURCHASE_REQUISITION_REQUEST, PURCHASE_REQUISITION_REQUEST_REGEX, PURCHASE_REQUISITION_TEMPLATE, PURCHASE_ORDER, PURCHASE_ORDER_REGEX } from "@constant/api-endpoints";
 import { IPurchaseRequisitionRequest } from "@dto/i-purchase-requisition-request.dto";
 import { IPurchaseRequisitionTemplate } from "@dto/i-purchase-requisition-template.dto";
-import { IPurchaseOrder } from "@dto/i-purchase-order.dto";
 import { IPurchaseApprovalOrder } from "@dto/i-purchase-approval-order.dto";
 
 const mock = new MockAdapter(axios);

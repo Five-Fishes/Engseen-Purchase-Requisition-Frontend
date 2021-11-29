@@ -14,13 +14,15 @@ import { EditOutlined } from "@ant-design/icons";
 const PurchaseRequisitionTemplateList: React.FC = () => {
   const [selectedPurchaseRequisitionTemplate, setSelectedPurchaseRequisitionTemplate] = useState<IPurchaseRequisitionTemplate>({} as IPurchaseRequisitionTemplate);
   const [filteredTemplateItems, setFilteredTemplateItems] = useState<IPurchaseRequisitionTemplateItem[]>();
-  const [searchText, setSearchText] = useState<string>("");
+  
   const [excelFile, setExcelFile] = useState<File>();
   const [excelData, setExcelData] = useState<Array<any>>([]);
+  
+  const [searchText, setSearchText] = useState<string>("");
   const searchEngine: SearchEngine<IPurchaseRequisitionTemplateItem> = new SearchEngine([], genereateIndex);
+  
   const [editTemplateNameModal, setEditTemplateNameModal] = useState<boolean>(false);
   const [newTemplateName, setNewTemplateName] = useState<string>("");
-  const [form] = Form.useForm();
 
   const search = () => {
     const filteredData = searchEngine.updateEngine(selectedPurchaseRequisitionTemplate.templateItems).search(searchText);
@@ -30,7 +32,12 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
   const changeTemplateNameModal = () => {
     setNewTemplateName(selectedPurchaseRequisitionTemplate.templateName);
     setEditTemplateNameModal(true);
-  }
+  };
+
+  const closeTemplateNameModal = () => {
+    setNewTemplateName("");
+    setEditTemplateNameModal(false);
+  };
 
   const editTemplateName = () => {
     if (newTemplateName.trim() !== "") {
@@ -38,7 +45,8 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
       const deepCopy: IPurchaseRequisitionTemplate = CLONING_LIB.deepClone(selectedPurchaseRequisitionTemplate);
       setSelectedPurchaseRequisitionTemplate(deepCopy);
     }
-  }
+    closeTemplateNameModal();
+  };
 
   const deleteTemplateItem = (itemIndex: number) => {
     selectedPurchaseRequisitionTemplate.templateItems.splice(itemIndex, 1);
@@ -51,6 +59,7 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
       readXlsxFile(excelFile).then((rows) => {
         // Convert to Array of JSON Object
         setExcelData(rows);
+        // TODO: show upload excel success
       })
     }
   };
@@ -62,11 +71,11 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
 
   const addNewComponentAsTemplateItem = (values: any): void => {
     console.log("Add Component to Template ", values);
-  }
+  };
 
   const formValidationFailed = (errorInfo: any): void => {
     console.log("Failed ", errorInfo);
-  }
+  };
 
   return (
     <>
@@ -197,14 +206,15 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
     <Modal title="Edit Template Name"
       key="edit-templateName-modal"
       visible={editTemplateNameModal}
-      footer={null}>
-      <Form onFinish={editTemplateName} form={form}>
+      footer={null}
+      onCancel={closeTemplateNameModal}>
+      <Form onFinish={editTemplateName}>
         <Form.Item label='Template Name'>
-          <Input placeholder='name' value={selectedPurchaseRequisitionTemplate.templateName}/>
+          <Input placeholder='name' value={newTemplateName} onChange={ (e) => setNewTemplateName(e.target.value) } />
         </Form.Item>
         <Form.Item className="text-center mt-3">
           <Space className="">
-            <Button htmlType="button">Cancel</Button>
+            <Button htmlType="button" onClick={closeTemplateNameModal}>Cancel</Button>
             <Button htmlType="submit" type="primary">Submit</Button>
           </Space>
         </Form.Item>

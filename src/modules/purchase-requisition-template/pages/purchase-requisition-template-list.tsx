@@ -46,12 +46,14 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
       setSelectedPurchaseRequisitionTemplate(deepCopy);
     }
     closeTemplateNameModal();
+    // TODO: show Edit Name success Alert
   };
 
   const deleteTemplateItem = (itemIndex: number) => {
     selectedPurchaseRequisitionTemplate.templateItems.splice(itemIndex, 1);
     const deepCopy: IPurchaseRequisitionTemplate = CLONING_LIB.deepClone(selectedPurchaseRequisitionTemplate);
     setSelectedPurchaseRequisitionTemplate(deepCopy);
+    // TODO: show Delete Template success Alert
   };
 
   const uploadExcelFile = (): void => {
@@ -59,7 +61,7 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
       readXlsxFile(excelFile).then((rows) => {
         // Convert to Array of JSON Object
         setExcelData(rows);
-        // TODO: show upload excel success
+        // TODO: show upload excel success Alert
       })
     }
   };
@@ -71,6 +73,7 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
 
   const addNewComponentAsTemplateItem = (values: any): void => {
     console.log("Add Component to Template ", values);
+    // TODO: show Add Component success Alert
   };
 
   const formValidationFailed = (errorInfo: any): void => {

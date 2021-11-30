@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Col, Form, Input, Row, Button, InputNumber, Modal, Space } from "antd";
+import { Col, Form, Input, Row, Button, InputNumber, Modal, Space, Divider } from "antd";
 import PurchaseRequisitionTemplateTable from "../components/template-table";
 import { IPurchaseRequisitionTemplate } from "@dto/i-purchase-requisition-template.dto";
 import Title from "antd/lib/typography/Title";
@@ -10,6 +10,8 @@ import readXlsxFile from "read-excel-file";
 import { SearchEngine } from "@utils/search/native-search";
 import { IPurchaseRequisitionTemplateItem } from "@dto/i-purchase-requisition-template-item.dto";
 import { EditOutlined } from "@ant-design/icons";
+import { popNotification } from "@module/shared/components/notification";
+import { NotificationType } from "@constant/notification-enum";
 
 const PurchaseRequisitionTemplateList: React.FC = () => {
   const [selectedPurchaseRequisitionTemplate, setSelectedPurchaseRequisitionTemplate] = useState<IPurchaseRequisitionTemplate>({} as IPurchaseRequisitionTemplate);
@@ -46,14 +48,14 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
       setSelectedPurchaseRequisitionTemplate(deepCopy);
     }
     closeTemplateNameModal();
-    // TODO: show Edit Name success Alert
+    popNotification("Success Edit Template", NotificationType.success);
   };
 
   const deleteTemplateItem = (itemIndex: number) => {
     selectedPurchaseRequisitionTemplate.templateItems.splice(itemIndex, 1);
     const deepCopy: IPurchaseRequisitionTemplate = CLONING_LIB.deepClone(selectedPurchaseRequisitionTemplate);
     setSelectedPurchaseRequisitionTemplate(deepCopy);
-    // TODO: show Delete Template success Alert
+    popNotification("Success Delete Component", NotificationType.success);
   };
 
   const uploadExcelFile = (): void => {
@@ -61,7 +63,7 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
       readXlsxFile(excelFile).then((rows) => {
         // Convert to Array of JSON Object
         setExcelData(rows);
-        // TODO: show upload excel success Alert
+        popNotification("Success Upload Excel", NotificationType.success);
       })
     }
   };
@@ -73,7 +75,15 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
 
   const addNewComponentAsTemplateItem = (values: any): void => {
     console.log("Add Component to Template ", values);
-    // TODO: show Add Component success Alert
+    const lastIndex = selectedPurchaseRequisitionTemplate.templateItems.length > 0 ? selectedPurchaseRequisitionTemplate.templateItems.length : 1;
+    const newTemplateItem: IPurchaseRequisitionTemplateItem = {
+      ...values,
+      sequence: lastIndex
+    };
+    selectedPurchaseRequisitionTemplate.templateItems.push(newTemplateItem);
+    const deepCopy: IPurchaseRequisitionTemplate = CLONING_LIB.deepClone(selectedPurchaseRequisitionTemplate);
+    setSelectedPurchaseRequisitionTemplate(deepCopy);
+    popNotification("Success Add Component", NotificationType.success);
   };
 
   const formValidationFailed = (errorInfo: any): void => {
@@ -117,7 +127,7 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
           <Col span={10}>
             <PurchaseRequisitionTemplateBrowser
               setSelectedTemplate={setSelectedPurchaseRequisitionTemplate} />
-            <hr/>
+            <Divider />
             {/* Excel Upload */}
             <Row>
               <Col span={16}>
@@ -168,7 +178,7 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
                         placeholder="Vendor"
                       />
                     </Form.Item>
-                    <Form.Item className="input-group" name="packingSize" rules={[
+                    <Form.Item className="input-group" name="packagingSize" rules={[
                       { required: true, message: "Enter packing size"},
                       { type: "number", min: 1, message: "Packing Size must be positive"}
                     ]}>
@@ -192,7 +202,7 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
                 </Row>
               </Form>
             </div>
-            <hr/>
+            <Divider />
             <Button
               key="save-template-button"
               type="primary"

@@ -10,7 +10,7 @@ interface IAppSider {
 const AppSider: React.FC<IAppSider> = (props) => {
   return (
     <>
-      <Sider theme="light" trigger={null} collapsible collapsed={props.sideBarOpened} width={300} className="shadow">
+      <Sider theme="light" trigger={null} collapsible collapsed={props.sideBarOpened} width={300} collapsedWidth={0} className="shadow">
         <div className="shadow" style={{ height: "58px", minHeight: "58px", backgroundColor: "#721959" }} />
         <Menu theme="light" mode="inline" defaultSelectedKeys={["1"]}>
           <Menu.Item key="1" icon={<FormOutlined />}>

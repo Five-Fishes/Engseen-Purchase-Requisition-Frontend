@@ -3,10 +3,12 @@ import { useState } from "react";
 import { Button, Input } from "antd";
 import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
 import { convertToLocalString } from "@utils/date-time/date-time-format";
+import { IPurchaseRequisitionRequestItem } from "@dto/i-purchase-requisition-request-item.dto";
 
 interface IPurchaseRequisitionSubmissionProps {
   setSelectedSubmissionRecord: (submissionRecord: IPurchaseRequisitionRequest) => void;
   purchaseRequisitionSubmissios: IPurchaseRequisitionRequest[];
+  setFilteredSubmissionsItems: (submissionItems: IPurchaseRequisitionRequestItem[]) => void;
 }
 
 const PurchaseRequisitionSubmissionBrowser: React.FC<IPurchaseRequisitionSubmissionProps> = (props) => {
@@ -30,6 +32,7 @@ const PurchaseRequisitionSubmissionBrowser: React.FC<IPurchaseRequisitionSubmiss
                   setSelectedRemarks(submission.remarks);
                   const deepCopy: IPurchaseRequisitionRequest = CLONING_LIB.deepClone(submission);
                   props.setSelectedSubmissionRecord(deepCopy);
+                  props.setFilteredSubmissionsItems(deepCopy.purchaseRequisitionRequestItems);
                 }}
               >
                 {convertToLocalString(submission.createdDate)}

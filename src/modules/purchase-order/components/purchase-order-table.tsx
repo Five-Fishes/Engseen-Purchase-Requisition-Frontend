@@ -1,4 +1,4 @@
-import { Button, Table } from "antd";
+import { Button, Space, Table } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import React from "react";
 import { IPurchaseOrder } from "@dto/i-purchase-order.dto";
@@ -62,7 +62,7 @@ const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
       key: "email",
       align: "center",
       render: (text: string, record: IPurchaseOrder) => (
-        <Button className="d-inline-flex align-items-center po-action-button" onClick={() => emailPO(record)}>
+        <Button disabled={record.emailed} className="d-inline-flex align-items-center po-action-button" onClick={() => emailPO(record)}>
           <MailOutlined />&nbsp;Email
         </Button>
       ),
@@ -76,11 +76,37 @@ const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
     console.groupEnd();
   };
 
+  const downloadAllPO = () => {
+    console.group(PurchaseOrderTable.name);
+    console.log("Download All PO");
+    console.log("Purchase Approval Orders Id: ", currentPurchaseApprovalOrderRecord?.id);
+    console.log("Purchase Orders List: ", currentPurchaseApprovalOrderRecord?.purchaseOrders);
+    console.groupEnd();
+  };
+
   const emailPO = (purchaseOrder: IPurchaseOrder) => {
     console.group(PurchaseOrderTable.name);
     console.log("Email PO");
     console.log("Purchase Order: ", purchaseOrder);
     console.groupEnd();
+  };
+
+  const emailAllPO = () => {
+    console.group(PurchaseOrderTable.name);
+    console.log("Email All PO");
+    console.log("Purchase Approval Orders Id: ", currentPurchaseApprovalOrderRecord?.id);
+    console.log("Purchase Orders List: ", currentPurchaseApprovalOrderRecord?.purchaseOrders);
+    console.groupEnd();
+  };
+
+  const downloadAndEmailAll = () => {
+    console.group(PurchaseOrderTable.name);
+    console.log("Download & Email PO");
+    console.log("Purchase Approval Orders Id: ", currentPurchaseApprovalOrderRecord?.id);
+    console.log("Purchase Orders List: ", currentPurchaseApprovalOrderRecord?.purchaseOrders);
+    console.groupEnd();
+    downloadAllPO();
+    emailAllPO();
   };
 
   const { currentPurchaseApprovalOrderRecord, filteredItems } = props;
@@ -96,7 +122,32 @@ const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
           rowKey="id"
           scroll={{ y: 370 }}
           pagination={{ pageSizeOptions: ["5", "10", "20", "50", "100"], hideOnSinglePage: true, defaultPageSize: 5 }}
-        ></Table>
+          summary={() => (
+            <Table.Summary fixed>
+              <Table.Summary.Row>
+                <Table.Summary.Cell index={0}></Table.Summary.Cell>
+                <Table.Summary.Cell index={1}></Table.Summary.Cell>
+                <Table.Summary.Cell index={2} align="center">
+                  <Button className="d-inline-flex align-items-center po-action-button" onClick={() => downloadAllPO()}>
+                    <DownloadOutlined />&nbsp;Download All
+                  </Button>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell index={3}></Table.Summary.Cell>
+                <Table.Summary.Cell index={4} align="center">
+                  <Button disabled={currentPurchaseApprovalOrderRecord.completed} className="d-inline-flex align-items-center po-action-button" onClick={() => emailAllPO()}>
+                    <MailOutlined />&nbsp;Email All
+                  </Button>
+                </Table.Summary.Cell>
+              </Table.Summary.Row>
+            </Table.Summary>
+          )}
+        >
+        </Table>
+        <Space className="float-end mt-5">
+          <Button type="primary" className="d-inline-flex align-items-center" onClick={() => downloadAndEmailAll()}>
+            One Click to Download &#38; Email all PO
+          </Button>
+        </Space>
       </>
     );
   } else {

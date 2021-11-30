@@ -4,4 +4,5 @@ export interface IPurchaseApprovalOrder {
   id: number;
   createdDate: Date;
   purchaseOrders: IPurchaseOrder[];
+  completed?: boolean;
 }

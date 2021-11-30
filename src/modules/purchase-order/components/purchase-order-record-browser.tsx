@@ -2,6 +2,7 @@ import { IPurchaseApprovalOrder } from "@dto/i-purchase-approval-order.dto";
 import { IPurchaseOrder } from "@dto/i-purchase-order.dto";
 import { useState } from "react";
 import { Button } from "antd";
+import { CheckCircleTwoTone } from "@ant-design/icons";
 import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
 import { convertToLocalString } from "@utils/date-time/date-time-format";
 
@@ -25,7 +26,7 @@ const PurchaseOrderBrowser: React.FC<IPurchaseOrderProps> = (props) => {
                 key={`purchase-order-date-${index}`}
                 type={selectedIndex === index ? "primary" : "default"}
                 shape="round"
-                className="m-2"
+                className="m-2 d-inline-flex align-items-center"
                 size="large"
                 onClick={() => {
                   setSelectedIndex(index);
@@ -35,6 +36,7 @@ const PurchaseOrderBrowser: React.FC<IPurchaseOrderProps> = (props) => {
                 }}
               >
                 {convertToLocalString(purchaseApprovalOrder.createdDate)}
+                <CheckCircleTwoTone hidden={!purchaseApprovalOrder.completed} twoToneColor="#52c41a" style={{ fontSize: "1.3em" }} />
               </Button>
             );
           })}

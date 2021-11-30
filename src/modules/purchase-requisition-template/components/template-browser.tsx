@@ -112,7 +112,7 @@ const PurchaseRequisitionTemplateBrowser: React.FC<IPurchaseRequisitionTemplateP
           ><DeleteOutlined />Delete Template</Button>
         </Col>
       </Row>
-      <div className="scrollable-menu d-inline-block text-center mt-2">
+      <div className="d-inline-block text-center mt-2">
         {purchaseRequisitionTemplates &&
           purchaseRequisitionTemplates.map((template, index) => {
             return (

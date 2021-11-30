@@ -207,7 +207,7 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
               key="save-template-button"
               type="primary"
               size="large"
-              className="float-end"
+              className="float-end mb-2"
               onClick={() => {
                 console.log("Save Template")
               }}

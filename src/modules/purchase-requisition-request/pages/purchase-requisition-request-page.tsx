@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Input } from "antd";
 import Title from "antd/lib/typography/Title";
 import { IPurchaseRequisitionTemplate } from "@dto/i-purchase-requisition-template.dto";
-import PurchaseRequisitionTemplateBrowser from "../components/templateBrowser/template-browser";
-import PurchaseRequisitionRequestConstructor from "../components/requestConstructor/request-constructor";
+import PurchaseRequisitionTemplateBrowser from "../components/template-browser/template-browser";
+import PurchaseRequisitionRequestConstructor from "../components/request-constructor/request-constructor";
 
 const PurchaseRequisitionRequestPage: React.FC = () => {
   const [selectedTemplate, setSelectedTemplate] = useState<IPurchaseRequisitionTemplate>();

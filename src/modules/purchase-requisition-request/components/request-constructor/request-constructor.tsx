@@ -16,15 +16,15 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
           dataSource={templateItems}
           columns={PURCHASE_REQUISITION_REQUEST_TABLE_COLUMN}
           rowKey="id"
-          scroll={{ y: 370 }}
+          scroll={{ y: 370, x: 1300 }}
           pagination={{ pageSizeOptions: ["5", "10", "20", "50", "100"], hideOnSinglePage: true, defaultPageSize: 5 }}
         ></Table>
       </>
     );
   } else {
     return (
-      <div className="d-flex flex-column justify-content-center">
-        <span className="text-center">No Template Selected</span>
+      <div className="d-flex flex-column justify-content-center" style={{height: '400px'}}>
+        <span className="text-center m-auto">No Template Selected</span>
       </div>
     );
   }

@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Input, Divider, Button } from "antd";
 import Title from "antd/lib/typography/Title";
 import { IPurchaseRequisitionTemplate } from "@dto/i-purchase-requisition-template.dto";
-import PurchaseRequisitionTemplateBrowser from "../components/templateBrowser/template-browser";
-import PurchaseRequisitionRequestConstructor from "../components/requestConstructor/request-constructor";
+import PurchaseRequisitionTemplateBrowser from "../components/template-browser/template-browser";
+import PurchaseRequisitionRequestConstructor from "../components/request-constructor/request-constructor";
 
 const PurchaseRequisitionRequestPage: React.FC = () => {
   const [selectedTemplate, setSelectedTemplate] = useState<IPurchaseRequisitionTemplate>();
@@ -20,13 +20,13 @@ const PurchaseRequisitionRequestPage: React.FC = () => {
             <PurchaseRequisitionTemplateBrowser setSelectedTemplate={setSelectedTemplate} />
           </div>
           <div className="col d-flex flex-column justify-content-center">
-            <Input
+            <Input.Search
               placeholder="Search"
               value={searchText}
               onChange={(e) => {
                 setSearchText(e.target.value);
               }}
-            ></Input>
+            ></Input.Search>
           </div>
         </div>
 

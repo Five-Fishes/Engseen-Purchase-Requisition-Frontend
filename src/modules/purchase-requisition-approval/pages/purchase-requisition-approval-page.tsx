@@ -1,14 +1,25 @@
 import { useState } from "react";
 import Title from "antd/lib/typography/Title";
-import { ReloadOutlined } from "@ant-design/icons";
-import { Button, DatePicker, Divider, Select } from "antd";
+import { Button, Divider, Input } from "antd";
+
 import { Sort } from "@constant/sort.enum";
+
+import FilterAndSort from "../components/filter-and-sort/filter-and-sort";
+import ComponentSelector from "../components/component-selector/component-selector";
+import PurchaseRequisitionSelector from "../components/purchase-requisition-request-selector/purchase-requisition-request-selector";
+import PurchaseRequititionApprovalTable from "../components/purchase-requisition-approval-table/purchase-requisition-approval-table";
+import { CheckSquareOutlined } from "@ant-design/icons";
 
 const PurchaseRequisitionApprovalPage: React.FC = () => {
   const [sort, setSort] = useState<Sort>();
+  const [dateRange, setDateRange] = useState<[Date, Date]>();
 
   const handleSortChange = (value: Sort | undefined) => {
     setSort(value);
+  };
+
+  const handleDateRangeChange = (value: [Date, Date] | undefined) => {
+    setDateRange(value);
   };
 
   return (
@@ -18,27 +29,35 @@ const PurchaseRequisitionApprovalPage: React.FC = () => {
       </div>
 
       <div className="row">
-        <div className="col-7">
+        <div className="col-6">
           <div className="my-2">Advance Sorting / Filtering</div>
-          <div className="d-flex">
-            <DatePicker.RangePicker></DatePicker.RangePicker>
-            <Select placeholder="Sort By" onChange={handleSortChange} style={{ width: 150 }} className="mx-1">
-              <Select.Option value={Sort.ASC}>Ascending Date</Select.Option>
-              <Select.Option value={Sort.DES}>Descending Date</Select.Option>
-            </Select>
-            <Button className="d-inline-flex align-items-center">
-              <ReloadOutlined />
-              Reset
-            </Button>
-          </div>
+          <FilterAndSort sortChangedHandler={handleSortChange} dateRangeChangedHandler={handleDateRangeChange} dateRange={dateRange} sort={sort}></FilterAndSort>
         </div>
-        <div className="col">section 2</div>
+        <div className="col-6">
+          <ComponentSelector></ComponentSelector>
+        </div>
       </div>
 
       <Divider />
 
       <div className="row">
-        <div className="col">Current Sort is {sort}</div>
+        <div className="col-3">
+          <PurchaseRequisitionSelector></PurchaseRequisitionSelector>
+        </div>
+        <div className="col-9">
+          <PurchaseRequititionApprovalTable></PurchaseRequititionApprovalTable>
+        </div>
+      </div>
+
+      <div className="row">
+        <div className="col-3 pt-3">
+          <Input.TextArea placeholder="Remarks" rows={3}></Input.TextArea>
+        </div>
+        <div className="col-9 d-flex justify-content-end">
+          <Button type="primary" size="large">
+            <CheckSquareOutlined style={{ transform: "translateY(-3px)" }} /> Issue Confirmed PO
+          </Button>
+        </div>
       </div>
     </div>
   );

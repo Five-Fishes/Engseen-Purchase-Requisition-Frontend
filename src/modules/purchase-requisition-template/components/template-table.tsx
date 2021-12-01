@@ -84,7 +84,7 @@ const PurchaseRequisitionTemplateTable: React.FC<IPurchaseRequisitionTemplateTab
           columns={PURCHASE_REQUISITION_TEMPLATE_TABLE_COLUMN}
           rowKey="id"
           scroll={{ y: 370 }}
-          pagination={{ pageSizeOptions: ["5", "10", "20", "50", "100"], hideOnSinglePage: true, defaultPageSize: 5 }}
+          pagination={{ showSizeChanger: true, pageSizeOptions: ["5", "10", "20", "50", "100"], defaultPageSize: 100 }}
         ></Table>
       </>
     );

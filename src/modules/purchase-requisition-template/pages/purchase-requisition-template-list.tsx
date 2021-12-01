@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Col, Form, Input, Row, Button, InputNumber } from "antd";
+import { Col, Form, Input, Row, Button, InputNumber, Modal, Space, Divider } from "antd";
 import PurchaseRequisitionTemplateTable from "../components/template-table";
 import { IPurchaseRequisitionTemplate } from "@dto/i-purchase-requisition-template.dto";
 import Title from "antd/lib/typography/Title";
@@ -9,24 +9,53 @@ import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
 import readXlsxFile from "read-excel-file";
 import { SearchEngine } from "@utils/search/native-search";
 import { IPurchaseRequisitionTemplateItem } from "@dto/i-purchase-requisition-template-item.dto";
+import { EditOutlined } from "@ant-design/icons";
+import { popNotification } from "@module/shared/components/notification";
+import { NotificationType } from "@constant/notification-enum";
 
 const PurchaseRequisitionTemplateList: React.FC = () => {
   const [selectedPurchaseRequisitionTemplate, setSelectedPurchaseRequisitionTemplate] = useState<IPurchaseRequisitionTemplate>({} as IPurchaseRequisitionTemplate);
   const [filteredTemplateItems, setFilteredTemplateItems] = useState<IPurchaseRequisitionTemplateItem[]>();
-  const [searchText, setSearchText] = useState<string>("");
+  
   const [excelFile, setExcelFile] = useState<File>();
   const [excelData, setExcelData] = useState<Array<any>>([]);
+  
+  const [searchText, setSearchText] = useState<string>("");
   const searchEngine: SearchEngine<IPurchaseRequisitionTemplateItem> = new SearchEngine([], genereateIndex);
+  
+  const [editTemplateNameModal, setEditTemplateNameModal] = useState<boolean>(false);
+  const [newTemplateName, setNewTemplateName] = useState<string>("");
 
   const search = () => {
     const filteredData = searchEngine.updateEngine(selectedPurchaseRequisitionTemplate.templateItems).search(searchText);
     setFilteredTemplateItems(filteredData);
   };
 
+  const changeTemplateNameModal = () => {
+    setNewTemplateName(selectedPurchaseRequisitionTemplate.templateName);
+    setEditTemplateNameModal(true);
+  };
+
+  const closeTemplateNameModal = () => {
+    setNewTemplateName("");
+    setEditTemplateNameModal(false);
+  };
+
+  const editTemplateName = () => {
+    if (newTemplateName.trim() !== "") {
+      selectedPurchaseRequisitionTemplate.templateName = newTemplateName;
+      const deepCopy: IPurchaseRequisitionTemplate = CLONING_LIB.deepClone(selectedPurchaseRequisitionTemplate);
+      setSelectedPurchaseRequisitionTemplate(deepCopy);
+    }
+    closeTemplateNameModal();
+    popNotification("Success Edit Template", NotificationType.success);
+  };
+
   const deleteTemplateItem = (itemIndex: number) => {
     selectedPurchaseRequisitionTemplate.templateItems.splice(itemIndex, 1);
     const deepCopy: IPurchaseRequisitionTemplate = CLONING_LIB.deepClone(selectedPurchaseRequisitionTemplate);
     setSelectedPurchaseRequisitionTemplate(deepCopy);
+    popNotification("Success Delete Component", NotificationType.success);
   };
 
   const uploadExcelFile = (): void => {
@@ -34,6 +63,7 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
       readXlsxFile(excelFile).then((rows) => {
         // Convert to Array of JSON Object
         setExcelData(rows);
+        popNotification("Success Upload Excel", NotificationType.success);
       })
     }
   };
@@ -45,11 +75,20 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
 
   const addNewComponentAsTemplateItem = (values: any): void => {
     console.log("Add Component to Template ", values);
-  }
+    const lastIndex = selectedPurchaseRequisitionTemplate.templateItems.length > 0 ? selectedPurchaseRequisitionTemplate.templateItems.length : 1;
+    const newTemplateItem: IPurchaseRequisitionTemplateItem = {
+      ...values,
+      sequence: lastIndex
+    };
+    selectedPurchaseRequisitionTemplate.templateItems.push(newTemplateItem);
+    const deepCopy: IPurchaseRequisitionTemplate = CLONING_LIB.deepClone(selectedPurchaseRequisitionTemplate);
+    setSelectedPurchaseRequisitionTemplate(deepCopy);
+    popNotification("Success Add Component", NotificationType.success);
+  };
 
   const formValidationFailed = (errorInfo: any): void => {
     console.log("Failed ", errorInfo);
-  }
+  };
 
   return (
     <>
@@ -62,7 +101,10 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
           <Col span={14}>
             <div className="border-right-2 mx-2">
               <div className="my-2 position-relative">
-                <b>{selectedPurchaseRequisitionTemplate.templateName}</b>
+                <b className="d-inline-flex align-items-center">
+                  {selectedPurchaseRequisitionTemplate.templateName}&nbsp;
+                  <EditOutlined className="cursor-pointer" onClick={changeTemplateNameModal}  hidden={selectedPurchaseRequisitionTemplate.templateName === undefined} />
+                </b>
                 <div className="col d-flex flex-column justify-content-center">
                   <Input.Search
                     allowClear
@@ -85,7 +127,7 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
           <Col span={10}>
             <PurchaseRequisitionTemplateBrowser
               setSelectedTemplate={setSelectedPurchaseRequisitionTemplate} />
-            <hr/>
+            <Divider />
             {/* Excel Upload */}
             <Row>
               <Col span={16}>
@@ -136,7 +178,7 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
                         placeholder="Vendor"
                       />
                     </Form.Item>
-                    <Form.Item className="input-group" name="packingSize" rules={[
+                    <Form.Item className="input-group" name="packagingSize" rules={[
                       { required: true, message: "Enter packing size"},
                       { type: "number", min: 1, message: "Packing Size must be positive"}
                     ]}>
@@ -160,12 +202,12 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
                 </Row>
               </Form>
             </div>
-            <hr/>
+            <Divider />
             <Button
               key="save-template-button"
               type="primary"
               size="large"
-              className="float-end"
+              className="float-end mb-2"
               onClick={() => {
                 console.log("Save Template")
               }}
@@ -174,6 +216,23 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
         </Row>
       </div>
     </div>
+    <Modal title="Edit Template Name"
+      key="edit-templateName-modal"
+      visible={editTemplateNameModal}
+      footer={null}
+      onCancel={closeTemplateNameModal}>
+      <Form onFinish={editTemplateName}>
+        <Form.Item label='Template Name'>
+          <Input placeholder='name' value={newTemplateName} onChange={ (e) => setNewTemplateName(e.target.value) } />
+        </Form.Item>
+        <Form.Item className="text-center mt-3">
+          <Space className="">
+            <Button htmlType="button" onClick={closeTemplateNameModal}>Cancel</Button>
+            <Button htmlType="submit" type="primary">Submit</Button>
+          </Space>
+        </Form.Item>
+      </Form>
+    </Modal>
     </>
   );
 }

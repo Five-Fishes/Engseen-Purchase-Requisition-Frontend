@@ -3,6 +3,7 @@ import { ColumnsType } from "antd/lib/table";
 import React from "react";
 import { IPurchaseRequisitionRequest } from "@dto/i-purchase-requisition-request.dto";
 import { IPurchaseRequisitionRequestItem } from "@dto/i-purchase-requisition-request-item.dto";
+import { convertToLocalString } from "@utils/date-time/date-time-format";
 
 interface IPurchaseRequisitionSubmissionTableProps {
   readonly currentSubmissionRecord?: IPurchaseRequisitionRequest;
@@ -53,6 +54,11 @@ const PurchaseRequisitionSubmissionTable: React.FC<IPurchaseRequisitionSubmissio
       title: "Delivery Date",
       dataIndex: "deliveryDate",
       key: "deliveryDate",
+      render: (text: string, record: IPurchaseRequisitionRequestItem) => (
+        <span>
+          {convertToLocalString(record.deliveryDate, true)}
+        </span>
+      ),
     },
   ];
 

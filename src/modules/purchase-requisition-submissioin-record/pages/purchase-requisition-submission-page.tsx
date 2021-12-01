@@ -125,7 +125,7 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
             </Button>
           </div>
           <div className="d-inline-flex flex-row align-items-center" style={{ gap: "15px", width: "max-content" }}>
-            <label style={{ width: "125%" }}>Advance Sorting / Filtering</label>
+            <label>Advance Sorting / Filtering</label>
             <DatePicker.RangePicker 
               format="DD/MM/YYYY" 
               allowEmpty={[true, true]}

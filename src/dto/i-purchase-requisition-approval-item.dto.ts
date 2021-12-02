@@ -2,6 +2,7 @@ import { PurchaseRequisitionApprovalStatus } from "@constant/purchase-requisitio
 import { IPurchaseRequisitionRequestItem } from "./i-purchase-requisition-request-item.dto";
 
 export interface IPurchaseRequisitionApprovalItem extends IPurchaseRequisitionRequestItem {
+  id?:number;
   itemCost: number;
   status: PurchaseRequisitionApprovalStatus
 }

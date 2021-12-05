@@ -142,7 +142,7 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
             </Button>
           </div>
           <div className="mx-2 d-inline-flex border-top mt-4 w-100">
-            <div className="my-3 mb-2" style={{ alignContent: "start", maxHeight: "500px" }}>
+            <div className="my-1 mb-2" style={{ alignContent: "start"}}>
               <PurchaseRequisitionSubmissionBrowser
                 setSelectedSubmissionRecord={setSelectedSubmissionRequest} 
                 purchaseRequisitionSubmissios={filteredPurchaseRequisitionSubmissios ?? []} 

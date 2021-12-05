@@ -1,9 +1,9 @@
 import React from "react";
 import { Route } from "react-router-dom";
 
-import PageRefresh from "./shared/components/RefreshRoute";
-import PostLogInRoute from "./shared/components/PostLogInRoute";
-import SwitchWithFallback from "./shared/components/SwitchWithFallback";
+import PageRefresh from "./shared/components/refresh-route";
+import PostLogInRoute from "./shared/components/post-login-route";
+import SwitchWithFallback from "./shared/components/switch-with-fallback";
 
 import LoginPage from "./login/pages/login";
 import PurchaseRequisitionTemplateRoute from "./purchase-requisition-template/pages";
@@ -17,7 +17,7 @@ const Routes: React.FC = () => {
   return (
     <SwitchWithFallback>
       <Route exact path="/" component={LoginPage} />
-      <Route path="/page-refresh/:destination" component={PageRefresh} />
+      <Route path="/page-refresh/:destination" component={PageRefresh} /> {/* TODO: @LUXIANZE Remove this before production deployment */}
       <PostLogInRoute path="/purchase-requisition-template" component={PurchaseRequisitionTemplateRoute} />
       <PostLogInRoute path="/purchase-requisition-request" component={PurchaseRequisitionRequestPage} />
       <PostLogInRoute path="/purchase-requisition-submission-record" component={PurchaseRequisitionSubmissionPage}/>

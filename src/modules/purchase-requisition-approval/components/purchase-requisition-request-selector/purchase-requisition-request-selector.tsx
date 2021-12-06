@@ -8,7 +8,7 @@ const PurchaseRequisitionSelector: React.FC = () => {
   }
   return (
     <>
-      <div className="d-flex flex-column scrollable-menu" style={{ maxHeight: "350px" }}>
+      <div className="d-flex flex-column scrollable-menu" style={{ maxHeight: "480px" }}>
         {APPROVAL_LIST.map((element, index) => (
           <Button className="m-2" shape="round" size="large" key={index}>
             {element.date.toDateString()} {element.approved && <CheckCircleOutlined style={{ color: "#22A70C", transform: "translateY(-3px)" }} />}

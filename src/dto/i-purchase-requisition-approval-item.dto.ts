@@ -5,4 +5,5 @@ export interface IPurchaseRequisitionApprovalItem extends IPurchaseRequisitionRe
   id?:number;
   itemCost: number;
   status: PurchaseRequisitionApprovalStatus
+  balance: number;
 }

@@ -186,7 +186,7 @@ const PurchaseOrderPage: React.FC = () => {
             </div>
             <div className="my-2 mx-4 position-relative w-100">
               <span>
-                Submission Date: <b color="primary">{convertToLocalString(selectedPurchaseApprovalOrder?.createdDate)}</b>
+                Submission Date: <b color="primary">{selectedPurchaseApprovalOrder ? convertToLocalString(selectedPurchaseApprovalOrder.createdDate) : ""}</b>
               </span>
               <div className="d-flex flex-column justify-content-center">
                 <Input.Search

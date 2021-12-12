@@ -17,7 +17,7 @@ const PurchaseRequisitionSubmissionBrowser: React.FC<IPurchaseRequisitionSubmiss
   const { purchaseRequisitionSubmissios } = props;
   return (
     <>
-      <div className="text-center d-flex flex-column py-2" style={{ overflowY: "scroll", maxHeight: "85%" }}>
+      <div className="text-center d-flex flex-column py-2" style={{ overflowY: "scroll", maxHeight: "85%", width: "max-content" }}>
         {purchaseRequisitionSubmissios &&
           purchaseRequisitionSubmissios.map((submission, index) => {
             return (
@@ -25,7 +25,7 @@ const PurchaseRequisitionSubmissionBrowser: React.FC<IPurchaseRequisitionSubmiss
                 key={`submission-date-${index}`}
                 type={selectedIndex === index ? "primary" : "default"}
                 shape="round"
-                className="m-2"
+                className="m-1 px-4"
                 size="large"
                 onClick={() => {
                   setSelectedIndex(index);
@@ -40,8 +40,10 @@ const PurchaseRequisitionSubmissionBrowser: React.FC<IPurchaseRequisitionSubmiss
             );
           })}
       </div>
-      <Input.TextArea readOnly style={{ minWidth: "350px", minHeight: "150px" }}
-        value={selectedRemarks == null ? "Remarks: " : "Remarks: \n" + selectedRemarks} />
+      <div className="fixed-bottom mx-4" style={{ width: "250px", height: "12.5%", zIndex: 100 }}>
+        <Input.TextArea readOnly style={{ height: "100%" }}
+          value={selectedRemarks == null ? "Remarks: " : "Remarks: \n" + selectedRemarks} />
+      </div>
     </>
   );
 };

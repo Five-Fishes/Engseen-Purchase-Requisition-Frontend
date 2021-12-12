@@ -42,6 +42,7 @@ mock.onGet(PURCHASE_REQUISITION_REQUEST_REGEX).reply<IPurchaseRequisitionRequest
     templateId: 1,
     purchaseRequisitionRequestItems: [
       {
+        id: 1,
         componentCode: 1,
         componentName: "abc",
         vendorName: "abc",
@@ -60,6 +61,7 @@ mock.onGet(PURCHASE_REQUISITION_REQUEST_REGEX).reply<IPurchaseRequisitionRequest
     templateId: 1,
     purchaseRequisitionRequestItems: [
       {
+        id: 2,
         componentCode: 1,
         componentName: "abc",
         vendorName: "abc",
@@ -78,6 +80,7 @@ mock.onGet(PURCHASE_REQUISITION_REQUEST_REGEX).reply<IPurchaseRequisitionRequest
     templateId: 1,
     purchaseRequisitionRequestItems: [
       {
+        id: 3,
         componentCode: 1,
         componentName: "abc",
         vendorName: "abc",
@@ -96,6 +99,7 @@ mock.onGet(PURCHASE_REQUISITION_REQUEST_REGEX).reply<IPurchaseRequisitionRequest
     templateId: 1,
     purchaseRequisitionRequestItems: [
       {
+        id: 4,
         componentCode: 1,
         componentName: "abc",
         vendorName: "abc",
@@ -114,6 +118,7 @@ mock.onGet(PURCHASE_REQUISITION_REQUEST_REGEX).reply<IPurchaseRequisitionRequest
     templateId: 1,
     purchaseRequisitionRequestItems: [
       {
+        id: 5,
         componentCode: 1,
         componentName: "abc",
         vendorName: "abc",
@@ -132,6 +137,7 @@ mock.onGet(PURCHASE_REQUISITION_REQUEST_REGEX).reply<IPurchaseRequisitionRequest
     templateId: 1,
     purchaseRequisitionRequestItems: [
       {
+        id: 6,
         componentCode: 1,
         componentName: "abc",
         vendorName: "abc",
@@ -150,6 +156,7 @@ mock.onGet(PURCHASE_REQUISITION_REQUEST_REGEX).reply<IPurchaseRequisitionRequest
     templateId: 1,
     purchaseRequisitionRequestItems: [
       {
+        id: 7,
         componentCode: 1,
         componentName: "abc",
         vendorName: "abc",
@@ -168,6 +175,7 @@ mock.onGet(PURCHASE_REQUISITION_REQUEST_REGEX).reply<IPurchaseRequisitionRequest
     templateId: 1,
     purchaseRequisitionRequestItems: [
       {
+        id: 8,
         componentCode: 1,
         componentName: "abc",
         vendorName: "abc",
@@ -186,6 +194,7 @@ mock.onGet(PURCHASE_REQUISITION_REQUEST_REGEX).reply<IPurchaseRequisitionRequest
     templateId: 1,
     purchaseRequisitionRequestItems: [
       {
+        id: 9,
         componentCode: 1,
         componentName: "abc",
         vendorName: "abc",
@@ -204,6 +213,7 @@ mock.onGet(PURCHASE_REQUISITION_REQUEST_REGEX).reply<IPurchaseRequisitionRequest
     templateId: 1,
     purchaseRequisitionRequestItems: [
       {
+        id: 10,
         componentCode: 1,
         componentName: "abc",
         vendorName: "abc",
@@ -270,9 +280,9 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
         id: 1,
         sequence: 1,
         componentCode: "AAA",
-        componentName: "Component AAA",
+        componentName: "BEGACRON GOLDEN YELLOW 2RS 200%",
         vendorId: "VA",
-        vendorName: "Vendor A",
+        vendorName: "KONG LONG HUAT CHEMICAL SDN. BHD.",
         packagingSize: 100,
       },
       {

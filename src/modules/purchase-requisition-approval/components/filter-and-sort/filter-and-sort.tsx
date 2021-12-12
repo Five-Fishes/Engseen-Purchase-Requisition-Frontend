@@ -15,8 +15,10 @@ const FilterAndSort: React.FC<IFilterAndSortProps> = (props) => {
   return (
     <>
       <DatePicker.RangePicker
+        format="DD/MM/YYYY" 
+        allowEmpty={[true, true]}
         onChange={(values, formatStrings) => {
-          const dateRange: [Date, Date] = [new Date(formatStrings[0]), new Date(formatStrings[1])];
+          const dateRange: [Date, Date] = [new Date(new Date(formatStrings[0]).setHours(0, 0, 0, 0)), new Date(new Date(formatStrings[1]).setHours(23, 59, 59, 59))];
           dateRangeChangedHandler(dateRange);
         }}
       ></DatePicker.RangePicker>

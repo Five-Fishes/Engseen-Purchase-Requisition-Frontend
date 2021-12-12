@@ -33,6 +33,7 @@ mock.onGet(PURCHASE_REQUISITION_REQUEST_REGEX).reply<IPurchaseRequisitionRequest
     templateId: 1,
     purchaseRequisitionRequestItems: [
       {
+        id: 1,
         componentCode: 1,
         componentName: "abc",
         vendorName: "abc",
@@ -51,6 +52,7 @@ mock.onGet(PURCHASE_REQUISITION_REQUEST_REGEX).reply<IPurchaseRequisitionRequest
     templateId: 1,
     purchaseRequisitionRequestItems: [
       {
+        id: 2,
         componentCode: 1,
         componentName: "abc",
         vendorName: "abc",
@@ -69,6 +71,7 @@ mock.onGet(PURCHASE_REQUISITION_REQUEST_REGEX).reply<IPurchaseRequisitionRequest
     templateId: 1,
     purchaseRequisitionRequestItems: [
       {
+        id: 3,
         componentCode: 1,
         componentName: "abc",
         vendorName: "abc",
@@ -87,6 +90,7 @@ mock.onGet(PURCHASE_REQUISITION_REQUEST_REGEX).reply<IPurchaseRequisitionRequest
     templateId: 1,
     purchaseRequisitionRequestItems: [
       {
+        id: 4,
         componentCode: 1,
         componentName: "abc",
         vendorName: "abc",
@@ -105,6 +109,7 @@ mock.onGet(PURCHASE_REQUISITION_REQUEST_REGEX).reply<IPurchaseRequisitionRequest
     templateId: 1,
     purchaseRequisitionRequestItems: [
       {
+        id: 5,
         componentCode: 1,
         componentName: "abc",
         vendorName: "abc",
@@ -123,6 +128,7 @@ mock.onGet(PURCHASE_REQUISITION_REQUEST_REGEX).reply<IPurchaseRequisitionRequest
     templateId: 1,
     purchaseRequisitionRequestItems: [
       {
+        id: 6,
         componentCode: 1,
         componentName: "abc",
         vendorName: "abc",
@@ -141,6 +147,7 @@ mock.onGet(PURCHASE_REQUISITION_REQUEST_REGEX).reply<IPurchaseRequisitionRequest
     templateId: 1,
     purchaseRequisitionRequestItems: [
       {
+        id: 7,
         componentCode: 1,
         componentName: "abc",
         vendorName: "abc",
@@ -159,6 +166,7 @@ mock.onGet(PURCHASE_REQUISITION_REQUEST_REGEX).reply<IPurchaseRequisitionRequest
     templateId: 1,
     purchaseRequisitionRequestItems: [
       {
+        id: 8,
         componentCode: 1,
         componentName: "abc",
         vendorName: "abc",
@@ -177,6 +185,7 @@ mock.onGet(PURCHASE_REQUISITION_REQUEST_REGEX).reply<IPurchaseRequisitionRequest
     templateId: 1,
     purchaseRequisitionRequestItems: [
       {
+        id: 9,
         componentCode: 1,
         componentName: "abc",
         vendorName: "abc",
@@ -195,6 +204,7 @@ mock.onGet(PURCHASE_REQUISITION_REQUEST_REGEX).reply<IPurchaseRequisitionRequest
     templateId: 1,
     purchaseRequisitionRequestItems: [
       {
+        id: 10,
         componentCode: 1,
         componentName: "abc",
         vendorName: "abc",

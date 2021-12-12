@@ -19,6 +19,7 @@ const PurchaseRequisitionApprovalPage: React.FC = () => {
   const [sort, setSort] = useState<Sort>();
   const [dateRange, setDateRange] = useState<[Date, Date]>();
   const [purchaseRequisitionApprovalList, setPurchaseRequisitionApprovalList] = useState<IPurchaseRequisitionApproval[]>();
+  const [filteredPurchaseRequisitionApprovalList, setFilteredPurchaseRequisitionApprovalList] = useState<IPurchaseRequisitionApproval[]>();
   const [selectedPurchaseRequisitionApproval, setSelectedPurchaseRequisitionApproval] = useState<IPurchaseRequisitionApproval>();
 
   useEffect(() => {
@@ -26,11 +27,34 @@ const PurchaseRequisitionApprovalPage: React.FC = () => {
       const approvals = await getPurchaseRequisitionApproval();
       if (approvals && approvals.status === ApiResponseStatus.SUCCESS) {
         setPurchaseRequisitionApprovalList(approvals.data);
+        setFilteredPurchaseRequisitionApprovalList(approvals.data);
       }
     };
 
     getApprovals();
   }, []);
+
+  useEffect(() => {
+    if (purchaseRequisitionApprovalList) {
+      let filteredAndSortedList: IPurchaseRequisitionApproval[] = CLONING_LIB.deepClone(purchaseRequisitionApprovalList);
+      if (dateRange) {
+        filteredAndSortedList = filteredAndSortedList.filter((approval) => new Date(approval.createdDate) > dateRange[0] && new Date(approval.createdDate) < dateRange[1]);
+      }
+
+      if (sort) {
+        filteredAndSortedList = filteredAndSortedList.sort((approval1, approval2) => {
+          if (sort === Sort.ASC) {
+            return approval1.createdDate < approval2.createdDate ? -1 : 1;
+          } else if (sort === Sort.DES) {
+            return approval1.createdDate > approval2.createdDate ? -1 : 1;
+          }
+          return 0;
+        });
+      }
+
+      setFilteredPurchaseRequisitionApprovalList(filteredAndSortedList);
+    }
+  }, [sort, dateRange, purchaseRequisitionApprovalList]);
 
   const handleSortChange = (value: Sort | undefined) => {
     setSort(value);
@@ -51,10 +75,9 @@ const PurchaseRequisitionApprovalPage: React.FC = () => {
   };
 
   const issuePurchaseOrder = () => {
-    console.log("issue PO")
     if (selectedPurchaseRequisitionApproval) {
       const clonedSelectedPurchaseRequisitionApproval = CLONING_LIB.deepClone(selectedPurchaseRequisitionApproval);
-      const updatedApprovalItems = clonedSelectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems.map(item => {
+      const updatedApprovalItems = clonedSelectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems.map((item) => {
         if (item.status === PurchaseRequisitionApprovalStatus.CONFIRMED) {
           item.status = PurchaseRequisitionApprovalStatus.ISSUED;
         }
@@ -64,7 +87,7 @@ const PurchaseRequisitionApprovalPage: React.FC = () => {
       setSelectedPurchaseRequisitionApproval(clonedSelectedPurchaseRequisitionApproval);
       updatePurchaseRequisitionApproval(clonedSelectedPurchaseRequisitionApproval);
     }
-  }
+  };
 
   return (
     <div className="container-fluid h-100">
@@ -87,8 +110,8 @@ const PurchaseRequisitionApprovalPage: React.FC = () => {
       <div className="row">
         <div className="col-3">
           <PurchaseRequisitionSelector
-            purcahseRequisitionApprovalList={purchaseRequisitionApprovalList}
-            setPurcahseRequisitionApprovalList={setPurchaseRequisitionApprovalList}
+            purcahseRequisitionApprovalList={filteredPurchaseRequisitionApprovalList}
+            setPurcahseRequisitionApprovalList={setFilteredPurchaseRequisitionApprovalList}
             selectedPurcahseRequisitionApproval={selectedPurchaseRequisitionApproval}
             setSelectedPurcahseRequisitionApproval={setSelectedPurchaseRequisitionApproval}
           ></PurchaseRequisitionSelector>
@@ -107,7 +130,7 @@ const PurchaseRequisitionApprovalPage: React.FC = () => {
         </div>
         <div className="col-9 d-flex justify-content-end">
           <Button onClick={issuePurchaseOrder} type="primary" size="large">
-            <CheckSquareOutlined style={{ transform: "translateY(-3px)" }}/> Issue Confirmed PO
+            <CheckSquareOutlined style={{ transform: "translateY(-3px)" }} /> Issue Confirmed PO
           </Button>
         </div>
       </div>

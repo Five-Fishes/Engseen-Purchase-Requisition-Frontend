@@ -12,7 +12,7 @@ import { convertToLocalString } from "@utils/date-time/date-time-format";
 import { Sort } from "@constant/sort.enum";
 import { useEffect } from "react";
 import { getPurchaseRequisitionRequest } from "@api/purchase-requisition-request.api";
-import { ApiResponseStatus } from "@constant/api-status";
+import { ApiResponseStatus } from "@constant/api-status.enum";
 import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
 import moment from "moment";
 

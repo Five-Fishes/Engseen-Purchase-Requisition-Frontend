@@ -1,210 +1,107 @@
-import { PurchaseRequisitionApprovalStatus, PurchaseRequisitionApprovalStatusDisplayText } from "@constant/purchase-requisition-aaproval-status.enum";
-import { IPurchaseRequisitionApprovalItem } from "@dto/i-purchase-requisition-approval-item.dto";
 import { Button, Input, InputNumber, Table } from "antd";
-import { useState } from "react";
 
-const PurchaseRequititionApprovalTable: React.FC = () => {
-  const DUMMY_DATA: IPurchaseRequisitionApprovalItem[] = [
-    {
-      id: 0,
-      itemCost: 100,
-      status: PurchaseRequisitionApprovalStatus.TO_CONFIRM,
-      componentCode: 1,
-      componentName: "ABC",
-      vendorName: "Company AAA",
-      stockBalance: 99,
-      packagingSize: 100,
-      noOfPacks: 1000,
-      quantity: 100000,
-      deliveryDate: new Date(),
-      balance: 999999,
-    },
-    {
-      id: 1,
-      itemCost: 100,
-      status: PurchaseRequisitionApprovalStatus.CONFIRMED,
-      componentCode: 1,
-      componentName: "ABC",
-      vendorName: "Company AAA",
-      stockBalance: 99,
-      packagingSize: 100,
-      noOfPacks: 1000,
-      quantity: 100000,
-      deliveryDate: new Date(),
-      balance: 999999,
-    },
-    {
-      id: 2,
-      itemCost: 100,
-      status: PurchaseRequisitionApprovalStatus.ISSUED,
-      componentCode: 1,
-      componentName: "ABC",
-      vendorName: "Company AAA",
-      stockBalance: 99,
-      packagingSize: 100,
-      noOfPacks: 1000,
-      quantity: 100000,
-      deliveryDate: new Date(),
-      balance: 999999,
-    },
-    {
-      id: 3,
-      itemCost: 100,
-      status: PurchaseRequisitionApprovalStatus.CONFIRMED,
-      componentCode: 1,
-      componentName: "ABC",
-      vendorName: "Company AAA",
-      stockBalance: 99,
-      packagingSize: 100,
-      noOfPacks: 1000,
-      quantity: 100000,
-      deliveryDate: new Date(),
-      balance: 999999,
-    },
-    {
-      id: 4,
-      itemCost: 100,
-      status: PurchaseRequisitionApprovalStatus.CONFIRMED,
-      componentCode: 1,
-      componentName: "ABC",
-      vendorName: "Company AAA",
-      stockBalance: 99,
-      packagingSize: 100,
-      noOfPacks: 1000,
-      quantity: 100000,
-      deliveryDate: new Date(),
-      balance: 999999,
-    },
-    {
-      id: 5,
-      itemCost: 100,
-      status: PurchaseRequisitionApprovalStatus.CONFIRMED,
-      componentCode: 1,
-      componentName: "ABC",
-      vendorName: "Company AAA",
-      stockBalance: 99,
-      packagingSize: 100,
-      noOfPacks: 1000,
-      quantity: 100000,
-      deliveryDate: new Date(),
-      balance: 999999,
-    },
-    {
-      id: 6,
-      itemCost: 100,
-      status: PurchaseRequisitionApprovalStatus.CONFIRMED,
-      componentCode: 1,
-      componentName: "ABC",
-      vendorName: "Company AAA",
-      stockBalance: 99,
-      packagingSize: 100,
-      noOfPacks: 1000,
-      quantity: 100000,
-      deliveryDate: new Date(),
-      balance: 999999,
-    },
-    {
-      id: 7,
-      itemCost: 100,
-      status: PurchaseRequisitionApprovalStatus.CONFIRMED,
-      componentCode: 1,
-      componentName: "ABC",
-      vendorName: "Company AAA",
-      stockBalance: 99,
-      packagingSize: 100,
-      noOfPacks: 1000,
-      quantity: 100000,
-      deliveryDate: new Date(),
-      balance: 999999,
-    },
-    {
-      id: 8,
-      itemCost: 100,
-      status: PurchaseRequisitionApprovalStatus.CONFIRMED,
-      componentCode: 1,
-      componentName: "ABC",
-      vendorName: "Company AAA",
-      stockBalance: 99,
-      packagingSize: 100,
-      noOfPacks: 1000,
-      quantity: 100000,
-      deliveryDate: new Date(),
-      balance: 999999,
-    },
-    {
-      id: 9,
-      itemCost: 100,
-      status: PurchaseRequisitionApprovalStatus.CONFIRMED,
-      componentCode: 1,
-      componentName: "ABC",
-      vendorName: "Company AAA",
-      stockBalance: 99,
-      packagingSize: 100,
-      noOfPacks: 1000,
-      quantity: 100000,
-      deliveryDate: new Date(),
-      balance: 999999,
-    },
-    {
-      id: 10,
-      itemCost: 100,
-      status: PurchaseRequisitionApprovalStatus.CONFIRMED,
-      componentCode: 1,
-      componentName: "ABC",
-      vendorName: "Company AAA",
-      stockBalance: 99,
-      packagingSize: 100,
-      noOfPacks: 1000,
-      quantity: 100000,
-      deliveryDate: new Date(),
-      balance: 999999,
-    },
-    {
-      id: 11,
-      itemCost: 100,
-      status: PurchaseRequisitionApprovalStatus.CONFIRMED,
-      componentCode: 1,
-      componentName: "ABC",
-      vendorName: "Company AAA",
-      stockBalance: 99,
-      packagingSize: 100,
-      noOfPacks: 1000,
-      quantity: 100000,
-      deliveryDate: new Date(),
-      balance: 999999,
-    },
-    {
-      id: 12,
-      itemCost: 100,
-      status: PurchaseRequisitionApprovalStatus.CONFIRMED,
-      componentCode: 1,
-      componentName: "ABC",
-      vendorName: "Company AAA",
-      stockBalance: 99,
-      packagingSize: 100,
-      noOfPacks: 1000,
-      quantity: 100000,
-      deliveryDate: new Date(),
-      balance: 999999,
-    },
-  ];
+import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
+import { PurchaseRequisitionApprovalStatus, PurchaseRequisitionApprovalStatusDisplayText } from "@constant/purchase-requisition-approval-status.enum";
+import { IPurchaseRequisitionApprovalItem } from "@dto/i-purchase-requisition-approval-item.dto";
+import { IPurchaseRequisitionApproval } from "@dto/i-purchase-requisition-approval.dto";
+import { ChangeEvent } from "@constant/change-event.enum";
+interface IPurchaseRequititionApprovalTableProps {
+  selectedPurchaseRequisitionApproval?: IPurchaseRequisitionApproval;
+  updatePurchaseRequisitionApproval: (purchaseRequisitionApproval: IPurchaseRequisitionApproval) => void;
+}
 
-  const [dummyData, setDummyData] = useState(DUMMY_DATA);
+const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTableProps> = (props) => {
+  const updatePurchaseRequisitionApproval = props.updatePurchaseRequisitionApproval;
 
   const confirmAll: () => void = () => {
-    setDummyData(
-      dummyData.map((data) => {
-        data.status = PurchaseRequisitionApprovalStatus.CONFIRMED;
-        return data;
-      })
-    );
+    if (props.selectedPurchaseRequisitionApproval) {
+      const updatedSelectedPurchaseRequisitionApprovalItems = props.selectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems.map((item) => {
+        item.status = PurchaseRequisitionApprovalStatus.CONFIRMED;
+        return item;
+      });
+      const updatedSelectedPurchaseRequisitionApproval = CLONING_LIB.deepClone(props.selectedPurchaseRequisitionApproval);
+      updatedSelectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems = updatedSelectedPurchaseRequisitionApprovalItems;
+      updatePurchaseRequisitionApproval(updatedSelectedPurchaseRequisitionApproval);
+    }
   };
 
-  const dataChanged: (changeEvent: any, key: string, index: number) => void = (changeEvent, key, index) => {
-    console.log(changeEvent);
-    console.log(key);
-    console.log(index);
+  /**
+   * Update the SelectedApprovalItem's field based on the provided key
+   * @param changeEvent change event emitted by html element
+   * @param record the data associated with current row
+   * @param key the key of the modified field (to perform modifying logic)
+   * @param index the index of current row (against table)
+   */
+  const dataChanged: (changeEventType: ChangeEvent, changeEvent: any, record: IPurchaseRequisitionApprovalItem, key: string, index: number) => void = (
+    changeEventType,
+    changeEvent,
+    record,
+    key,
+    index
+  ) => {
+    console.group("dataChanged");
+    console.log("changeEventType >>: ", changeEventType);
+    console.log("changeEvent >>: ", changeEvent);
+    console.log("record >>: ", record);
+    console.log("key >>: ", key);
+    console.log("index >>: ", index);
+    console.groupEnd();
+
+    let valueToUpdate: any;
+    if (changeEventType === ChangeEvent.NUMBER_INPUT) {
+      valueToUpdate = changeEvent;
+    } else {
+      valueToUpdate = changeEvent.target.value;
+    }
+
+    if (props.selectedPurchaseRequisitionApproval) {
+      const updatedSelectedPurchaseRequisitionApproval = updateData(props.selectedPurchaseRequisitionApproval, valueToUpdate, record, key);
+      updatePurchaseRequisitionApproval(updatedSelectedPurchaseRequisitionApproval);
+    }
   };
+
+  const updateApprovalItemStatus: (item: IPurchaseRequisitionApprovalItem) => void = (item) => {
+    if (props.selectedPurchaseRequisitionApproval) {
+      let udpatedValue: PurchaseRequisitionApprovalStatus;
+      switch (item.status) {
+        case PurchaseRequisitionApprovalStatus.TO_CONFIRM:
+          udpatedValue = PurchaseRequisitionApprovalStatus.CONFIRMED;
+          break;
+        case PurchaseRequisitionApprovalStatus.CONFIRMED:
+          udpatedValue = PurchaseRequisitionApprovalStatus.ISSUED;
+          break;
+        case PurchaseRequisitionApprovalStatus.ISSUED:
+          udpatedValue = PurchaseRequisitionApprovalStatus.TO_CONFIRM;
+          break;
+        default:
+          udpatedValue = PurchaseRequisitionApprovalStatus.TO_CONFIRM;
+          break;
+      }
+      const updatedApproval = updateData(props.selectedPurchaseRequisitionApproval, udpatedValue, item, "status");
+      updatePurchaseRequisitionApproval(updatedApproval);
+    }
+  }
+
+  const updateData: (selectedPurchaseRequisitionApproval: IPurchaseRequisitionApproval, value: any, record: IPurchaseRequisitionApprovalItem, key: string) => IPurchaseRequisitionApproval = (
+    selectedPurchaseRequisitionApproval,
+    value,
+    record,
+    key
+  ) => {
+    const idToUpdate = record.id;
+    const updatedSelectedPurchaseRequisitionApprovalItems = selectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems.map((item) => {
+      if (item.id === idToUpdate) {
+        (item as any)[key] = value;
+      }
+      return item;
+    });
+    const updatedSelectedPurchaseRequisitionApproval = CLONING_LIB.deepClone(selectedPurchaseRequisitionApproval);
+    updatedSelectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems = updatedSelectedPurchaseRequisitionApprovalItems;
+    return updatedSelectedPurchaseRequisitionApproval;
+  };
+
+
+  const SELECTED_PURCHASE_REQUISITION_APPROVAL_ITEMS: IPurchaseRequisitionApprovalItem[] = props.selectedPurchaseRequisitionApproval?.purchaseRequisitionApprovalItems ?? [];
 
   return (
     <>
@@ -217,9 +114,8 @@ const PurchaseRequititionApprovalTable: React.FC = () => {
             <Input.Search placeholder="Search"></Input.Search>
           </div>
         </div>
-
         <Table
-          dataSource={dummyData}
+          dataSource={SELECTED_PURCHASE_REQUISITION_APPROVAL_ITEMS}
           rowKey="id"
           className="my-2"
           scroll={{ x: 2000, y: 500 }}
@@ -234,8 +130,8 @@ const PurchaseRequititionApprovalTable: React.FC = () => {
             }
             dataIndex="itemCost"
             key="itemCost"
-            render={(value, record, index: number) => {
-              return <InputNumber value={value} onChange={(e) => dataChanged(e, "itemCost", index)} />;
+            render={(value, record: IPurchaseRequisitionApprovalItem, index: number) => {
+              return <InputNumber value={value} onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, "itemCost", index)} />;
             }}
           />
           <Table.Column
@@ -243,8 +139,8 @@ const PurchaseRequititionApprovalTable: React.FC = () => {
             dataIndex="vendorName"
             key="vendorName"
             width="300px"
-            render={(value, record, index) => {
-              return <Input value={value} onChange={(e) => dataChanged(e, "vendorName", index)} />;
+            render={(value, record: IPurchaseRequisitionApprovalItem, index: number) => {
+              return <Input value={value} onChange={(e) => dataChanged(ChangeEvent.TEXT_INPUT, e, record, "vendorName", index)} />;
             }}
           />
           <Table.Column
@@ -256,8 +152,8 @@ const PurchaseRequititionApprovalTable: React.FC = () => {
             dataIndex="status"
             key="status"
             width="200px"
-            render={(status: PurchaseRequisitionApprovalStatus) => {
-              return <Button>{`${PurchaseRequisitionApprovalStatusDisplayText(status)}`}</Button>;
+            render={(value: PurchaseRequisitionApprovalStatus, record: IPurchaseRequisitionApprovalItem, index: number) => {
+              return <Button onClick={() => updateApprovalItemStatus(record)}>{`${PurchaseRequisitionApprovalStatusDisplayText(value)}`}</Button>;
             }}
           />
           <Table.Column
@@ -268,20 +164,27 @@ const PurchaseRequititionApprovalTable: React.FC = () => {
             }
             dataIndex="packagingSize"
             key="packagingSize"
-            render={(value, record, index: number) => {
-              return <InputNumber value={value} onChange={(e) => dataChanged(e, "packagingSize", index)} />;
+            render={(value, record: IPurchaseRequisitionApprovalItem, index: number) => {
+              return <InputNumber value={value} onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, "packagingSize", index)} />;
             }}
           />
           <Table.Column
             title="No. of Packs to Order"
             dataIndex="noOfPacks"
             key="noOfPacks"
-            render={(value, record, index: number) => {
-              return <InputNumber value={value} onChange={(e) => dataChanged(e, "noOfPacks", index)} />;
+            render={(value, record: IPurchaseRequisitionApprovalItem, index: number) => {
+              return <InputNumber value={value} onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, "noOfPacks", index)} />;
             }}
           />
           <Table.Column title="Total Quantity To Order (kgs)" dataIndex="quantity" key="quantity" />
-          <Table.Column title="Delivery Date" dataIndex="deliveryDate" key="deliveryDate" render={(deliveryDate) => <>{(deliveryDate as Date).toDateString()}</>} />
+          <Table.Column
+            title="Delivery Date"
+            dataIndex="deliveryDate"
+            key="deliveryDate"
+            render={(value, record: IPurchaseRequisitionApprovalItem, index: number) => {
+              return new Date(value).toDateString();
+            }}
+          />
           <Table.Column title="Balance" dataIndex="balance" key="balance" />
         </Table>
       </div>

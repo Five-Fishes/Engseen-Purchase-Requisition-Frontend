@@ -1,9 +1,10 @@
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
-import { PURCHASE_REQUISITION_REQUEST, PURCHASE_REQUISITION_REQUEST_REGEX, PURCHASE_REQUISITION_TEMPLATE, PURCHASE_ORDER, PURCHASE_ORDER_REGEX } from "@constant/api-endpoints";
+import { PURCHASE_REQUISITION_REQUEST, PURCHASE_REQUISITION_REQUEST_REGEX, PURCHASE_REQUISITION_TEMPLATE, PURCHASE_ORDER, PURCHASE_ORDER_REGEX, GET_COMPONENT_BY_SEARCH } from "@constant/api-endpoints";
 import { IPurchaseRequisitionRequest } from "@dto/i-purchase-requisition-request.dto";
 import { IPurchaseRequisitionTemplate } from "@dto/i-purchase-requisition-template.dto";
 import { IPurchaseApprovalOrder } from "@dto/i-purchase-approval-order.dto";
+import { IPurchaseRequisitionTemplateItem } from "@dto/i-purchase-requisition-template-item.dto";
 
 const mock = new MockAdapter(axios);
 
@@ -206,6 +207,45 @@ mock.onGet(PURCHASE_REQUISITION_REQUEST_REGEX).reply<IPurchaseRequisitionRequest
       },
     ],
     remarks: "abc",
+  },
+]);
+
+mock.onGet(GET_COMPONENT_BY_SEARCH).reply<IPurchaseRequisitionTemplateItem[]>(200, [
+  {
+    id: 1,
+    componentCode: "AAA",
+    componentName: "Component A",
+    vendorId: ":VEN-A",
+    vendorName: "Vendor A",
+    packagingSize: 100,
+    sequence: 1,
+  },
+  {
+    id: 2,
+    componentCode: "BBB",
+    componentName: "Component B",
+    vendorId: ":VEN-B",
+    vendorName: "Vendor B",
+    packagingSize: 100,
+    sequence: 2,
+  },
+  {
+    id: 3,
+    componentCode: "CCC",
+    componentName: "Component C",
+    vendorId: ":VEN-C",
+    vendorName: "Vendor C",
+    packagingSize: 100,
+    sequence: 3,
+  },
+  {
+    id: 4,
+    componentCode: "DDD",
+    componentName: "Component D",
+    vendorId: ":VEN-D",
+    vendorName: "Vendor D",
+    packagingSize: 100,
+    sequence: 4,
   },
 ]);
 

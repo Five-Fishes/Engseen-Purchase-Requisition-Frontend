@@ -1,10 +1,16 @@
-import { Button, Input, InputNumber, Table } from "antd";
+import { useEffect, useState } from "react";
+import { Button, Input, Table } from "antd";
 
 import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
-import { PurchaseRequisitionApprovalStatus, PurchaseRequisitionApprovalStatusDisplayText } from "@constant/purchase-requisition-approval-status.enum";
-import { IPurchaseRequisitionApprovalItem } from "@dto/i-purchase-requisition-approval-item.dto";
-import { IPurchaseRequisitionApproval } from "@dto/i-purchase-requisition-approval.dto";
+import { SearchEngine } from "@utils/search/native-search";
 import { ChangeEvent } from "@constant/change-event.enum";
+import { IPurchaseRequisitionApproval } from "@dto/i-purchase-requisition-approval.dto";
+import { IPurchaseRequisitionApprovalItem } from "@dto/i-purchase-requisition-approval-item.dto";
+import StatefulTextInput from "@module/shared/components/stateful-input/stateful-text-input/stateful-text-input";
+import StatefulNumberInput from "@module/shared/components/stateful-input/stateful-number-input/stateful-number-input";
+import { PurchaseRequisitionApprovalStatus, PurchaseRequisitionApprovalStatusDisplayText } from "@constant/purchase-requisition-approval-status.enum";
+
+import generateIndex from "./purchase-requisition-approval-table-indexer";
 interface IPurchaseRequititionApprovalTableProps {
   selectedPurchaseRequisitionApproval?: IPurchaseRequisitionApproval;
   updatePurchaseRequisitionApproval: (purchaseRequisitionApproval: IPurchaseRequisitionApproval) => void;
@@ -12,11 +18,22 @@ interface IPurchaseRequititionApprovalTableProps {
 
 const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTableProps> = (props) => {
   const updatePurchaseRequisitionApproval = props.updatePurchaseRequisitionApproval;
+  const [searchResult, setSearchResult] = useState<IPurchaseRequisitionApprovalItem[]>();
+  const searchEngine: SearchEngine<IPurchaseRequisitionApprovalItem> = new SearchEngine([], generateIndex);
+
+  useEffect(() => {
+    if (props.selectedPurchaseRequisitionApproval) {
+      const initSearchResult = CLONING_LIB.deepClone(props.selectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems);
+      setSearchResult(initSearchResult);
+    }
+  }, [props.selectedPurchaseRequisitionApproval]);
 
   const confirmAll: () => void = () => {
     if (props.selectedPurchaseRequisitionApproval) {
       const updatedSelectedPurchaseRequisitionApprovalItems = props.selectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems.map((item) => {
-        item.status = PurchaseRequisitionApprovalStatus.CONFIRMED;
+        if (item.status !== PurchaseRequisitionApprovalStatus.ISSUED) {
+          item.status = PurchaseRequisitionApprovalStatus.CONFIRMED;
+        }
         return item;
       });
       const updatedSelectedPurchaseRequisitionApproval = CLONING_LIB.deepClone(props.selectedPurchaseRequisitionApproval);
@@ -68,10 +85,10 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
           udpatedValue = PurchaseRequisitionApprovalStatus.CONFIRMED;
           break;
         case PurchaseRequisitionApprovalStatus.CONFIRMED:
-          udpatedValue = PurchaseRequisitionApprovalStatus.ISSUED;
+          udpatedValue = PurchaseRequisitionApprovalStatus.TO_CONFIRM;
           break;
         case PurchaseRequisitionApprovalStatus.ISSUED:
-          udpatedValue = PurchaseRequisitionApprovalStatus.TO_CONFIRM;
+          udpatedValue = PurchaseRequisitionApprovalStatus.ISSUED;
           break;
         default:
           udpatedValue = PurchaseRequisitionApprovalStatus.TO_CONFIRM;
@@ -80,7 +97,7 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
       const updatedApproval = updateData(props.selectedPurchaseRequisitionApproval, udpatedValue, item, "status");
       updatePurchaseRequisitionApproval(updatedApproval);
     }
-  }
+  };
 
   const updateData: (selectedPurchaseRequisitionApproval: IPurchaseRequisitionApproval, value: any, record: IPurchaseRequisitionApprovalItem, key: string) => IPurchaseRequisitionApproval = (
     selectedPurchaseRequisitionApproval,
@@ -100,18 +117,29 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
     return updatedSelectedPurchaseRequisitionApproval;
   };
 
+  const handleSearch = (value: string, event: React.ChangeEvent<HTMLInputElement> | React.MouseEvent<HTMLElement, MouseEvent> | React.KeyboardEvent<HTMLInputElement> | undefined) => {
+    console.group("Search [PurchaseRequititionApprovalTable]");
+    console.log("value >>: ", value);
+    console.log("event >>: ", event);
+    if (props.selectedPurchaseRequisitionApproval) {
+      console.log('selectedPurchaseRequisitionApproval >>: ', props.selectedPurchaseRequisitionApproval);
+      const searchOutput = searchEngine.updateEngine(props.selectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems).search(value);
+      setSearchResult(searchOutput);
+    }
+    console.groupEnd();
+  };
 
-  const SELECTED_PURCHASE_REQUISITION_APPROVAL_ITEMS: IPurchaseRequisitionApprovalItem[] = props.selectedPurchaseRequisitionApproval?.purchaseRequisitionApprovalItems ?? [];
+  const SELECTED_PURCHASE_REQUISITION_APPROVAL_ITEMS: IPurchaseRequisitionApprovalItem[] = searchResult || [];
 
   return (
     <>
       <div>
         <div className="d-flex justify-content-between">
           <div>
-            <strong>Submission Date</strong>: {new Date().toLocaleDateString()}
+            <strong>Submission Date</strong>: {props.selectedPurchaseRequisitionApproval && new Date(props.selectedPurchaseRequisitionApproval.createdDate).toDateString()}
           </div>
           <div>
-            <Input.Search placeholder="Search"></Input.Search>
+            <Input.Search placeholder="Search" onSearch={handleSearch}></Input.Search>
           </div>
         </div>
         <Table
@@ -131,7 +159,7 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
             dataIndex="itemCost"
             key="itemCost"
             render={(value, record: IPurchaseRequisitionApprovalItem, index: number) => {
-              return <InputNumber value={value} onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, "itemCost", index)} />;
+              return <StatefulNumberInput state={record.status} value={value} onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, "itemCost", index)} />;
             }}
           />
           <Table.Column
@@ -140,7 +168,7 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
             key="vendorName"
             width="300px"
             render={(value, record: IPurchaseRequisitionApprovalItem, index: number) => {
-              return <Input value={value} onChange={(e) => dataChanged(ChangeEvent.TEXT_INPUT, e, record, "vendorName", index)} />;
+              return <StatefulTextInput state={record.status} value={value} onChange={(e) => dataChanged(ChangeEvent.TEXT_INPUT, e, record, "vendorName", index)} />;
             }}
           />
           <Table.Column
@@ -165,7 +193,7 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
             dataIndex="packagingSize"
             key="packagingSize"
             render={(value, record: IPurchaseRequisitionApprovalItem, index: number) => {
-              return <InputNumber value={value} onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, "packagingSize", index)} />;
+              return <StatefulNumberInput state={record.status} value={value} onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, "packagingSize", index)} />;
             }}
           />
           <Table.Column
@@ -173,7 +201,7 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
             dataIndex="noOfPacks"
             key="noOfPacks"
             render={(value, record: IPurchaseRequisitionApprovalItem, index: number) => {
-              return <InputNumber value={value} onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, "noOfPacks", index)} />;
+              return <StatefulNumberInput state={record.status} value={value} onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, "noOfPacks", index)} />;
             }}
           />
           <Table.Column title="Total Quantity To Order (kgs)" dataIndex="quantity" key="quantity" />

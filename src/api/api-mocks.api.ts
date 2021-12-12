@@ -271,9 +271,9 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
         id: 1,
         sequence: 1,
         componentCode: "AAA",
-        componentName: "Component AAA",
+        componentName: "BEGACRON GOLDEN YELLOW 2RS 200%",
         vendorId: "VA",
-        vendorName: "Vendor A",
+        vendorName: "KONG LONG HUAT CHEMICAL SDN. BHD.",
         packagingSize: 100,
       },
       {

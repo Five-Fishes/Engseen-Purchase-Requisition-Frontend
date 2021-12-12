@@ -40,7 +40,7 @@ const PurchaseRequisitionSubmissionBrowser: React.FC<IPurchaseRequisitionSubmiss
             );
           })}
       </div>
-      <div className="fixed-bottom mx-4" style={{ width: "250px", height: "12.5%" }}>
+      <div className="fixed-bottom mx-4" style={{ width: "250px", height: "12.5%", zIndex: 100 }}>
         <Input.TextArea readOnly style={{ height: "100%" }}
           value={selectedRemarks == null ? "Remarks: " : "Remarks: \n" + selectedRemarks} />
       </div>

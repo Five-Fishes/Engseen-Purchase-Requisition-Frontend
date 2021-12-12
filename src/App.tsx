@@ -34,7 +34,7 @@ console.log(analytics);
 console.log(mock);
 
 const App: React.FC = () => {
-  const [sideBarOpened, setSideBarOpened] = useState(true);
+  const [sideBarOpened, setSideBarOpened] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   function triggerSideBar(): void {
     setSideBarOpened(!sideBarOpened);
@@ -52,7 +52,7 @@ const App: React.FC = () => {
     <>
       <Router>
         <Layout className="h-100">
-          <AppSider sideBarOpened={sideBarOpened} />
+          <AppSider sideBarOpened={sideBarOpened} toggleSidebar={triggerSideBar} />
           <Layout>
             <Header triggerSideBar={triggerSideBar} sideBarOpened={sideBarOpened} loggedIn={loggedIn} triggerLoggedIn={triggerLoggedIn} />
             <Content className="h-100 px-3 pt-3 page" style={{ backgroundColor: "#ffffff" }}>

@@ -1,8 +1,10 @@
+import { IColumnFilter } from "@dto/i-column-filter";
 import { IPurchaseRequisitionTemplate } from "@dto/i-purchase-requisition-template.dto";
 import Table from "antd/lib/table";
 
 interface IPurchaseRequisitionRequestConstructorProps {
   readonly currentTemplate?: IPurchaseRequisitionTemplate;
+  tableColumn: IColumnFilter[];
 }
 
 const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionRequestConstructorProps> = (props) => {
@@ -14,7 +16,7 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
         <Table
           className="my-2"
           dataSource={templateItems}
-          columns={PURCHASE_REQUISITION_REQUEST_TABLE_COLUMN}
+          columns={props.tableColumn.filter(item => !item.hidden)}
           rowKey="id"
           scroll={{ y: 370, x: 1400 }}
           pagination={{ pageSizeOptions: ["5", "10", "20", "50", "100"], hideOnSinglePage: true, defaultPageSize: 5 }}
@@ -30,47 +32,47 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
   }
 };
 
-const PURCHASE_REQUISITION_REQUEST_TABLE_COLUMN = [
-  {
-    title: "Row",
-    dataIndex: "sequence",
-    key: "sequence",
-  },
-  {
-    title: "Component ID",
-    dataIndex: "componentCode",
-    key: "componentCode",
-  },
-  {
-    title: "Component Name",
-    dataIndex: "componentName",
-    key: "componentName",
-  },
-  {
-    title: "Vendor",
-    dataIndex: "vendorName",
-    key: "vendorName",
-  },
-  {
-    title: "Balance Qty (kgs)",
-    dataIndex: "componentCode",
-    key: "componentCode",
-  },
-  {
-    title: "Packing Size (kgs per pack)",
-    dataIndex: "packagingSize",
-    key: "packagingSize",
-  },
-  {
-    title: "No. of Packs to Order",
-    dataIndex: "componentCode",
-    key: "componentCode",
-  },
-  {
-    title: "Total Quantity To Order (kgs)",
-    dataIndex: "componentCode",
-    key: "componentCode",
-  },
-];
+// const PURCHASE_REQUISITION_REQUEST_TABLE_COLUMN = [
+//   {
+//     title: "Row",
+//     dataIndex: "sequence",
+//     key: "sequence",
+//   },
+//   {
+//     title: "Component ID",
+//     dataIndex: "componentCode",
+//     key: "componentCode",
+//   },
+//   {
+//     title: "Component Name",
+//     dataIndex: "componentName",
+//     key: "componentName",
+//   },
+//   {
+//     title: "Vendor",
+//     dataIndex: "vendorName",
+//     key: "vendorName",
+//   },
+//   {
+//     title: "Balance Qty (kgs)",
+//     dataIndex: "componentCode",
+//     key: "componentCode",
+//   },
+//   {
+//     title: "Packing Size (kgs per pack)",
+//     dataIndex: "packagingSize",
+//     key: "packagingSize",
+//   },
+//   {
+//     title: "No. of Packs to Order",
+//     dataIndex: "componentCode",
+//     key: "componentCode",
+//   },
+//   {
+//     title: "Total Quantity To Order (kgs)",
+//     dataIndex: "componentCode",
+//     key: "componentCode",
+//   },
+// ];
 
 export default PurchaseRequisitionRequestConstructor;

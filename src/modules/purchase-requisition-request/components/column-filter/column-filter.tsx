@@ -1,10 +1,46 @@
+import { IColumnFilter } from "@dto/i-column-filter";
+import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
 import { Checkbox, Table, Button } from "antd";
+import { useState } from "react";
 
-interface IPurchaseRequisitionColumnFilterProps {};
+interface IPurchaseRequisitionColumnFilterProps {
+  purchaseRequisitionRequestFilterColumn: IColumnFilter[];
+  setPurchaseRequisitionRequestFilterColumn: (columns: IColumnFilter[]) => void;
+};
 
 const PurchaseRequisitionColumnFilter: React.FC<IPurchaseRequisitionColumnFilterProps> = (props) => {
   
-  const applyColumn = () => {};
+  const [columnFilter] = useState<Map<string, boolean>>(new Map());
+
+  const applyColumn = () => {
+    const filteredColumn = props.purchaseRequisitionRequestFilterColumn.map(option => {
+      const column = columnFilter.get(option.key);
+      option["hidden"] = column;
+      return option;
+    });
+    const deepCopy: IColumnFilter[] = CLONING_LIB.deepClone(filteredColumn);
+    props.setPurchaseRequisitionRequestFilterColumn(deepCopy);
+  };
+
+  const filterColumn = (column: IFilterColumnOption, checked: boolean) => {
+    columnFilter.set(column.key, !checked);
+  };
+  
+  const COLUMN = [
+    {
+      title: "Filter",
+      dataIndex: "filterable",
+      key: "filterable",
+      render: (filterable: boolean, record: IFilterColumnOption) => (
+        filterable && <Checkbox onChange={e => filterColumn(record, e.target.checked)} defaultChecked={true} />
+      ),
+    },
+    {
+      title: "Column Name",
+      dataIndex: "name",
+      key: "name",
+    },
+  ];
 
   return (
     <>
@@ -20,26 +56,6 @@ const PurchaseRequisitionColumnFilter: React.FC<IPurchaseRequisitionColumnFilter
     </>
   )
 };
-
-const filterColumn = (column: IFilterColumnOption) => {
-  console.log(column);
-};
-
-const COLUMN = [
-  {
-    title: "Filter",
-    dataIndex: "filterable",
-    key: "filterable",
-    render: (filterable: boolean, record: IFilterColumnOption) => (
-      filterable && <Checkbox onChange={e => filterColumn(record)} defaultChecked={true} />
-    ),
-  },
-  {
-    title: "Column Name",
-    dataIndex: "name",
-    key: "name",
-  },
-];
 
 interface IFilterColumnOption {
   name: string;

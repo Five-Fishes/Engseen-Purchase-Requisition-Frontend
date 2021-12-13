@@ -12,7 +12,7 @@ import { convertToLocalString } from "@utils/date-time/date-time-format";
 import { Sort } from "@constant/sort.enum";
 import { useEffect } from "react";
 import { getPurchaseRequisitionRequest } from "@api/purchase-requisition-request.api";
-import { ApiResponseStatus } from "@constant/api-status";
+import { ApiResponseStatus } from "@constant/api-status.enum";
 import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
 import moment from "moment";
 
@@ -67,8 +67,10 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
   };
   
   const filterByDateRange = (startDate?: string, endDate?: string) => {
-    setStartDateFilterCriteria(startDate === undefined ? startDate : new Date(startDate));
-    setEndDateFilterCriteria(endDate === undefined ? endDate : new Date(endDate));
+    const startDateValue = startDate === undefined ? startDate : new Date(new Date(startDate).setHours(0, 0, 0, 0));
+    setStartDateFilterCriteria(startDateValue);
+    const endDateValue = endDate === undefined ? endDate : new Date(new Date(endDate).setHours(23, 59, 59, 59))
+    setEndDateFilterCriteria(endDateValue);
     filterSubmissionRequest();
   };
 
@@ -142,7 +144,7 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
             </Button>
           </div>
           <div className="mx-2 d-inline-flex border-top mt-4 w-100">
-            <div className="my-3 mb-2" style={{ alignContent: "start", maxHeight: "500px" }}>
+            <div className="my-1 mb-2" style={{ alignContent: "start"}}>
               <PurchaseRequisitionSubmissionBrowser
                 setSelectedSubmissionRecord={setSelectedSubmissionRequest} 
                 purchaseRequisitionSubmissios={filteredPurchaseRequisitionSubmissios ?? []} 

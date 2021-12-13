@@ -1,6 +1,7 @@
 import "./header.less";
 import { Button } from "antd";
-import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
+import { MenuOutlined } from "@ant-design/icons";
+import React from "react";
 
 interface IHeaderProps {
   readonly sideBarOpened: boolean;
@@ -14,13 +15,16 @@ const Header: React.FC<IHeaderProps> = (props) => {
     <>
       <div className="d-flex header shadow justify-content-between">
         <div className="d-flex align-items-center h-100">
-          <Button
-            icon={props.sideBarOpened ? <MenuFoldOutlined style={{ color: "#FFFFFF" }} /> : <MenuUnfoldOutlined style={{ color: "#FFFFFF" }} />}
-            block
-            type="link"
-            size="large"
-            onClick={props.triggerSideBar}
-          ></Button>
+          {props.loggedIn && 
+            <Button
+              icon={<MenuOutlined style={{ color: "#FFFFFF", fontSize: "22px" }} />}
+              block
+              type="link"
+              size="large"
+              className="mx-3"
+              onClick={props.triggerSideBar}
+            ></Button>
+          }
         </div>
         <div className="d-flex align-items-center h-100">
           <Button className="mx-3" type="default" onClick={props.triggerLoggedIn}>

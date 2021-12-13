@@ -120,7 +120,7 @@ const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
           dataSource={submissionItems}
           columns={PURCHASE_ORDER_TABLE_COLUMN}
           rowKey="id"
-          scroll={{ y: 370 }}
+          scroll={{ y: 370, x: 700 }}
           pagination={{ pageSizeOptions: ["5", "10", "20", "50", "100"], hideOnSinglePage: true, defaultPageSize: 5 }}
           summary={() => (
             <Table.Summary fixed>

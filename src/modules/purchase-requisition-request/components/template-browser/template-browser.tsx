@@ -1,6 +1,6 @@
 import "./template-browser.less";
 import { getPurchaseRequisitionTemplate } from "@api/purchase-requisition-template.api";
-import { ApiResponseStatus } from "@constant/api-status";
+import { ApiResponseStatus } from "@constant/api-status.enum";
 import { IPurchaseRequisitionTemplate } from "@dto/i-purchase-requisition-template.dto";
 import { useEffect, useState } from "react";
 import { Button } from "antd";

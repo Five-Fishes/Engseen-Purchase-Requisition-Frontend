@@ -11,9 +11,9 @@ import { SearchEngine } from "@utils/search/native-search";
 import { IPurchaseRequisitionTemplateItem } from "@dto/i-purchase-requisition-template-item.dto";
 import { EditOutlined } from "@ant-design/icons";
 import { popNotification } from "@module/shared/components/notification";
-import { NotificationType } from "@constant/notification-enum";
-import { ApiResponseStatus } from "@constant/api-status";
+import { ApiResponseStatus } from "@constant/api-status.enum";
 import { getItemBySearch } from "@api/purchase-requisition-template.api";
+import { NotificationType } from "@constant/notification.enum";
 
 const PurchaseRequisitionTemplateList: React.FC = () => {
   const [selectedPurchaseRequisitionTemplate, setSelectedPurchaseRequisitionTemplate] = useState<IPurchaseRequisitionTemplate>({} as IPurchaseRequisitionTemplate);

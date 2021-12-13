@@ -9,12 +9,12 @@ import { IPurchaseOrder } from "@dto/i-purchase-order.dto";
 import { convertToLocalString } from "@utils/date-time/date-time-format";
 import { Sort } from "@constant/sort.enum";
 import { getPurchaseOrders }  from "@api/purchase-order.api";
-import { ApiResponseStatus } from "@constant/api-status";
+import { ApiResponseStatus } from "@constant/api-status.enum";
 import { genereateIndex } from "../components/purchase-order-indexer";
 import PurchaseOrderBrowser from "../components/purchase-order-record-browser";
 import PurchaseOrderTable from "../components/purchase-order-table";
 import { popNotification } from "@module/shared/components/notification";
-import { NotificationType } from "@constant/notification-enum";
+import { NotificationType } from "@constant/notification.enum";
 import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
 // import { PDFDownloadLink } from "@react-pdf/renderer";
 // import PurchaseOrderTemplate from "@module/shared/components/PurchaseOrderTemplate/PurchaseOrderTemplate";
@@ -83,8 +83,10 @@ const PurchaseOrderPage: React.FC = () => {
   };
 
   const filterByDateRange = (startDate?: string, endDate?: string) => {
-    setStartDateFilterCriteria(startDate === undefined ? startDate : new Date(startDate));
-    setEndDateFilterCriteria(endDate === undefined ? endDate : new Date(endDate));
+    const startDateValue= startDate === undefined ? startDate : new Date(new Date(startDate).setHours(0, 0, 0, 0));
+    setStartDateFilterCriteria(startDateValue);
+    const endDateValue = endDate === undefined ? endDate : new Date(new Date(endDate).setHours(23, 59, 59, 59))
+    setEndDateFilterCriteria(endDateValue);
     filterPurchaseApprovalOrders();
   };
 
@@ -184,7 +186,7 @@ const PurchaseOrderPage: React.FC = () => {
             </div>
             <div className="my-2 mx-4 position-relative w-100">
               <span>
-                Submission Date: <b color="primary">{convertToLocalString(selectedPurchaseApprovalOrder?.createdDate)}</b>
+                Submission Date: <b color="primary">{selectedPurchaseApprovalOrder ? convertToLocalString(selectedPurchaseApprovalOrder.createdDate) : ""}</b>
               </span>
               <div className="d-flex flex-column justify-content-center">
                 <Input.Search

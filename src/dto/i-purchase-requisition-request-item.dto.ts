@@ -1,4 +1,5 @@
 export interface IPurchaseRequisitionRequestItem {
+  id?: number;
   componentCode: number;
   componentName: string;
   vendorName: string;

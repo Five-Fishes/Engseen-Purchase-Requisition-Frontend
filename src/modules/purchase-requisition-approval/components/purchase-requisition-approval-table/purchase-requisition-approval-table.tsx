@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import { Button, Input, Table } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
 
 import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
 import { getSearchText, SearchEngine } from "@utils/search/native-search";
 import { ChangeEvent } from "@constant/change-event.enum";
 import { TABLE_PAGINATION_CONFIG } from "@constant/pagination-config";
+import { PurchaseRequisitionApprovalStatus, PurchaseRequisitionApprovalStatusDisplayText } from "@constant/purchase-requisition-approval-status.enum";
 import { IPurchaseRequisitionApproval } from "@dto/i-purchase-requisition-approval.dto";
 import { IPurchaseRequisitionApprovalItem } from "@dto/i-purchase-requisition-approval-item.dto";
 import StatefulTextInput from "@module/shared/components/stateful-input/stateful-text-input/stateful-text-input";
 import StatefulNumberInput from "@module/shared/components/stateful-input/stateful-number-input/stateful-number-input";
-import { PurchaseRequisitionApprovalStatus, PurchaseRequisitionApprovalStatusDisplayText } from "@constant/purchase-requisition-approval-status.enum";
 
 import generateIndex from "./purchase-requisition-approval-table-indexer";
 interface IPurchaseRequititionApprovalTableProps {
@@ -216,6 +217,9 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
             }}
           />
           <Table.Column title="Balance" dataIndex="balance" key="balance" />
+          <Table.Column title="Action" render={(value, record: IPurchaseRequisitionApprovalItem, index: number) => {
+              return <Button icon={<DeleteOutlined/>}/>
+            }}/>
         </Table>
       </div>
     </>

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Button, Input, Table } from "antd";
 
 import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
-import { SearchEngine } from "@utils/search/native-search";
+import { getSearchText, SearchEngine } from "@utils/search/native-search";
 import { ChangeEvent } from "@constant/change-event.enum";
 import { TABLE_PAGINATION_CONFIG } from "@constant/pagination-config";
 import { IPurchaseRequisitionApproval } from "@dto/i-purchase-requisition-approval.dto";
@@ -124,7 +124,8 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
     console.log("event >>: ", event);
     if (props.selectedPurchaseRequisitionApproval) {
       console.log('selectedPurchaseRequisitionApproval >>: ', props.selectedPurchaseRequisitionApproval);
-      const searchOutput = searchEngine.updateEngine(props.selectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems).search(value.replace(/\s+/g, ''));
+      const sanitisedSearchText: string = getSearchText(value)
+      const searchOutput = searchEngine.updateEngine(props.selectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems).search(sanitisedSearchText);
       setSearchResult(searchOutput);
     }
     console.groupEnd();

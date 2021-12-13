@@ -3,7 +3,7 @@ import { Input, Button, Select, DatePicker } from "antd";
 import Title from "antd/lib/typography/Title";
 import { ReloadOutlined } from "@ant-design/icons";
 import moment from "moment";
-import { SearchEngine } from "@utils/search/native-search";
+import { getSearchText, SearchEngine } from "@utils/search/native-search";
 import { IPurchaseApprovalOrder } from "@dto/i-purchase-approval-order.dto";
 import { IPurchaseOrder } from "@dto/i-purchase-order.dto";
 import { convertToLocalString } from "@utils/date-time/date-time-format";
@@ -77,7 +77,8 @@ const PurchaseOrderPage: React.FC = () => {
 
   const search = () => {
     if (selectedPurchaseApprovalOrder) {
-      const filteredData = searchEngine.updateEngine(selectedPurchaseApprovalOrder.purchaseOrders ?? []).search(searchText.replace(/\s+/g, ''));
+      const sanitisedSearchText: string = getSearchText(searchText);
+      const filteredData = searchEngine.updateEngine(selectedPurchaseApprovalOrder.purchaseOrders ?? []).search(sanitisedSearchText);
       setFilteredPurchaseOrders(filteredData);
     }
   };

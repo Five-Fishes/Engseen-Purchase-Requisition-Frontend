@@ -4,6 +4,7 @@ import { Button, Input, Table } from "antd";
 import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
 import { SearchEngine } from "@utils/search/native-search";
 import { ChangeEvent } from "@constant/change-event.enum";
+import { TABLE_PAGINATION_CONFIG } from "@constant/pagination-config";
 import { IPurchaseRequisitionApproval } from "@dto/i-purchase-requisition-approval.dto";
 import { IPurchaseRequisitionApprovalItem } from "@dto/i-purchase-requisition-approval-item.dto";
 import StatefulTextInput from "@module/shared/components/stateful-input/stateful-text-input/stateful-text-input";
@@ -147,7 +148,7 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
           rowKey="id"
           className="my-2"
           scroll={{ x: 2000, y: 500 }}
-          pagination={{ pageSizeOptions: ["5", "10", "20", "50", "100"], hideOnSinglePage: true, defaultPageSize: 5 }}
+          pagination={TABLE_PAGINATION_CONFIG}
         >
           <Table.Column title="Component Name" dataIndex="componentName" key="componentName" />
           <Table.Column

@@ -1,8 +1,10 @@
-import { IPurchaseRequisitionTemplate } from "@dto/i-purchase-requisition-template.dto";
-import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
+import React, { ChangeEvent, useState } from "react";
 import { Input } from "antd";
 import Table from "antd/lib/table";
-import React, { ChangeEvent, useState } from "react";
+
+import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
+import { TABLE_PAGINATION_CONFIG } from "@constant/pagination-config";
+import { IPurchaseRequisitionTemplate } from "@dto/i-purchase-requisition-template.dto";
 
 interface IPurchaseRequisitionRequestConstructorProps {
   readonly currentTemplate?: IPurchaseRequisitionTemplate;
@@ -26,7 +28,7 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
           columns={PURCHASE_REQUISITION_REQUEST_TABLE_COLUMN}
           rowKey="id"
           scroll={{ y: 370, x: 1400 }}
-          pagination={{ pageSizeOptions: ["5", "10", "20", "50", "100"], hideOnSinglePage: true, defaultPageSize: 5 }}
+          pagination={TABLE_PAGINATION_CONFIG}
         ></Table>
       </>
     );

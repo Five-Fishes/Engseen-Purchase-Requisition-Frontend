@@ -1,4 +1,4 @@
-import { NotificationType, NotificationPlacement } from "@constant/notification-enum";
+import { NotificationType, NotificationPlacement } from "@constant/notification.enum";
 import { notification } from "antd";
 
 export const popNotification = (message: string, type: NotificationType = NotificationType.info, placement: NotificationPlacement = NotificationPlacement.bottomRight, description?: string) => {

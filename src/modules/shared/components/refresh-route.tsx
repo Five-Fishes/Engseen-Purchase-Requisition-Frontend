@@ -1,6 +1,6 @@
 import { Redirect, useParams } from "react-router";
 
-
+/** @deprecated Do not use this component, it **was** meant to support CSR when hitting WhiteLabelError */
 const PageRefresh: React.FC = () => {
 
     const destination = `/${useParams<IPageRefreshRouteParams>().destination}`;

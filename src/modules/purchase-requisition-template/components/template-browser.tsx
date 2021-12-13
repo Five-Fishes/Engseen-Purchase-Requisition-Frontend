@@ -1,12 +1,12 @@
 import { getPurchaseRequisitionTemplate } from "@api/purchase-requisition-template.api";
-import { ApiResponseStatus } from "@constant/api-status";
+import { ApiResponseStatus } from "@constant/api-status.enum";
 import { IPurchaseRequisitionTemplate } from "@dto/i-purchase-requisition-template.dto";
 import { useEffect, useState } from "react";
 import { Button, Input, Row, Col, Modal } from "antd";
 import { DeleteOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
 import { popNotification } from "@module/shared/components/notification";
-import { NotificationType } from "@constant/notification-enum";
+import { NotificationType } from "@constant/notification.enum";
 
 interface IPurchaseRequisitionTemplateProps {
   setSelectedTemplate: (template: IPurchaseRequisitionTemplate) => void;

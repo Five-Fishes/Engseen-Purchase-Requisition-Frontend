@@ -1,5 +1,5 @@
 import { Route, Switch, SwitchProps } from "react-router";
-import NoMatch from "./NoMatch";
+import NoMatch from "./no-match";
 
 interface ISwitchWithFallbackProps extends SwitchProps {};
 

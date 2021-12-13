@@ -142,7 +142,7 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
             <strong>Submission Date</strong>: {props.selectedPurchaseRequisitionApproval && new Date(props.selectedPurchaseRequisitionApproval.createdDate).toDateString()}
           </div>
           <div>
-            <Input.Search placeholder="Search" onSearch={handleSearch}></Input.Search>
+            <Input.Search placeholder="Search" onSearch={handleSearch} allowClear></Input.Search>
           </div>
         </div>
         <Table

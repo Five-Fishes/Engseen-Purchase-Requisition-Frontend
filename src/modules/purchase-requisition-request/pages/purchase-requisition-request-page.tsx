@@ -28,6 +28,7 @@ const PurchaseRequisitionRequestPage: React.FC = () => {
               onChange={(e) => {
                 setSearchText(e.target.value);
               }}
+              allowClear
             ></Input.Search>
           </div>
         </div>

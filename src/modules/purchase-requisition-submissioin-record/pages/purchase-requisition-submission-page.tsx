@@ -61,7 +61,7 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
 
   const search = () => {
     if (selectedSubmissionRequest) {
-      const filteredData = searchEngine.updateEngine(selectedSubmissionRequest.purchaseRequisitionRequestItems).search(searchText);
+      const filteredData = searchEngine.updateEngine(selectedSubmissionRequest.purchaseRequisitionRequestItems).search(searchText.replace(/\s+/g, ''));
       setFilteredSubmissionItems(filteredData);
     }
   };

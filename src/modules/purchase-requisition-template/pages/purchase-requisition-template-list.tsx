@@ -33,7 +33,7 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
   const [insertItemsForm] = Form.useForm();
 
   const search = () => {
-    const filteredData = searchEngine.updateEngine(selectedPurchaseRequisitionTemplate.templateItems).search(searchText);
+    const filteredData = searchEngine.updateEngine(selectedPurchaseRequisitionTemplate.templateItems).search(searchText.replace(/\s+/g, ''));
     setFilteredTemplateItems(filteredData);
   };
 

@@ -12,7 +12,7 @@ import { convertToLocalString } from "@utils/date-time/date-time-format";
 import { Sort } from "@constant/sort.enum";
 import { useEffect } from "react";
 import { getPurchaseRequisitionRequest } from "@api/purchase-requisition-request.api";
-import { ApiResponseStatus } from "@constant/api-status";
+import { ApiResponseStatus } from "@constant/api-status.enum";
 import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
 import moment from "moment";
 
@@ -61,7 +61,7 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
 
   const search = () => {
     if (selectedSubmissionRequest) {
-      const filteredData = searchEngine.updateEngine(selectedSubmissionRequest.purchaseRequisitionRequestItems).search(searchText);
+      const filteredData = searchEngine.updateEngine(selectedSubmissionRequest.purchaseRequisitionRequestItems).search(searchText.replace(/\s+/g, ''));
       setFilteredSubmissionItems(filteredData);
     }
   };

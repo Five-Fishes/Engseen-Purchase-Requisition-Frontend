@@ -30,6 +30,7 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
 
   const [templateInsertItemSelect, setTemplateInsertItemSelect] = useState<boolean>(false);
   const [insertItemOptions, setInsertItemOptions] = useState<IPurchaseRequisitionTemplateItem[]>();
+  const [insertItemsForm] = Form.useForm();
 
   const search = () => {
     const filteredData = searchEngine.updateEngine(selectedPurchaseRequisitionTemplate.templateItems).search(searchText);
@@ -110,14 +111,14 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
       ...values.selectedItem,
       sequence: values.itemSequence,
     };
-    const insertIndex = values.itemSequence === 0 || values.itemSequence > selectedPurchaseRequisitionTemplate.templateItems.length ? selectedPurchaseRequisitionTemplate.templateItems.length : values.itemSequence;
+    const insertIndex: number = values.itemSequence === 0 || values.itemSequence > selectedPurchaseRequisitionTemplate.templateItems.length ? selectedPurchaseRequisitionTemplate.templateItems.length : values.itemSequence;
     selectedPurchaseRequisitionTemplate.templateItems.splice(insertIndex, 0, itemToInsert);
-    
     const sortedResult = updateTemplateItemsSequence(selectedPurchaseRequisitionTemplate.templateItems);
     selectedPurchaseRequisitionTemplate.templateItems = sortedResult;
     const deepCopy: IPurchaseRequisitionTemplate = CLONING_LIB.deepClone(selectedPurchaseRequisitionTemplate);
     setSelectedPurchaseRequisitionTemplate(deepCopy);
     setTemplateInsertItemSelect(false);
+    insertItemsForm.resetFields();
     popNotification("Success Add Component", NotificationType.success);
   };
 
@@ -278,7 +279,7 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
       visible={templateInsertItemSelect}
       footer={null}
       onCancel={closeTemplateInsertItemSelectModal}>
-      <Form onFinish={insertItemToTemplate}>
+      <Form onFinish={insertItemToTemplate} form={insertItemsForm}>
         <Form.Item label='Item Row' name="itemSequence">
           <InputNumber placeholder='Row to insert' />
         </Form.Item>

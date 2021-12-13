@@ -77,7 +77,7 @@ const PurchaseOrderPage: React.FC = () => {
 
   const search = () => {
     if (selectedPurchaseApprovalOrder) {
-      const filteredData = searchEngine.updateEngine(selectedPurchaseApprovalOrder.purchaseOrders ?? []).search(searchText);
+      const filteredData = searchEngine.updateEngine(selectedPurchaseApprovalOrder.purchaseOrders ?? []).search(searchText.replace(/\s+/g, ''));
       setFilteredPurchaseOrders(filteredData);
     }
   };

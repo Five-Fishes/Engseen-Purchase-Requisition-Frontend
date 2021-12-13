@@ -123,7 +123,7 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
     console.log("event >>: ", event);
     if (props.selectedPurchaseRequisitionApproval) {
       console.log('selectedPurchaseRequisitionApproval >>: ', props.selectedPurchaseRequisitionApproval);
-      const searchOutput = searchEngine.updateEngine(props.selectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems).search(value);
+      const searchOutput = searchEngine.updateEngine(props.selectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems).search(value.replace(/\s+/g, ''));
       setSearchResult(searchOutput);
     }
     console.groupEnd();

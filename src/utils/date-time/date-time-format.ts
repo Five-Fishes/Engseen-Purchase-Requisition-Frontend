@@ -13,7 +13,7 @@ export const convertToLocalString: (dateTime?: any, dateOnly?: boolean) => strin
   } catch (error) {
     const e = error as Error;
 
-    console.group(convertToLocalString.name);
+    console.group("convertToLocalString");
     console.error("Error message", e.message);
     console.error("Input value: " + dateTime);
     console.error("Stack Trace", e.stack);

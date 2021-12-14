@@ -2,5 +2,5 @@ import { IPurchaseRequisitionApprovalItem } from "@dto/i-purchase-requisition-ap
 
 export default function generateIndex(purchaseRequisitionApprovalItem: IPurchaseRequisitionApprovalItem): string {
     const searchIndex = JSON.stringify(purchaseRequisitionApprovalItem);
-    return searchIndex.toLowerCase();
+    return searchIndex.replace(/\s+/g, '').toLowerCase();
 }

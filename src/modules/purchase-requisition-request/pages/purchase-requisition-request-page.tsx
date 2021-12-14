@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Input, Divider, Button } from "antd";
 import Title from "antd/lib/typography/Title";
+
 import { IPurchaseRequisitionTemplate } from "@dto/i-purchase-requisition-template.dto";
+
 import PurchaseRequisitionTemplateBrowser from "../components/template-browser/template-browser";
 import PurchaseRequisitionRequestConstructor from "../components/request-constructor/request-constructor";
 import PurchaseRequisitionColumnFilter from "../components/column-filter/column-filter";
@@ -10,6 +12,7 @@ import { IColumnFilter } from "@dto/i-column-filter";
 const PurchaseRequisitionRequestPage: React.FC = () => {
   const [selectedTemplate, setSelectedTemplate] = useState<IPurchaseRequisitionTemplate>();
   const [searchText, setSearchText] = useState<string>();
+  const [columnFilter, setColumnFilter] = useState<Map<string, boolean>>(new Map());
   const [purchaseRequisitionRequestFilterColumn, setPurchaseRequisitionRequestFilterColumn] = useState<IColumnFilter[]>([
     {
       title: "Row",
@@ -74,13 +77,9 @@ const PurchaseRequisitionRequestPage: React.FC = () => {
               ></Input.Search>
             </div>
           </div>
-
           <div className="row">
             <div className="col">
-              <PurchaseRequisitionRequestConstructor
-                currentTemplate={selectedTemplate}
-                tableColumn={purchaseRequisitionRequestFilterColumn ?? []}
-              />
+              <PurchaseRequisitionRequestConstructor currentTemplate={selectedTemplate} columnFilter={columnFilter}/>
             </div>
           </div>
 
@@ -103,8 +102,7 @@ const PurchaseRequisitionRequestPage: React.FC = () => {
 
         <div className="mx-2">
           <PurchaseRequisitionColumnFilter
-            purchaseRequisitionRequestFilterColumn={purchaseRequisitionRequestFilterColumn ?? []}
-            setPurchaseRequisitionRequestFilterColumn={setPurchaseRequisitionRequestFilterColumn}
+            setColumnFilter={setColumnFilter}
           />
         </div>
       </div>

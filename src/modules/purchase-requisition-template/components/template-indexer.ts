@@ -1,6 +1,6 @@
 import { IPurchaseRequisitionTemplateItem } from "@dto/i-purchase-requisition-template-item.dto";
 
-export const genereateIndex = (purchaseRequisitionTemplateItem: IPurchaseRequisitionTemplateItem) => {
+export const generateIndex = (purchaseRequisitionTemplateItem: IPurchaseRequisitionTemplateItem) => {
   const searchIndex = (purchaseRequisitionTemplateItem.componentCode.trim() || '')
     + (purchaseRequisitionTemplateItem.componentName.trim() || '')
     + (purchaseRequisitionTemplateItem.vendorName.trim() || '');

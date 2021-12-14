@@ -4,8 +4,7 @@ import { Checkbox, Table, Button } from "antd";
 import { useState } from "react";
 
 interface IPurchaseRequisitionColumnFilterProps {
-  purchaseRequisitionRequestFilterColumn: IColumnFilter[];
-  setPurchaseRequisitionRequestFilterColumn: (columns: IColumnFilter[]) => void;
+  setColumnFilter: (columnFilters: Map<string, boolean>) => void;
 };
 
 const PurchaseRequisitionColumnFilter: React.FC<IPurchaseRequisitionColumnFilterProps> = (props) => {
@@ -13,13 +12,9 @@ const PurchaseRequisitionColumnFilter: React.FC<IPurchaseRequisitionColumnFilter
   const [columnFilter] = useState<Map<string, boolean>>(new Map());
 
   const applyColumn = () => {
-    const filteredColumn = props.purchaseRequisitionRequestFilterColumn.map(option => {
-      const column = columnFilter.get(option.key);
-      option["hidden"] = column;
-      return option;
-    });
-    const deepCopy: IColumnFilter[] = CLONING_LIB.deepClone(filteredColumn);
-    props.setPurchaseRequisitionRequestFilterColumn(deepCopy);
+    const deepCopy: Map<string, boolean> = CLONING_LIB.deepClone(columnFilter);
+    props.setColumnFilter(deepCopy);
+    console.log(columnFilter);
   };
 
   const filterColumn = (column: IFilterColumnOption, checked: boolean) => {

@@ -122,51 +122,52 @@ const PurchaseRequisitionApprovalPage: React.FC = () => {
   };
 
   return (
-    <div className="container-fluid h-100">
-      <div className="row">
-        <Title level={4}>Purchase Approval</Title>
+    <>
+      <div className="container-fluid h-100 mb-remark-fixed" style={{ overflowY: "scroll" }}>
+        <div className="row">
+          <Title level={4}>Purchase Approval</Title>
+        </div>
+
+        <div className="row">
+          <div className="col-6">
+            <div className="my-2">Advance Sorting / Filtering</div>
+            <FilterAndSort sortChangedHandler={handleSortChange} dateRangeChangedHandler={handleDateRangeChange} dateRange={dateRange} sort={sort}></FilterAndSort>
+          </div>
+          <div className="col-6">
+            <ComponentSelector></ComponentSelector>
+          </div>
+        </div>
+
+        <Divider />
+
+        <div className="row">
+          <div className="col-3">
+            <PurchaseRequisitionSelector
+              purcahseRequisitionApprovalList={filteredPurchaseRequisitionApprovalList}
+              setPurcahseRequisitionApprovalList={setFilteredPurchaseRequisitionApprovalList}
+              selectedPurcahseRequisitionApproval={selectedPurchaseRequisitionApproval}
+              setSelectedPurcahseRequisitionApproval={setSelectedPurchaseRequisitionApproval}
+            ></PurchaseRequisitionSelector>
+          </div>
+          <div className="col-9">
+            <PurchaseRequititionApprovalTable
+              selectedPurchaseRequisitionApproval={selectedPurchaseRequisitionApproval}
+              updatePurchaseRequisitionApproval={updatePurchaseRequisitionApproval}
+            ></PurchaseRequititionApprovalTable>
+          </div>
+        </div>
       </div>
-
-      <div className="row">
-        <div className="col-6">
-          <div className="my-2">Advance Sorting / Filtering</div>
-          <FilterAndSort sortChangedHandler={handleSortChange} dateRangeChangedHandler={handleDateRangeChange} dateRange={dateRange} sort={sort}></FilterAndSort>
+      <div className="row fixed-bottom mx-3 pb-1 remark-wrapper">
+        <div className="col-3 pt-3 remarks-box">
+          <Input.TextArea className="h-100" placeholder="Remarks" rows={3} value={selectedPurchaseRequisitionApproval && selectedPurchaseRequisitionApproval.remarks} onChange={(e) => updateRemarks(e)}></Input.TextArea>
         </div>
-        <div className="col-6">
-          <ComponentSelector></ComponentSelector>
-        </div>
-      </div>
-
-      <Divider />
-
-      <div className="row">
-        <div className="col-3">
-          <PurchaseRequisitionSelector
-            purcahseRequisitionApprovalList={filteredPurchaseRequisitionApprovalList}
-            setPurcahseRequisitionApprovalList={setFilteredPurchaseRequisitionApprovalList}
-            selectedPurcahseRequisitionApproval={selectedPurchaseRequisitionApproval}
-            setSelectedPurcahseRequisitionApproval={setSelectedPurchaseRequisitionApproval}
-          ></PurchaseRequisitionSelector>
-        </div>
-        <div className="col-9">
-          <PurchaseRequititionApprovalTable
-            selectedPurchaseRequisitionApproval={selectedPurchaseRequisitionApproval}
-            updatePurchaseRequisitionApproval={updatePurchaseRequisitionApproval}
-          ></PurchaseRequititionApprovalTable>
-        </div>
-      </div>
-
-      <div className="row">
-        <div className="col-3 pt-3">
-          <Input.TextArea placeholder="Remarks" rows={3} value={selectedPurchaseRequisitionApproval && selectedPurchaseRequisitionApproval.remarks} onChange={(e) => updateRemarks(e)}></Input.TextArea>
-        </div>
-        <div className="col-9 d-flex justify-content-end">
+        <div className="col-9 d-flex justify-content-end align-items-center">
           <Button onClick={issuePurchaseOrder} type="primary" size="large">
             <CheckSquareOutlined style={{ transform: "translateY(-3px)" }} /> Issue Confirmed PO
           </Button>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

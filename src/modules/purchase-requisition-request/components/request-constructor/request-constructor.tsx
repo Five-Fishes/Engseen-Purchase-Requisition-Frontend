@@ -1,5 +1,4 @@
 import React from "react";
-import { IColumnFilter } from "@dto/i-column-filter";
 import Table from "antd/lib/table";
 import { Button, DatePicker, InputNumber, Popconfirm, Popover } from "antd";
 

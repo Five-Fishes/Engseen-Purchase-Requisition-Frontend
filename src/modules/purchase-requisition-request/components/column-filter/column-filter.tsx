@@ -1,4 +1,3 @@
-import { IColumnFilter } from "@dto/i-column-filter";
 import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
 import { Checkbox, Table, Button } from "antd";
 import { useState } from "react";

@@ -7,54 +7,11 @@ import { IPurchaseRequisitionTemplate } from "@dto/i-purchase-requisition-templa
 import PurchaseRequisitionTemplateBrowser from "../components/template-browser/template-browser";
 import PurchaseRequisitionRequestConstructor from "../components/request-constructor/request-constructor";
 import PurchaseRequisitionColumnFilter from "../components/column-filter/column-filter";
-import { IColumnFilter } from "@dto/i-column-filter";
 
 const PurchaseRequisitionRequestPage: React.FC = () => {
   const [selectedTemplate, setSelectedTemplate] = useState<IPurchaseRequisitionTemplate>();
   const [searchText, setSearchText] = useState<string>();
   const [columnFilter, setColumnFilter] = useState<Map<string, boolean>>(new Map());
-  const [purchaseRequisitionRequestFilterColumn, setPurchaseRequisitionRequestFilterColumn] = useState<IColumnFilter[]>([
-    {
-      title: "Row",
-      dataIndex: "sequence",
-      key: "sequence",
-    },
-    {
-      title: "Component ID",
-      dataIndex: "componentCode",
-      key: "componentCode",
-    },
-    {
-      title: "Component Name",
-      dataIndex: "componentName",
-      key: "componentName",
-    },
-    {
-      title: "Vendor",
-      dataIndex: "vendorName",
-      key: "vendorName",
-    },
-    {
-      title: "Balance Qty (kgs)",
-      dataIndex: "componentCode",
-      key: "componentCode",
-    },
-    {
-      title: "Packing Size (kgs per pack)",
-      dataIndex: "packagingSize",
-      key: "packagingSize",
-    },
-    {
-      title: "No. of Packs to Order",
-      dataIndex: "componentCode",
-      key: "componentCode",
-    },
-    {
-      title: "Total Quantity To Order (kgs)",
-      dataIndex: "componentCode",
-      key: "componentCode",
-    },
-  ]);
 
   return (
     <>

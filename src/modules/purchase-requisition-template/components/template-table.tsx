@@ -1,9 +1,11 @@
-import { IPurchaseRequisitionTemplateItem } from "@dto/i-purchase-requisition-template-item.dto";
-import { IPurchaseRequisitionTemplate } from "@dto/i-purchase-requisition-template.dto";
+import React from "react";
 import { Table, Button, Modal } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import { DeleteOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
-import React from "react";
+
+import { TABLE_PAGINATION_CONFIG } from "@constant/pagination-config";
+import { IPurchaseRequisitionTemplateItem } from "@dto/i-purchase-requisition-template-item.dto";
+import { IPurchaseRequisitionTemplate } from "@dto/i-purchase-requisition-template.dto";
 
 interface IPurchaseRequisitionTemplateTableProps {
   readonly currentTemplate?: IPurchaseRequisitionTemplate;
@@ -84,7 +86,7 @@ const PurchaseRequisitionTemplateTable: React.FC<IPurchaseRequisitionTemplateTab
           columns={PURCHASE_REQUISITION_TEMPLATE_TABLE_COLUMN}
           rowKey="sequence"
           scroll={{ y: 370 }}
-          pagination={{ showSizeChanger: true, pageSizeOptions: ["5", "10", "20", "50", "100"], defaultPageSize: 100 }}
+          pagination={TABLE_PAGINATION_CONFIG}
         ></Table>
       </>
     );

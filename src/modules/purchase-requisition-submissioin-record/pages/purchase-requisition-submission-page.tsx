@@ -5,7 +5,7 @@ import { IPurchaseRequisitionRequest } from "@dto/i-purchase-requisition-request
 import { ArrowRightOutlined, ReloadOutlined } from "@ant-design/icons";
 import PurchaseRequisitionSubmissionTable from "../components/submission-table";
 import PurchaseRequisitionSubmissionBrowser from "../components/submission-record-browser";
-import { SearchEngine } from "@utils/search/native-search";
+import { getSearchText, SearchEngine } from "@utils/search/native-search";
 import { genereateIndex } from "../components/submission-indexer";
 import { IPurchaseRequisitionRequestItem } from "@dto/i-purchase-requisition-request-item.dto";
 import { convertToLocalString } from "@utils/date-time/date-time-format";
@@ -61,7 +61,8 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
 
   const search = () => {
     if (selectedSubmissionRequest) {
-      const filteredData = searchEngine.updateEngine(selectedSubmissionRequest.purchaseRequisitionRequestItems).search(searchText.replace(/\s+/g, ''));
+      const sanitisedSearchText: string = getSearchText(searchText);
+      const filteredData = searchEngine.updateEngine(selectedSubmissionRequest.purchaseRequisitionRequestItems).search(sanitisedSearchText);
       setFilteredSubmissionItems(filteredData);
     }
   };

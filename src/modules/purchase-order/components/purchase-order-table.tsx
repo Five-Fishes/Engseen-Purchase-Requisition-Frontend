@@ -1,9 +1,11 @@
+import React from "react";
 import { Button, Space, Table } from "antd";
 import { ColumnsType } from "antd/lib/table";
-import React from "react";
+import { DownloadOutlined, MailOutlined } from "@ant-design/icons";
+
+import { TABLE_PAGINATION_CONFIG } from "@constant/pagination-config";
 import { IPurchaseOrder } from "@dto/i-purchase-order.dto";
 import { IPurchaseApprovalOrder } from "@dto/i-purchase-approval-order.dto";
-import { DownloadOutlined, MailOutlined } from "@ant-design/icons";
 
 interface IPurchaseOrderTableProps {
   readonly currentPurchaseApprovalOrderRecord?: IPurchaseApprovalOrder;
@@ -121,7 +123,7 @@ const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
           columns={PURCHASE_ORDER_TABLE_COLUMN}
           rowKey="id"
           scroll={{ y: 370, x: 700 }}
-          pagination={{ pageSizeOptions: ["5", "10", "20", "50", "100"], hideOnSinglePage: true, defaultPageSize: 5 }}
+          pagination={TABLE_PAGINATION_CONFIG}
           summary={() => (
             <Table.Summary fixed>
               <Table.Summary.Row>

@@ -4,10 +4,10 @@ import PurchaseRequisitionTemplateTable from "../components/template-table";
 import { IPurchaseRequisitionTemplate } from "@dto/i-purchase-requisition-template.dto";
 import Title from "antd/lib/typography/Title";
 import PurchaseRequisitionTemplateBrowser from "../components/template-browser";
-import { genereateIndex } from "../components/template-indexer";
+import { generateIndex } from "../components/template-indexer";
 import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
 import readXlsxFile from "read-excel-file";
-import { SearchEngine } from "@utils/search/native-search";
+import { getSearchText, SearchEngine } from "@utils/search/native-search";
 import { IPurchaseRequisitionTemplateItem } from "@dto/i-purchase-requisition-template-item.dto";
 import { EditOutlined } from "@ant-design/icons";
 import { popNotification } from "@module/shared/components/notification";
@@ -23,7 +23,7 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
   const [excelData, setExcelData] = useState<Array<any>>([]);
   
   const [searchText, setSearchText] = useState<string>("");
-  const searchEngine: SearchEngine<IPurchaseRequisitionTemplateItem> = new SearchEngine([], genereateIndex);
+  const searchEngine: SearchEngine<IPurchaseRequisitionTemplateItem> = new SearchEngine([], generateIndex);
   
   const [editTemplateNameModal, setEditTemplateNameModal] = useState<boolean>(false);
   const [newTemplateName, setNewTemplateName] = useState<string>("");
@@ -33,7 +33,8 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
   const [insertItemsForm] = Form.useForm();
 
   const search = () => {
-    const filteredData = searchEngine.updateEngine(selectedPurchaseRequisitionTemplate.templateItems).search(searchText.replace(/\s+/g, ''));
+    const sanitisedSearchText: string = getSearchText(searchText);
+    const filteredData = searchEngine.updateEngine(selectedPurchaseRequisitionTemplate.templateItems).search(sanitisedSearchText);
     setFilteredTemplateItems(filteredData);
   };
 

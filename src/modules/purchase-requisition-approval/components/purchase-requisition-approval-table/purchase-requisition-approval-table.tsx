@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
 import { Button, Input, Table } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
 
 import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
-import { SearchEngine } from "@utils/search/native-search";
+import { getSearchText, SearchEngine } from "@utils/search/native-search";
 import { ChangeEvent } from "@constant/change-event.enum";
+import { TABLE_PAGINATION_CONFIG } from "@constant/pagination-config";
+import { PurchaseRequisitionApprovalStatus, PurchaseRequisitionApprovalStatusDisplayText } from "@constant/purchase-requisition-approval-status.enum";
 import { IPurchaseRequisitionApproval } from "@dto/i-purchase-requisition-approval.dto";
 import { IPurchaseRequisitionApprovalItem } from "@dto/i-purchase-requisition-approval-item.dto";
 import StatefulTextInput from "@module/shared/components/stateful-input/stateful-text-input/stateful-text-input";
 import StatefulNumberInput from "@module/shared/components/stateful-input/stateful-number-input/stateful-number-input";
-import { PurchaseRequisitionApprovalStatus, PurchaseRequisitionApprovalStatusDisplayText } from "@constant/purchase-requisition-approval-status.enum";
 
 import generateIndex from "./purchase-requisition-approval-table-indexer";
 interface IPurchaseRequititionApprovalTableProps {
@@ -123,7 +125,8 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
     console.log("event >>: ", event);
     if (props.selectedPurchaseRequisitionApproval) {
       console.log('selectedPurchaseRequisitionApproval >>: ', props.selectedPurchaseRequisitionApproval);
-      const searchOutput = searchEngine.updateEngine(props.selectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems).search(value.replace(/\s+/g, ''));
+      const sanitisedSearchText: string = getSearchText(value)
+      const searchOutput = searchEngine.updateEngine(props.selectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems).search(sanitisedSearchText);
       setSearchResult(searchOutput);
     }
     console.groupEnd();
@@ -139,7 +142,7 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
             <strong>Submission Date</strong>: {props.selectedPurchaseRequisitionApproval && new Date(props.selectedPurchaseRequisitionApproval.createdDate).toDateString()}
           </div>
           <div>
-            <Input.Search placeholder="Search" onSearch={handleSearch}></Input.Search>
+            <Input.Search placeholder="Search" onSearch={handleSearch} allowClear></Input.Search>
           </div>
         </div>
         <Table
@@ -147,7 +150,7 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
           rowKey="id"
           className="my-2"
           scroll={{ x: 2000, y: 500 }}
-          pagination={{ pageSizeOptions: ["5", "10", "20", "50", "100"], hideOnSinglePage: true, defaultPageSize: 5 }}
+          pagination={TABLE_PAGINATION_CONFIG}
         >
           <Table.Column title="Component Name" dataIndex="componentName" key="componentName" />
           <Table.Column
@@ -214,6 +217,9 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
             }}
           />
           <Table.Column title="Balance" dataIndex="balance" key="balance" />
+          <Table.Column title="Action" render={(value, record: IPurchaseRequisitionApprovalItem, index: number) => {
+              return <Button icon={<DeleteOutlined/>}/>
+            }}/>
         </Table>
       </div>
     </>

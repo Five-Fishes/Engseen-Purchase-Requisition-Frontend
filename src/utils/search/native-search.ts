@@ -33,3 +33,7 @@ export class SearchEngine<T> {
     return this;
   }
 }
+
+export function getSearchText(searchInput: string): string {
+  return searchInput.replace(/\s+/g, '');
+}

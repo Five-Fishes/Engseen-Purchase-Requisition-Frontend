@@ -10,6 +10,7 @@ import PopOverDatePicker from "@module/shared/components/popover-date-picker/pop
 
 interface IPurchaseRequisitionRequestConstructorProps {
   readonly currentTemplate?: IPurchaseRequisitionTemplate;
+  columnFilter: Map<string, boolean>;
 }
 
 const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionRequestConstructorProps> = (props) => {
@@ -17,31 +18,44 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
 
   return (
     <Table className="my-2" dataSource={TEMPLATE_ITEMS} rowKey="id" scroll={{ x: 2000, y: 500 }} pagination={TABLE_PAGINATION_CONFIG}>
-      <Table.Column title="Row" render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <>{index + 1}</>} />
-      <Table.Column title="Component ID" dataIndex="componentCode" key="componentCode" />
-      <Table.Column title="Component Name" width={300} dataIndex="componentName" key="componentName" />
-      <Table.Column title="Vendor" width={300} dataIndex="vendorName" key="vendorName" />
-      <Table.Column
-        title={
-          <span>
-            Balance Qty <br />
-            (kgs)
-          </span>
-        }
-        dataIndex="balance"
-        key="balance"
-      />
-      <Table.Column
-        title={
-          <span>
-            Packaging Size <br />
-            (kgs per pack)
-          </span>
-        }
-        dataIndex="packagingSize"
-        render={(value: number, record: IPurchaseRequisitionTemplateItem, index: number) => <InputNumber value={value} />}
-        key="packagingSize"
-      />
+      {console.log(props.columnFilter.get("sequence"))}
+      {props.columnFilter.get("sequence") !== true && 
+        <Table.Column title="Row" render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <>{index + 1}</>}  />
+      }
+      {props.columnFilter.get("componentCode") !== true && 
+        <Table.Column title="Component ID" dataIndex="componentCode" key="componentCode" />
+      }
+      {props.columnFilter.get("componentName") !== true && 
+        <Table.Column title="Component Name" width={300} dataIndex="componentName" key="componentName" />
+      }
+      {props.columnFilter.get("vendor") !== true && 
+        <Table.Column title="Vendor" width={300} dataIndex="vendorName" key="vendorName" />
+      }
+      {props.columnFilter.get("balance") !== true && 
+        <Table.Column
+          title={
+            <span>
+              Balance Qty <br />
+              (kgs)
+            </span>
+          }
+          dataIndex="balance"
+          key="balance"
+        />
+      }
+      {props.columnFilter.get("packagingSize") !== true && 
+        <Table.Column
+          title={
+            <span>
+              Packaging Size <br />
+              (kgs per pack)
+            </span>
+          }
+          dataIndex="packagingSize"
+          render={(value: number, record: IPurchaseRequisitionTemplateItem, index: number) => <InputNumber value={value} />}
+          key="packagingSize"
+        />
+      }
       <Table.Column
         title="No. of Packs to Order"
         dataIndex="quantity"

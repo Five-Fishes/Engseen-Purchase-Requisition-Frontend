@@ -1,11 +1,11 @@
-import { DownloadOutlined, FileDoneOutlined, FileOutlined, FileTextOutlined, HistoryOutlined, LaptopOutlined } from "@ant-design/icons";
-import { Drawer, Menu } from "antd";
-import { Link } from "react-router-dom";
-import React from "react";
+import { DownloadOutlined, FileDoneOutlined, FileOutlined, FileTextOutlined, HistoryOutlined, LaptopOutlined } from '@ant-design/icons'
+import { Drawer, Menu } from 'antd'
+import { Link } from 'react-router-dom'
+import React from 'react'
 
 interface IAppSider {
-  sideBarOpened: boolean;
-  toggleSidebar?: () => void;
+  sideBarOpened: boolean
+  toggleSidebar?: () => void
 }
 
 const AppSider: React.FC<IAppSider> = (props) => {
@@ -15,7 +15,8 @@ const AppSider: React.FC<IAppSider> = (props) => {
       <Drawer
         title={
           <span className="d-inline-flex align-items-center text-white">
-            <LaptopOutlined />&nbsp;&nbsp;Purchasing System
+            <LaptopOutlined />
+            &nbsp;&nbsp;Purchasing System
           </span>
         }
         placement="left"
@@ -23,13 +24,17 @@ const AppSider: React.FC<IAppSider> = (props) => {
         closable={false}
         visible={props.sideBarOpened}
         key="app-sidebar"
-        headerStyle={{ height: "58px", minHeight: "58px", backgroundColor: "#721959" }}
+        headerStyle={{
+          height: '58px',
+          minHeight: '58px',
+          backgroundColor: '#721959',
+        }}
         bodyStyle={{ padding: 0 }}
       >
-        <Menu theme="light" mode="inline" defaultSelectedKeys={["1"]}>
+        <Menu theme="light" mode="inline" defaultSelectedKeys={['1']}>
           <Menu.Item key="1" icon={<FileOutlined />}>
             <Link className="router-link" to="/purchase-requisition-template">
-              Purchase Template 
+              Purchase Template
             </Link>
           </Menu.Item>
           <Menu.Item key="2" icon={<FileTextOutlined />}>
@@ -56,7 +61,7 @@ const AppSider: React.FC<IAppSider> = (props) => {
       </Drawer>
       {/* </Sider> */}
     </>
-  );
-};
+  )
+}
 
-export default AppSider;
+export default AppSider

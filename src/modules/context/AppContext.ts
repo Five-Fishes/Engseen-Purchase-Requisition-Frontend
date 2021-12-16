@@ -1,1 +1,1 @@
-export let loggedIn: boolean = true;
+export let loggedIn: boolean = true

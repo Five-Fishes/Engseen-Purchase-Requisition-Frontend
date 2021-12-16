@@ -1,5 +1,5 @@
-import App from "./App";
+import App from './App'
 
-test("renders learn react link", () => {
-  expect(<App />).toBeTruthy();
-});
+test('renders learn react link', () => {
+  expect(<App />).toBeTruthy()
+})

@@ -1,23 +1,23 @@
-import { ReloadOutlined } from "@ant-design/icons";
-import { Button, DatePicker, Select } from "antd";
-import moment from "moment";
+import { ReloadOutlined } from '@ant-design/icons'
+import { Button, DatePicker, Select } from 'antd'
+import moment from 'moment'
 
-import { Sort } from "@constant/sort.enum";
+import { Sort } from '@constant/sort.enum'
 
 interface IFilterAndSortProps {
-  dateRange?: [Date, Date];
-  sort?: Sort;
-  dateRangeChangedHandler: (dateRange: [Date, Date] | undefined) => void;
-  sortChangedHandler: (sort: Sort | undefined) => void;
+  dateRange?: [Date, Date]
+  sort?: Sort
+  dateRangeChangedHandler: (dateRange: [Date, Date] | undefined) => void
+  sortChangedHandler: (sort: Sort | undefined) => void
 }
 
 const FilterAndSort: React.FC<IFilterAndSortProps> = (props) => {
-  const sortChangedHandler = props.sortChangedHandler;
-  const dateRangeChangedHandler = props.dateRangeChangedHandler;
+  const sortChangedHandler = props.sortChangedHandler
+  const dateRangeChangedHandler = props.dateRangeChangedHandler
   const reset = () => {
-    dateRangeChangedHandler(undefined);
-    sortChangedHandler(undefined);
-  };
+    dateRangeChangedHandler(undefined)
+    sortChangedHandler(undefined)
+  }
 
   return (
     <>
@@ -27,8 +27,8 @@ const FilterAndSort: React.FC<IFilterAndSortProps> = (props) => {
         allowEmpty={[true, true]}
         onChange={(values) => {
           if (values && values[0] != null && values[1] != null) {
-            const dateRange: [Date, Date] = [values[0].toDate(), values[1].toDate()];
-            dateRangeChangedHandler(dateRange);
+            const dateRange: [Date, Date] = [values[0].toDate(), values[1].toDate()]
+            dateRangeChangedHandler(dateRange)
           }
         }}
       ></DatePicker.RangePicker>
@@ -41,7 +41,7 @@ const FilterAndSort: React.FC<IFilterAndSortProps> = (props) => {
         Reset
       </Button>
     </>
-  );
-};
+  )
+}
 
-export default FilterAndSort;
+export default FilterAndSort

@@ -1,17 +1,17 @@
-import { useState } from "react";
-import { Input, Divider, Button } from "antd";
-import Title from "antd/lib/typography/Title";
+import { useState } from 'react'
+import { Input, Divider, Button } from 'antd'
+import Title from 'antd/lib/typography/Title'
 
-import { IPurchaseRequisitionTemplate } from "@dto/i-purchase-requisition-template.dto";
+import { IPurchaseRequisitionTemplate } from '@dto/i-purchase-requisition-template.dto'
 
-import PurchaseRequisitionTemplateBrowser from "../components/template-browser/template-browser";
-import PurchaseRequisitionRequestConstructor from "../components/request-constructor/request-constructor";
-import PurchaseRequisitionColumnFilter from "../components/column-filter/column-filter";
+import PurchaseRequisitionTemplateBrowser from '../components/template-browser/template-browser'
+import PurchaseRequisitionRequestConstructor from '../components/request-constructor/request-constructor'
+import PurchaseRequisitionColumnFilter from '../components/column-filter/column-filter'
 
 const PurchaseRequisitionRequestPage: React.FC = () => {
-  const [selectedTemplate, setSelectedTemplate] = useState<IPurchaseRequisitionTemplate>();
-  const [searchText, setSearchText] = useState<string>();
-  const [columnFilter, setColumnFilter] = useState<Map<string, boolean>>(new Map());
+  const [selectedTemplate, setSelectedTemplate] = useState<IPurchaseRequisitionTemplate>()
+  const [searchText, setSearchText] = useState<string>()
+  const [columnFilter, setColumnFilter] = useState<Map<string, boolean>>(new Map())
 
   return (
     <>
@@ -29,19 +29,19 @@ const PurchaseRequisitionRequestPage: React.FC = () => {
                 placeholder="Search"
                 value={searchText}
                 onChange={(e) => {
-                  setSearchText(e.target.value);
+                  setSearchText(e.target.value)
                 }}
               ></Input.Search>
             </div>
           </div>
           <div className="row">
             <div className="col">
-              <PurchaseRequisitionRequestConstructor currentTemplate={selectedTemplate} columnFilter={columnFilter}/>
+              <PurchaseRequisitionRequestConstructor currentTemplate={selectedTemplate} columnFilter={columnFilter} />
             </div>
           </div>
 
           <Divider />
-          
+
           <div className="row fixed-bottom mx-3 pb-1 remark-wrapper bg-white">
             <div className="col my-auto">
               <Button type="primary" size="large">
@@ -54,17 +54,15 @@ const PurchaseRequisitionRequestPage: React.FC = () => {
             </div>
           </div>
         </div>
-        
-        <Divider type="vertical" style={{ height: "100vh" }} />
+
+        <Divider type="vertical" style={{ height: '100vh' }} />
 
         <div className="mx-2">
-          <PurchaseRequisitionColumnFilter
-            setColumnFilter={setColumnFilter}
-          />
+          <PurchaseRequisitionColumnFilter setColumnFilter={setColumnFilter} />
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default PurchaseRequisitionRequestPage;
+export default PurchaseRequisitionRequestPage

@@ -8,7 +8,7 @@ export const convertToLocalString: (dateTime?: any, dateOnly?: boolean) => strin
     if (dateOnly) {
       return localeDate
     }
-    const localeTime = dateTimeValue.toLocaleTimeString()
+    const localeTime = dateTimeValue.toLocaleTimeString('en-US')
     return localeDate + ' ' + localeTime
   } catch (error) {
     const e = error as Error

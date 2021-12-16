@@ -27,10 +27,14 @@ const firebaseConfig = {
   measurementId: 'G-2Z0L5N2FQH',
 }
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig)
-getAnalytics(app)
-getMock()
+if (process.env.NODE_ENV === 'production') {
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig)
+  getAnalytics(app)
+}
+if (process.env.NODE_ENV === 'development') {
+  getMock()
+}
 
 const App: React.FC = () => {
   const [sideBarOpened, setSideBarOpened] = useState(false)

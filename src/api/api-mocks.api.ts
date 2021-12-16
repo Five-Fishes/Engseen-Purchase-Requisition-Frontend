@@ -21,7 +21,7 @@ const getMock = () => mock
 
 mock.onPost(PURCHASE_REQUISITION_REQUEST).reply<IPurchaseRequisitionRequest>(200, {
   id: 1,
-  createdDate: undefined,
+  createdDate: new Date(),
   templateId: 1,
   purchaseRequisitionRequestItems: [
     {

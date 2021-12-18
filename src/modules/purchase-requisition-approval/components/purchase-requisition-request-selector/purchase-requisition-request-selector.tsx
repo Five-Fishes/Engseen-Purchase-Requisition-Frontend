@@ -4,6 +4,7 @@ import { CheckCircleOutlined } from '@ant-design/icons';
 import { PurchaseRequisitionApprovalStatus } from '@constant/purchase-requisition-approval-status.enum';
 import { IPurchaseRequisitionApprovalItem } from '@dto/i-purchase-requisition-approval-item.dto';
 import { IPurchaseRequisitionApproval } from '@dto/i-purchase-requisition-approval.dto';
+import { convertToLocalString } from '@utils/date-time/date-time-format';
 
 interface IPurchaseRequisitionSelectorProps {
   purcahseRequisitionApprovalList?: IPurchaseRequisitionApproval[];
@@ -33,7 +34,7 @@ const PurchaseRequisitionSelector: React.FC<IPurchaseRequisitionSelectorProps> =
                 setSelectedPurcahseRequisitionApproval(purchaseRequisitionApproval);
               }}
             >
-              {new Date(purchaseRequisitionApproval.createdDate).toDateString()}{' '}
+              {convertToLocalString(purchaseRequisitionApproval.createdDate)}{' '}
               {isAllApprovalItemsIssued(purchaseRequisitionApproval.purchaseRequisitionApprovalItems) && <CheckCircleOutlined style={{ color: '#22A70C', transform: 'translateY(-3px)' }} />}
             </Button>
           ))}

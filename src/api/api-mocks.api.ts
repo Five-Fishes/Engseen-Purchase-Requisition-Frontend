@@ -311,6 +311,7 @@ mock.onPost(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate>(2
       packagingSize: 100,
     },
   ],
+  remarks: ''
 });
 
 mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(200, [
@@ -409,6 +410,7 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
         packagingSize: 100,
       },
     ],
+    remarks: ''
   },
   {
     id: 1,
@@ -451,6 +453,7 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
         packagingSize: 100,
       },
     ],
+    remarks: ''
   },
   {
     id: 1,
@@ -493,6 +496,7 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
         packagingSize: 100,
       },
     ],
+    remarks: ''
   },
   {
     id: 1,
@@ -535,6 +539,7 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
         packagingSize: 100,
       },
     ],
+    remarks: ''
   },
   {
     id: 1,
@@ -577,6 +582,7 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
         packagingSize: 100,
       },
     ],
+    remarks: ''
   },
   {
     id: 1,
@@ -619,6 +625,7 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
         packagingSize: 100,
       },
     ],
+    remarks: ''
   },
   {
     id: 1,
@@ -661,6 +668,7 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
         packagingSize: 100,
       },
     ],
+    remarks: ''
   },
   {
     id: 1,
@@ -703,6 +711,7 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
         packagingSize: 100,
       },
     ],
+    remarks: ''
   },
   {
     id: 1,
@@ -745,6 +754,7 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
         packagingSize: 100,
       },
     ],
+    remarks: ''
   },
   {
     id: 1,
@@ -787,6 +797,7 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
         packagingSize: 100,
       },
     ],
+    remarks: ''
   },
 ]);
 

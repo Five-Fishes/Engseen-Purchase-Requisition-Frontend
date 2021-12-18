@@ -4,4 +4,5 @@ export interface IPurchaseRequisitionTemplate {
   id: number;
   templateName: string;
   templateItems: IPurchaseRequisitionTemplateItem[];
+  remarks: string;
 }

@@ -13,25 +13,37 @@ import moment from 'moment';
 
 interface IPurchaseRequisitionRequestConstructorProps {
   readonly currentTemplate?: IPurchaseRequisitionTemplate;
+  readonly searchResult?: IPurchaseRequisitionTemplateItem[]
   updateTemplate: (template: IPurchaseRequisitionTemplate) => void;
   columnFilter: Map<string, boolean>;
 }
 
 const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionRequestConstructorProps> = (props) => {
-  const TEMPLATE_ITEMS: IPurchaseRequisitionTemplateItem[] = props.currentTemplate?.templateItems || [];
   const updateTemplate = props.updateTemplate;
-
+  
   const updateAllDeliveryDate: (value: any) => void = (value) => {
     if (props.currentTemplate) {
       const updatedPurchaseRequisitionTemplate = CLONING_LIB.deepClone(props.currentTemplate);
       if (value) {
-        updatedPurchaseRequisitionTemplate?.templateItems.forEach((item) => {
+        updatedPurchaseRequisitionTemplate.templateItems.forEach((item) => {
           item.deliveryDate = (value as Moment).toDate();
         });
         updateTemplate(updatedPurchaseRequisitionTemplate);
       }
     }
   };
+
+  const clearAllInput: () => void = () => {
+    if (props.currentTemplate) {
+      const updatedPurchaseRequisitionTemplate = CLONING_LIB.deepClone(props.currentTemplate);
+      updatedPurchaseRequisitionTemplate.templateItems.forEach((item) => {
+        item.quantity = 0
+        item.packagingSize = 0
+        item.deliveryDate = undefined
+      });
+      updateTemplate(updatedPurchaseRequisitionTemplate);
+    }
+  }
 
   const updateData: (selectedPurchaseRequisitionApproval: IPurchaseRequisitionTemplate, value: any, record: IPurchaseRequisitionTemplateItem, key: string) => IPurchaseRequisitionTemplate = (
     selectedPurchaseRequisitionApproval,
@@ -50,6 +62,26 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
     updatedSelectedPurchaseRequisitionApproval.templateItems = updatedSelectedPurchaseRequisitionApprovalItems;
     return updatedSelectedPurchaseRequisitionApproval;
   };
+
+  const clearInputByItemId: (record: IPurchaseRequisitionTemplateItem) => void = (record) => {
+    if (props.currentTemplate) {
+      const updatedPurchaseRequisitionTemplate = CLONING_LIB.deepClone(props.currentTemplate);
+      const updatedPurchaseRequisitionTemplateItems: IPurchaseRequisitionTemplateItem[] =  updatedPurchaseRequisitionTemplate.templateItems.map((item) => {
+        if (item.id === record.id) {
+          return {
+            ...item,
+            quantity: 0,
+            deliveryDate: undefined,
+            packagingSize: 0,
+          }
+        }else {
+          return item
+        }
+      });
+      updatedPurchaseRequisitionTemplate.templateItems = updatedPurchaseRequisitionTemplateItems;
+      updateTemplate(updatedPurchaseRequisitionTemplate);
+    }
+  }
 
   /**
    * Update the SelectedApprovalItem's field based on the provided key
@@ -96,7 +128,7 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
   };
 
   return (
-    <Table className="my-2" dataSource={TEMPLATE_ITEMS} rowKey="id" scroll={{ x: 2000, y: 500 }} pagination={TABLE_PAGINATION_CONFIG}>
+    <Table className="my-2" dataSource={props.searchResult} rowKey="id" scroll={{ x: 2000, y: 500 }} pagination={TABLE_PAGINATION_CONFIG}>
       {console.log(props.columnFilter.get('sequence'))}
       {props.columnFilter.get('sequence') !== true && <Table.Column title="Row" render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <>{index + 1}</>} />}
       {props.columnFilter.get('componentCode') !== true && <Table.Column title="Component ID" dataIndex="componentCode" key="componentCode" />}
@@ -123,17 +155,17 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
             </span>
           }
           dataIndex="packagingSize"
-          render={(value: number, record: IPurchaseRequisitionTemplateItem, index: number) => <InputNumber value={value} />}
+          render={(value: number, record: IPurchaseRequisitionTemplateItem, index: number) => <InputNumber onChange={ e => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, "packagingSize", index)} value={value} />}
           key="packagingSize"
         />
       )}
       <Table.Column
         title="No. of Packs to Order"
         dataIndex="quantity"
-        render={(value: number, record: IPurchaseRequisitionTemplateItem, index: number) => <InputNumber value={value} />}
+        render={(value: number, record: IPurchaseRequisitionTemplateItem, index: number) => <InputNumber onChange={ e => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, "quantity", index)} value={value} />}
         key="quantity"
       />
-      <Table.Column title="Total Quantity to Order (kgs)" render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <>{record.packagingSize * 1}</>} />
+      <Table.Column title="Total Quantity to Order (kgs)" render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <>{record.packagingSize * (record.quantity || 0)}</>} />
       <Table.Column
         title={
           <Popover
@@ -146,7 +178,7 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
             }
             trigger="click"
           >
-            <div>
+            <div className="cursor-pointer">
               <span>Delivery Date</span>
               <br />
               <span style={{ fontSize: '8px' }}>*Click to change all</span>
@@ -164,15 +196,15 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
       />
       <Table.Column
         title={
-          <Popconfirm title="Are you sure you want to clear input for all rows?" okText="OK" cancelText="Cancel">
-            <div>
+          <Popconfirm title="Are you sure you want to clear input for all rows?" okText="OK" cancelText="Cancel" onConfirm={() => clearAllInput()}>
+            <div className="cursor-pointer">
               <span>Clear Input</span>
               <br />
               <span style={{ fontSize: '8px' }}>*Click to clear all</span>
             </div>
           </Popconfirm>
         }
-        render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <Button icon={<ClearOutlined />} />}
+        render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <Button onClick={() => clearInputByItemId(record)} icon={<ClearOutlined />} />}
       />
     </Table>
   );

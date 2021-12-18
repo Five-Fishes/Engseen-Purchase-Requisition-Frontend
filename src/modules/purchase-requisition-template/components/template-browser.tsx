@@ -51,6 +51,7 @@ const PurchaseRequisitionTemplateBrowser: React.FC<IPurchaseRequisitionTemplateP
         id: 0,
         templateName: newTemplateText,
         templateItems: [],
+        remarks: ""
       };
       if (purchaseRequisitionTemplates === undefined || purchaseRequisitionTemplates.length === 0) {
         setPurchaseRequisitionTemplates([newTemplate]);

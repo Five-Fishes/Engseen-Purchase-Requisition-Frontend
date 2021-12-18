@@ -1,48 +1,49 @@
-import { useEffect, useState } from 'react'
-import { Button, Input, Table } from 'antd'
-import { DeleteOutlined } from '@ant-design/icons'
+import { useEffect, useState } from 'react';
+import { Button, DatePicker, Input, Table } from 'antd';
+import { DeleteOutlined } from '@ant-design/icons';
 
-import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper'
-import { getSearchText, SearchEngine } from '@utils/search/native-search'
-import { ChangeEvent } from '@constant/change-event.enum'
-import { TABLE_PAGINATION_CONFIG } from '@constant/pagination-config'
-import { PurchaseRequisitionApprovalStatus, PurchaseRequisitionApprovalStatusDisplayText } from '@constant/purchase-requisition-approval-status.enum'
-import { IPurchaseRequisitionApproval } from '@dto/i-purchase-requisition-approval.dto'
-import { IPurchaseRequisitionApprovalItem } from '@dto/i-purchase-requisition-approval-item.dto'
-import StatefulTextInput from '@module/shared/components/stateful-input/stateful-text-input/stateful-text-input'
-import StatefulNumberInput from '@module/shared/components/stateful-input/stateful-number-input/stateful-number-input'
+import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
+import { getSearchText, SearchEngine } from '@utils/search/native-search';
+import { ChangeEvent } from '@constant/change-event.enum';
+import { TABLE_PAGINATION_CONFIG } from '@constant/pagination-config';
+import { PurchaseRequisitionApprovalStatus, PurchaseRequisitionApprovalStatusDisplayText } from '@constant/purchase-requisition-approval-status.enum';
+import { IPurchaseRequisitionApproval } from '@dto/i-purchase-requisition-approval.dto';
+import { IPurchaseRequisitionApprovalItem } from '@dto/i-purchase-requisition-approval-item.dto';
+import StatefulTextInput from '@module/shared/components/stateful-input/stateful-text-input/stateful-text-input';
+import StatefulNumberInput from '@module/shared/components/stateful-input/stateful-number-input/stateful-number-input';
 
-import generateIndex from './purchase-requisition-approval-table-indexer'
+import generateIndex from './purchase-requisition-approval-table-indexer';
+import moment, { Moment } from 'moment';
 interface IPurchaseRequititionApprovalTableProps {
-  selectedPurchaseRequisitionApproval?: IPurchaseRequisitionApproval
-  updatePurchaseRequisitionApproval: (purchaseRequisitionApproval: IPurchaseRequisitionApproval) => void
+  selectedPurchaseRequisitionApproval?: IPurchaseRequisitionApproval;
+  updatePurchaseRequisitionApproval: (purchaseRequisitionApproval: IPurchaseRequisitionApproval) => void;
 }
 
 const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTableProps> = (props) => {
-  const updatePurchaseRequisitionApproval = props.updatePurchaseRequisitionApproval
-  const [searchResult, setSearchResult] = useState<IPurchaseRequisitionApprovalItem[]>()
-  const searchEngine: SearchEngine<IPurchaseRequisitionApprovalItem> = new SearchEngine([], generateIndex)
+  const updatePurchaseRequisitionApproval = props.updatePurchaseRequisitionApproval;
+  const [searchResult, setSearchResult] = useState<IPurchaseRequisitionApprovalItem[]>();
+  const searchEngine: SearchEngine<IPurchaseRequisitionApprovalItem> = new SearchEngine([], generateIndex);
 
   useEffect(() => {
     if (props.selectedPurchaseRequisitionApproval) {
-      const initSearchResult = CLONING_LIB.deepClone(props.selectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems)
-      setSearchResult(initSearchResult)
+      const initSearchResult = CLONING_LIB.deepClone(props.selectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems);
+      setSearchResult(initSearchResult);
     }
-  }, [props.selectedPurchaseRequisitionApproval])
+  }, [props.selectedPurchaseRequisitionApproval]);
 
   const confirmAll: () => void = () => {
     if (props.selectedPurchaseRequisitionApproval) {
       const updatedSelectedPurchaseRequisitionApprovalItems = props.selectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems.map((item) => {
         if (item.status !== PurchaseRequisitionApprovalStatus.ISSUED) {
-          item.status = PurchaseRequisitionApprovalStatus.CONFIRMED
+          item.status = PurchaseRequisitionApprovalStatus.CONFIRMED;
         }
-        return item
-      })
-      const updatedSelectedPurchaseRequisitionApproval = CLONING_LIB.deepClone(props.selectedPurchaseRequisitionApproval)
-      updatedSelectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems = updatedSelectedPurchaseRequisitionApprovalItems
-      updatePurchaseRequisitionApproval(updatedSelectedPurchaseRequisitionApproval)
+        return item;
+      });
+      const updatedSelectedPurchaseRequisitionApproval = CLONING_LIB.deepClone(props.selectedPurchaseRequisitionApproval);
+      updatedSelectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems = updatedSelectedPurchaseRequisitionApprovalItems;
+      updatePurchaseRequisitionApproval(updatedSelectedPurchaseRequisitionApproval);
     }
-  }
+  };
 
   /**
    * Update the SelectedApprovalItem's field based on the provided key
@@ -58,48 +59,57 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
     key,
     index
   ) => {
-    console.group('dataChanged')
-    console.log('changeEventType >>: ', changeEventType)
-    console.log('changeEvent >>: ', changeEvent)
-    console.log('record >>: ', record)
-    console.log('key >>: ', key)
-    console.log('index >>: ', index)
-    console.groupEnd()
+    console.group('dataChanged');
+    console.log('changeEventType >>: ', changeEventType);
+    console.log('changeEvent >>: ', changeEvent);
+    console.log('record >>: ', record);
+    console.log('key >>: ', key);
+    console.log('index >>: ', index);
+    console.groupEnd();
 
-    let valueToUpdate: any
-    if (changeEventType === ChangeEvent.NUMBER_INPUT) {
-      valueToUpdate = changeEvent
-    } else {
-      valueToUpdate = changeEvent.target.value
+    let valueToUpdate: any;
+    switch (changeEventType) {
+      case ChangeEvent.NUMBER_INPUT:
+        valueToUpdate = changeEvent;
+        break;
+      case ChangeEvent.DATE_TIME:
+        valueToUpdate = changeEvent ? (changeEvent as Moment).toDate() : undefined;
+        break;
+      case ChangeEvent.TEXT_INPUT:
+        valueToUpdate = changeEvent.target.value;
+        break;
+      default:
+        valueToUpdate = '';
+        break;
     }
 
     if (props.selectedPurchaseRequisitionApproval) {
-      const updatedSelectedPurchaseRequisitionApproval = updateData(props.selectedPurchaseRequisitionApproval, valueToUpdate, record, key)
-      updatePurchaseRequisitionApproval(updatedSelectedPurchaseRequisitionApproval)
+      const updatedSelectedPurchaseRequisitionApproval = updateData(props.selectedPurchaseRequisitionApproval, valueToUpdate, record, key);
+      updatePurchaseRequisitionApproval(updatedSelectedPurchaseRequisitionApproval);
     }
-  }
+  };
 
   const updateApprovalItemStatus: (item: IPurchaseRequisitionApprovalItem) => void = (item) => {
     if (props.selectedPurchaseRequisitionApproval) {
-      let udpatedValue: PurchaseRequisitionApprovalStatus
+      let udpatedValue: PurchaseRequisitionApprovalStatus;
       switch (item.status) {
         case PurchaseRequisitionApprovalStatus.TO_CONFIRM:
-          udpatedValue = PurchaseRequisitionApprovalStatus.CONFIRMED
-          break
+          udpatedValue = PurchaseRequisitionApprovalStatus.CONFIRMED;
+          break;
         case PurchaseRequisitionApprovalStatus.CONFIRMED:
-          udpatedValue = PurchaseRequisitionApprovalStatus.TO_CONFIRM
-          break
+          udpatedValue = PurchaseRequisitionApprovalStatus.TO_CONFIRM;
+          break;
         case PurchaseRequisitionApprovalStatus.ISSUED:
-          udpatedValue = PurchaseRequisitionApprovalStatus.ISSUED
-          break
+          udpatedValue = PurchaseRequisitionApprovalStatus.ISSUED;
+          break;
         default:
-          udpatedValue = PurchaseRequisitionApprovalStatus.TO_CONFIRM
-          break
+          udpatedValue = PurchaseRequisitionApprovalStatus.TO_CONFIRM;
+          break;
       }
-      const updatedApproval = updateData(props.selectedPurchaseRequisitionApproval, udpatedValue, item, 'status')
-      updatePurchaseRequisitionApproval(updatedApproval)
+      const updatedApproval = updateData(props.selectedPurchaseRequisitionApproval, udpatedValue, item, 'status');
+      updatePurchaseRequisitionApproval(updatedApproval);
     }
-  }
+  };
 
   const updateData: (selectedPurchaseRequisitionApproval: IPurchaseRequisitionApproval, value: any, record: IPurchaseRequisitionApprovalItem, key: string) => IPurchaseRequisitionApproval = (
     selectedPurchaseRequisitionApproval,
@@ -107,32 +117,32 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
     record,
     key
   ) => {
-    const idToUpdate = record.id
+    const idToUpdate = record.id;
     const updatedSelectedPurchaseRequisitionApprovalItems = selectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems.map((item) => {
       if (item.id === idToUpdate) {
-        ;(item as any)[key] = value
+        (item as any)[key] = value;
       }
-      return item
-    })
-    const updatedSelectedPurchaseRequisitionApproval = CLONING_LIB.deepClone(selectedPurchaseRequisitionApproval)
-    updatedSelectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems = updatedSelectedPurchaseRequisitionApprovalItems
-    return updatedSelectedPurchaseRequisitionApproval
-  }
+      return item;
+    });
+    const updatedSelectedPurchaseRequisitionApproval = CLONING_LIB.deepClone(selectedPurchaseRequisitionApproval);
+    updatedSelectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems = updatedSelectedPurchaseRequisitionApprovalItems;
+    return updatedSelectedPurchaseRequisitionApproval;
+  };
 
   const handleSearch = (value: string, event: React.ChangeEvent<HTMLInputElement> | React.MouseEvent<HTMLElement, MouseEvent> | React.KeyboardEvent<HTMLInputElement> | undefined) => {
-    console.group('Search [PurchaseRequititionApprovalTable]')
-    console.log('value >>: ', value)
-    console.log('event >>: ', event)
+    console.group('Search [PurchaseRequititionApprovalTable]');
+    console.log('value >>: ', value);
+    console.log('event >>: ', event);
     if (props.selectedPurchaseRequisitionApproval) {
-      console.log('selectedPurchaseRequisitionApproval >>: ', props.selectedPurchaseRequisitionApproval)
-      const sanitisedSearchText: string = getSearchText(value)
-      const searchOutput = searchEngine.updateEngine(props.selectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems).search(sanitisedSearchText)
-      setSearchResult(searchOutput)
+      console.log('selectedPurchaseRequisitionApproval >>: ', props.selectedPurchaseRequisitionApproval);
+      const sanitisedSearchText: string = getSearchText(value);
+      const searchOutput = searchEngine.updateEngine(props.selectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems).search(sanitisedSearchText);
+      setSearchResult(searchOutput);
     }
-    console.groupEnd()
-  }
+    console.groupEnd();
+  };
 
-  const SELECTED_PURCHASE_REQUISITION_APPROVAL_ITEMS: IPurchaseRequisitionApprovalItem[] = searchResult || []
+  const SELECTED_PURCHASE_REQUISITION_APPROVAL_ITEMS: IPurchaseRequisitionApprovalItem[] = searchResult || [];
 
   return (
     <>
@@ -156,7 +166,7 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
             dataIndex="itemCost"
             key="itemCost"
             render={(value, record: IPurchaseRequisitionApprovalItem, index: number) => {
-              return <StatefulNumberInput state={record.status} value={value} onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, 'itemCost', index)} />
+              return <StatefulNumberInput state={record.status} value={value} onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, 'itemCost', index)} />;
             }}
           />
           <Table.Column
@@ -165,7 +175,7 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
             key="vendorName"
             width="300px"
             render={(value, record: IPurchaseRequisitionApprovalItem, index: number) => {
-              return <StatefulTextInput state={record.status} value={value} onChange={(e) => dataChanged(ChangeEvent.TEXT_INPUT, e, record, 'vendorName', index)} />
+              return <StatefulTextInput state={record.status} value={value} onChange={(e) => dataChanged(ChangeEvent.TEXT_INPUT, e, record, 'vendorName', index)} />;
             }}
           />
           <Table.Column
@@ -178,7 +188,7 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
             key="status"
             width="200px"
             render={(value: PurchaseRequisitionApprovalStatus, record: IPurchaseRequisitionApprovalItem, index: number) => {
-              return <Button onClick={() => updateApprovalItemStatus(record)}>{`${PurchaseRequisitionApprovalStatusDisplayText(value)}`}</Button>
+              return <Button onClick={() => updateApprovalItemStatus(record)}>{`${PurchaseRequisitionApprovalStatusDisplayText(value)}`}</Button>;
             }}
           />
           <Table.Column
@@ -190,7 +200,7 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
             dataIndex="packagingSize"
             key="packagingSize"
             render={(value, record: IPurchaseRequisitionApprovalItem, index: number) => {
-              return <StatefulNumberInput state={record.status} value={value} onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, 'packagingSize', index)} />
+              return <StatefulNumberInput state={record.status} value={value} onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, 'packagingSize', index)} />;
             }}
           />
           <Table.Column
@@ -198,7 +208,7 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
             dataIndex="noOfPacks"
             key="noOfPacks"
             render={(value, record: IPurchaseRequisitionApprovalItem, index: number) => {
-              return <StatefulNumberInput state={record.status} value={value} onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, 'noOfPacks', index)} />
+              return <StatefulNumberInput state={record.status} value={value} onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, 'noOfPacks', index)} />;
             }}
           />
           <Table.Column title="Total Quantity To Order (kgs)" dataIndex="quantity" key="quantity" />
@@ -207,20 +217,24 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
             dataIndex="deliveryDate"
             key="deliveryDate"
             render={(value, record: IPurchaseRequisitionApprovalItem, index: number) => {
-              return new Date(value).toDateString()
+              let castedValue = undefined;
+              if (value) {
+                castedValue = moment(new Date(value));
+              }
+              return <DatePicker value={castedValue} onChange={(moment) => dataChanged(ChangeEvent.DATE_TIME, moment, record, 'deliveryDate', index)} />;
             }}
           />
           <Table.Column title="Balance" dataIndex="balance" key="balance" />
           <Table.Column
             title="Action"
             render={(value, record: IPurchaseRequisitionApprovalItem, index: number) => {
-              return <Button icon={<DeleteOutlined />} />
+              return <Button icon={<DeleteOutlined />} />;
             }}
           />
         </Table>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default PurchaseRequititionApprovalTable
+export default PurchaseRequititionApprovalTable;

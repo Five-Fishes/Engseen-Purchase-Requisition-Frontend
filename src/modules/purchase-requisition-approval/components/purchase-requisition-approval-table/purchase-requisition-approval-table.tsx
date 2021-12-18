@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, DatePicker, Input, Table } from 'antd';
+import { Button, DatePicker, Input, Popover, Table } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 import moment, { Moment } from 'moment';
 
@@ -41,6 +41,18 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
       });
       const updatedSelectedPurchaseRequisitionApproval = CLONING_LIB.deepClone(props.selectedPurchaseRequisitionApproval);
       updatedSelectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems = updatedSelectedPurchaseRequisitionApprovalItems;
+      updatePurchaseRequisitionApproval(updatedSelectedPurchaseRequisitionApproval);
+    }
+  };
+
+  const updateAllDeliveryDate: (value: any) => void = (value) => {
+    if (props.selectedPurchaseRequisitionApproval) {
+      const updatedSelectedPurchaseRequisitionApproval = CLONING_LIB.deepClone(props.selectedPurchaseRequisitionApproval);
+      if (value) {
+        updatedSelectedPurchaseRequisitionApproval?.purchaseRequisitionApprovalItems.forEach((item) => {
+          item.status === PurchaseRequisitionApprovalStatus.TO_CONFIRM && (item.deliveryDate = (value as Moment).toDate());
+        });
+      }
       updatePurchaseRequisitionApproval(updatedSelectedPurchaseRequisitionApproval);
     }
   };
@@ -213,7 +225,24 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
           />
           <Table.Column title="Total Quantity To Order (kgs)" dataIndex="quantity" key="quantity" />
           <Table.Column
-            title="Delivery Date"
+            title={
+              <Popover
+                content={
+                  <DatePicker
+                    onChange={(moment) => {
+                      updateAllDeliveryDate(moment);
+                    }}
+                  />
+                }
+                trigger="click"
+              >
+                <div>
+                  <span>Delivery Date</span>
+                  <br />
+                  <span style={{ fontSize: '8px' }}>*Click to change all</span>
+                </div>
+              </Popover>
+            }
             dataIndex="deliveryDate"
             key="deliveryDate"
             render={(value, record: IPurchaseRequisitionApprovalItem, index: number) => {
@@ -221,7 +250,13 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
               if (value) {
                 castedValue = moment(new Date(value));
               }
-              return <DatePicker value={castedValue} onChange={(moment) => dataChanged(ChangeEvent.DATE_TIME, moment, record, 'deliveryDate', index)} />;
+              return (
+                <DatePicker
+                  disabled={!(record.status === PurchaseRequisitionApprovalStatus.TO_CONFIRM)}
+                  value={castedValue}
+                  onChange={(moment) => dataChanged(ChangeEvent.DATE_TIME, moment, record, 'deliveryDate', index)}
+                />
+              );
             }}
           />
           <Table.Column title="Balance" dataIndex="balance" key="balance" />

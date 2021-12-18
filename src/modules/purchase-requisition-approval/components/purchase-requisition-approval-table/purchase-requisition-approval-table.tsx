@@ -236,7 +236,7 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
                 }
                 trigger="click"
               >
-                <div>
+                <div className="cursor-pointer">
                   <span>Delivery Date</span>
                   <br />
                   <span style={{ fontSize: '8px' }}>*Click to change all</span>

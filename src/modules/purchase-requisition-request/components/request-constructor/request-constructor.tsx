@@ -1,20 +1,99 @@
-import React from 'react'
-import Table from 'antd/lib/table'
-import { Button, DatePicker, InputNumber, Popconfirm, Popover } from 'antd'
+import React from 'react';
+import Table from 'antd/lib/table';
+import { Moment } from 'moment';
+import { Button, DatePicker, InputNumber, Popconfirm, Popover } from 'antd';
 
-import { TABLE_PAGINATION_CONFIG } from '@constant/pagination-config'
-import { IPurchaseRequisitionTemplate } from '@dto/i-purchase-requisition-template.dto'
-import { IPurchaseRequisitionTemplateItem } from '@dto/i-purchase-requisition-template-item.dto'
-import { ClearOutlined, EditOutlined } from '@ant-design/icons'
-import PopOverDatePicker from '@module/shared/components/popover-date-picker/popover-date-picker'
+import { TABLE_PAGINATION_CONFIG } from '@constant/pagination-config';
+import { IPurchaseRequisitionTemplate } from '@dto/i-purchase-requisition-template.dto';
+import { IPurchaseRequisitionTemplateItem } from '@dto/i-purchase-requisition-template-item.dto';
+import { ClearOutlined } from '@ant-design/icons';
+import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
+import { ChangeEvent } from '@constant/change-event.enum';
+import moment from 'moment';
 
 interface IPurchaseRequisitionRequestConstructorProps {
-  readonly currentTemplate?: IPurchaseRequisitionTemplate
-  columnFilter: Map<string, boolean>
+  readonly currentTemplate?: IPurchaseRequisitionTemplate;
+  updateTemplate: (template: IPurchaseRequisitionTemplate) => void;
+  columnFilter: Map<string, boolean>;
 }
 
 const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionRequestConstructorProps> = (props) => {
-  const TEMPLATE_ITEMS: IPurchaseRequisitionTemplateItem[] = props.currentTemplate?.templateItems || []
+  const TEMPLATE_ITEMS: IPurchaseRequisitionTemplateItem[] = props.currentTemplate?.templateItems || [];
+  const updateTemplate = props.updateTemplate;
+
+  const updateAllDeliveryDate: (value: any) => void = (value) => {
+    if (props.currentTemplate) {
+      const updatedPurchaseRequisitionTemplate = CLONING_LIB.deepClone(props.currentTemplate);
+      if (value) {
+        updatedPurchaseRequisitionTemplate?.templateItems.forEach((item) => {
+          item.deliveryDate = (value as Moment).toDate();
+        });
+        updateTemplate(updatedPurchaseRequisitionTemplate);
+      }
+    }
+  };
+
+  const updateData: (selectedPurchaseRequisitionApproval: IPurchaseRequisitionTemplate, value: any, record: IPurchaseRequisitionTemplateItem, key: string) => IPurchaseRequisitionTemplate = (
+    selectedPurchaseRequisitionApproval,
+    value,
+    record,
+    key
+  ) => {
+    const idToUpdate = record.id;
+    const updatedSelectedPurchaseRequisitionApprovalItems = selectedPurchaseRequisitionApproval.templateItems.map((item) => {
+      if (item.id === idToUpdate) {
+        (item as any)[key] = value;
+      }
+      return item;
+    });
+    const updatedSelectedPurchaseRequisitionApproval = CLONING_LIB.deepClone(selectedPurchaseRequisitionApproval);
+    updatedSelectedPurchaseRequisitionApproval.templateItems = updatedSelectedPurchaseRequisitionApprovalItems;
+    return updatedSelectedPurchaseRequisitionApproval;
+  };
+
+  /**
+   * Update the SelectedApprovalItem's field based on the provided key
+   * @param changeEvent change event emitted by html element
+   * @param record the data associated with current row
+   * @param key the key of the modified field (to perform modifying logic)
+   * @param index the index of current row (against table)
+   */
+  const dataChanged: (changeEventType: ChangeEvent, changeEvent: any, record: IPurchaseRequisitionTemplateItem, key: string, index: number) => void = (
+    changeEventType,
+    changeEvent,
+    record,
+    key,
+    index
+  ) => {
+    console.group('dataChanged');
+    console.log('changeEventType >>: ', changeEventType);
+    console.log('changeEvent >>: ', changeEvent);
+    console.log('record >>: ', record);
+    console.log('key >>: ', key);
+    console.log('index >>: ', index);
+    console.groupEnd();
+
+    let valueToUpdate: any;
+    switch (changeEventType) {
+      case ChangeEvent.NUMBER_INPUT:
+        valueToUpdate = changeEvent;
+        break;
+      case ChangeEvent.DATE_TIME:
+        valueToUpdate = changeEvent ? (changeEvent as Moment).toDate() : undefined;
+        break;
+      case ChangeEvent.TEXT_INPUT:
+        valueToUpdate = changeEvent.target.value;
+        break;
+      default:
+        valueToUpdate = '';
+        break;
+    }
+
+    if (props.currentTemplate) {
+      const updatedSelectedPurchaseRequisitionApproval = updateData(props.currentTemplate, valueToUpdate, record, key);
+      updateTemplate(updatedSelectedPurchaseRequisitionApproval);
+    }
+  };
 
   return (
     <Table className="my-2" dataSource={TEMPLATE_ITEMS} rowKey="id" scroll={{ x: 2000, y: 500 }} pagination={TABLE_PAGINATION_CONFIG}>
@@ -31,8 +110,8 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
               (kgs)
             </span>
           }
-          dataIndex="balance"
           key="balance"
+          render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <>{Math.floor(Math.random() * 10000)}</>}
         />
       )}
       {props.columnFilter.get('packagingSize') !== true && (
@@ -57,7 +136,16 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
       <Table.Column title="Total Quantity to Order (kgs)" render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <>{record.packagingSize * 1}</>} />
       <Table.Column
         title={
-          <Popover content={<DatePicker />} trigger="click">
+          <Popover
+            content={
+              <DatePicker
+                onChange={(moment) => {
+                  updateAllDeliveryDate(moment);
+                }}
+              />
+            }
+            trigger="click"
+          >
             <div>
               <span>Delivery Date</span>
               <br />
@@ -66,11 +154,13 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
           </Popover>
         }
         dataIndex="deliveryDate"
-        render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => (
-          <>
-            {new Date().toLocaleDateString()} <PopOverDatePicker icon={<EditOutlined />} />
-          </>
-        )}
+        render={(value: Date, record: IPurchaseRequisitionTemplateItem, index: number) => {
+          let castedValue = undefined;
+          if (value) {
+            castedValue = moment(new Date(value));
+          }
+          return <DatePicker value={castedValue} onChange={(moment) => dataChanged(ChangeEvent.DATE_TIME, moment, record, 'deliveryDate', index)} />;
+        }}
       />
       <Table.Column
         title={
@@ -85,7 +175,7 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
         render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <Button icon={<ClearOutlined />} />}
       />
     </Table>
-  )
-}
+  );
+};
 
-export default PurchaseRequisitionRequestConstructor
+export default PurchaseRequisitionRequestConstructor;

@@ -1,15 +1,15 @@
-import React from 'react'
-import { Button, Space, Table } from 'antd'
-import { ColumnsType } from 'antd/lib/table'
-import { DownloadOutlined, MailOutlined } from '@ant-design/icons'
+import React from 'react';
+import { Button, Space, Table } from 'antd';
+import { ColumnsType } from 'antd/lib/table';
+import { DownloadOutlined, MailOutlined } from '@ant-design/icons';
 
-import { TABLE_PAGINATION_CONFIG } from '@constant/pagination-config'
-import { IPurchaseOrder } from '@dto/i-purchase-order.dto'
-import { IPurchaseApprovalOrder } from '@dto/i-purchase-approval-order.dto'
+import { TABLE_PAGINATION_CONFIG } from '@constant/pagination-config';
+import { IPurchaseOrder } from '@dto/i-purchase-order.dto';
+import { IPurchaseApprovalOrder } from '@dto/i-purchase-approval-order.dto';
 
 interface IPurchaseOrderTableProps {
-  readonly currentPurchaseApprovalOrderRecord?: IPurchaseApprovalOrder
-  filteredItems?: IPurchaseOrder[]
+  readonly currentPurchaseApprovalOrderRecord?: IPurchaseApprovalOrder;
+  filteredItems?: IPurchaseOrder[];
 }
 
 const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
@@ -59,52 +59,52 @@ const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
         </Button>
       ),
     },
-  ]
+  ];
 
   const downloadPO = (purchaseOrder: IPurchaseOrder) => {
-    console.group(PurchaseOrderTable.name)
-    console.log('Download PO')
-    console.log('Purchase Order: ', purchaseOrder)
-    console.groupEnd()
-  }
+    console.group(PurchaseOrderTable.name);
+    console.log('Download PO');
+    console.log('Purchase Order: ', purchaseOrder);
+    console.groupEnd();
+  };
 
   const downloadAllPO = () => {
-    console.group(PurchaseOrderTable.name)
-    console.log('Download All PO')
-    console.log('Purchase Approval Orders Id: ', currentPurchaseApprovalOrderRecord?.id)
-    console.log('Purchase Orders List: ', currentPurchaseApprovalOrderRecord?.purchaseOrders)
-    console.groupEnd()
-  }
+    console.group(PurchaseOrderTable.name);
+    console.log('Download All PO');
+    console.log('Purchase Approval Orders Id: ', currentPurchaseApprovalOrderRecord?.id);
+    console.log('Purchase Orders List: ', currentPurchaseApprovalOrderRecord?.purchaseOrders);
+    console.groupEnd();
+  };
 
   const emailPO = (purchaseOrder: IPurchaseOrder) => {
-    console.group(PurchaseOrderTable.name)
-    console.log('Email PO')
-    console.log('Purchase Order: ', purchaseOrder)
-    console.groupEnd()
-  }
+    console.group(PurchaseOrderTable.name);
+    console.log('Email PO');
+    console.log('Purchase Order: ', purchaseOrder);
+    console.groupEnd();
+  };
 
   const emailAllPO = () => {
-    console.group(PurchaseOrderTable.name)
-    console.log('Email All PO')
-    console.log('Purchase Approval Orders Id: ', currentPurchaseApprovalOrderRecord?.id)
-    console.log('Purchase Orders List: ', currentPurchaseApprovalOrderRecord?.purchaseOrders)
-    console.groupEnd()
-  }
+    console.group(PurchaseOrderTable.name);
+    console.log('Email All PO');
+    console.log('Purchase Approval Orders Id: ', currentPurchaseApprovalOrderRecord?.id);
+    console.log('Purchase Orders List: ', currentPurchaseApprovalOrderRecord?.purchaseOrders);
+    console.groupEnd();
+  };
 
   const downloadAndEmailAll = () => {
-    console.group(PurchaseOrderTable.name)
-    console.log('Download & Email PO')
-    console.log('Purchase Approval Orders Id: ', currentPurchaseApprovalOrderRecord?.id)
-    console.log('Purchase Orders List: ', currentPurchaseApprovalOrderRecord?.purchaseOrders)
-    console.groupEnd()
-    downloadAllPO()
-    emailAllPO()
-  }
+    console.group(PurchaseOrderTable.name);
+    console.log('Download & Email PO');
+    console.log('Purchase Approval Orders Id: ', currentPurchaseApprovalOrderRecord?.id);
+    console.log('Purchase Orders List: ', currentPurchaseApprovalOrderRecord?.purchaseOrders);
+    console.groupEnd();
+    downloadAllPO();
+    emailAllPO();
+  };
 
-  const { currentPurchaseApprovalOrderRecord, filteredItems } = props
+  const { currentPurchaseApprovalOrderRecord, filteredItems } = props;
 
   if (currentPurchaseApprovalOrderRecord && currentPurchaseApprovalOrderRecord != null) {
-    const submissionItems = filteredItems === undefined ? currentPurchaseApprovalOrderRecord.purchaseOrders : filteredItems
+    const submissionItems = filteredItems === undefined ? currentPurchaseApprovalOrderRecord.purchaseOrders : filteredItems;
     return (
       <>
         <Table
@@ -142,14 +142,14 @@ const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
           </Button>
         </Space>
       </>
-    )
+    );
   } else {
     return (
       <div className="d-flex flex-column justify-content-center my-4">
         <span className="text-center">No Purchase Order Selected</span>
       </div>
-    )
+    );
   }
-}
+};
 
-export default PurchaseOrderTable
+export default PurchaseOrderTable;

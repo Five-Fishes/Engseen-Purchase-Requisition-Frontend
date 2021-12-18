@@ -1,135 +1,135 @@
-import React, { useState } from 'react'
-import { Col, Form, Input, Row, Button, InputNumber, Modal, Space, Divider, Radio } from 'antd'
-import PurchaseRequisitionTemplateTable from '../components/template-table'
-import { IPurchaseRequisitionTemplate } from '@dto/i-purchase-requisition-template.dto'
-import Title from 'antd/lib/typography/Title'
-import PurchaseRequisitionTemplateBrowser from '../components/template-browser'
-import { generateIndex } from '../components/template-indexer'
-import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper'
-import readXlsxFile from 'read-excel-file'
-import { getSearchText, SearchEngine } from '@utils/search/native-search'
-import { IPurchaseRequisitionTemplateItem } from '@dto/i-purchase-requisition-template-item.dto'
-import { EditOutlined } from '@ant-design/icons'
-import { popNotification } from '@module/shared/components/notification'
-import { ApiResponseStatus } from '@constant/api-status.enum'
-import { getItemBySearch } from '@api/purchase-requisition-template.api'
-import { NotificationType } from '@constant/notification.enum'
+import React, { useState } from 'react';
+import { Col, Form, Input, Row, Button, InputNumber, Modal, Space, Divider, Radio } from 'antd';
+import PurchaseRequisitionTemplateTable from '../components/template-table';
+import { IPurchaseRequisitionTemplate } from '@dto/i-purchase-requisition-template.dto';
+import Title from 'antd/lib/typography/Title';
+import PurchaseRequisitionTemplateBrowser from '../components/template-browser';
+import { generateIndex } from '../components/template-indexer';
+import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
+import readXlsxFile from 'read-excel-file';
+import { getSearchText, SearchEngine } from '@utils/search/native-search';
+import { IPurchaseRequisitionTemplateItem } from '@dto/i-purchase-requisition-template-item.dto';
+import { EditOutlined } from '@ant-design/icons';
+import { popNotification } from '@module/shared/components/notification';
+import { ApiResponseStatus } from '@constant/api-status.enum';
+import { getItemBySearch } from '@api/purchase-requisition-template.api';
+import { NotificationType } from '@constant/notification.enum';
 
 const PurchaseRequisitionTemplateList: React.FC = () => {
-  const [selectedPurchaseRequisitionTemplate, setSelectedPurchaseRequisitionTemplate] = useState<IPurchaseRequisitionTemplate>({} as IPurchaseRequisitionTemplate)
-  const [filteredTemplateItems, setFilteredTemplateItems] = useState<IPurchaseRequisitionTemplateItem[]>()
+  const [selectedPurchaseRequisitionTemplate, setSelectedPurchaseRequisitionTemplate] = useState<IPurchaseRequisitionTemplate>({} as IPurchaseRequisitionTemplate);
+  const [filteredTemplateItems, setFilteredTemplateItems] = useState<IPurchaseRequisitionTemplateItem[]>();
 
-  const [excelFile, setExcelFile] = useState<File>()
-  const [excelData, setExcelData] = useState<Array<any>>([])
+  const [excelFile, setExcelFile] = useState<File>();
+  const [excelData, setExcelData] = useState<Array<any>>([]);
 
-  const [searchText, setSearchText] = useState<string>('')
-  const searchEngine: SearchEngine<IPurchaseRequisitionTemplateItem> = new SearchEngine([], generateIndex)
+  const [searchText, setSearchText] = useState<string>('');
+  const searchEngine: SearchEngine<IPurchaseRequisitionTemplateItem> = new SearchEngine([], generateIndex);
 
-  const [editTemplateNameModal, setEditTemplateNameModal] = useState<boolean>(false)
-  const [newTemplateName, setNewTemplateName] = useState<string>('')
+  const [editTemplateNameModal, setEditTemplateNameModal] = useState<boolean>(false);
+  const [newTemplateName, setNewTemplateName] = useState<string>('');
 
-  const [templateInsertItemSelect, setTemplateInsertItemSelect] = useState<boolean>(false)
-  const [insertItemOptions, setInsertItemOptions] = useState<IPurchaseRequisitionTemplateItem[]>()
-  const [insertItemsForm] = Form.useForm()
+  const [templateInsertItemSelect, setTemplateInsertItemSelect] = useState<boolean>(false);
+  const [insertItemOptions, setInsertItemOptions] = useState<IPurchaseRequisitionTemplateItem[]>();
+  const [insertItemsForm] = Form.useForm();
 
   const search = () => {
-    const sanitisedSearchText: string = getSearchText(searchText)
-    const filteredData = searchEngine.updateEngine(selectedPurchaseRequisitionTemplate.templateItems).search(sanitisedSearchText)
-    setFilteredTemplateItems(filteredData)
-  }
+    const sanitisedSearchText: string = getSearchText(searchText);
+    const filteredData = searchEngine.updateEngine(selectedPurchaseRequisitionTemplate.templateItems).search(sanitisedSearchText);
+    setFilteredTemplateItems(filteredData);
+  };
 
   const changeTemplateNameModal = () => {
-    setNewTemplateName(selectedPurchaseRequisitionTemplate.templateName)
-    setEditTemplateNameModal(true)
-  }
+    setNewTemplateName(selectedPurchaseRequisitionTemplate.templateName);
+    setEditTemplateNameModal(true);
+  };
 
   const closeTemplateNameModal = () => {
-    setNewTemplateName('')
-    setEditTemplateNameModal(false)
-  }
+    setNewTemplateName('');
+    setEditTemplateNameModal(false);
+  };
 
   const editTemplateName = () => {
     if (newTemplateName.trim() !== '') {
-      selectedPurchaseRequisitionTemplate.templateName = newTemplateName
-      const deepCopy: IPurchaseRequisitionTemplate = CLONING_LIB.deepClone(selectedPurchaseRequisitionTemplate)
-      setSelectedPurchaseRequisitionTemplate(deepCopy)
+      selectedPurchaseRequisitionTemplate.templateName = newTemplateName;
+      const deepCopy: IPurchaseRequisitionTemplate = CLONING_LIB.deepClone(selectedPurchaseRequisitionTemplate);
+      setSelectedPurchaseRequisitionTemplate(deepCopy);
     }
-    closeTemplateNameModal()
-    popNotification('Success Edit Template', NotificationType.success)
-  }
+    closeTemplateNameModal();
+    popNotification('Success Edit Template', NotificationType.success);
+  };
 
   const deleteTemplateItem = (itemIndex: number) => {
-    selectedPurchaseRequisitionTemplate.templateItems.splice(itemIndex, 1)
-    const sortedResult = updateTemplateItemsSequence(selectedPurchaseRequisitionTemplate.templateItems)
-    selectedPurchaseRequisitionTemplate.templateItems = sortedResult
-    const deepCopy: IPurchaseRequisitionTemplate = CLONING_LIB.deepClone(selectedPurchaseRequisitionTemplate)
-    setSelectedPurchaseRequisitionTemplate(deepCopy)
-    popNotification('Success Delete Component', NotificationType.success)
-  }
+    selectedPurchaseRequisitionTemplate.templateItems.splice(itemIndex, 1);
+    const sortedResult = updateTemplateItemsSequence(selectedPurchaseRequisitionTemplate.templateItems);
+    selectedPurchaseRequisitionTemplate.templateItems = sortedResult;
+    const deepCopy: IPurchaseRequisitionTemplate = CLONING_LIB.deepClone(selectedPurchaseRequisitionTemplate);
+    setSelectedPurchaseRequisitionTemplate(deepCopy);
+    popNotification('Success Delete Component', NotificationType.success);
+  };
 
   const uploadExcelFile = (): void => {
     if (excelFile !== undefined) {
       readXlsxFile(excelFile).then((rows) => {
         // Convert to Array of JSON Object
-        setExcelData(rows)
-        popNotification('Success Upload Excel', NotificationType.success)
-      })
+        setExcelData(rows);
+        popNotification('Success Upload Excel', NotificationType.success);
+      });
     }
-  }
+  };
 
   const loadDatabaseWithExcelData = (): void => {
-    console.log('Load Database')
-    console.log(excelData)
-  }
+    console.log('Load Database');
+    console.log(excelData);
+  };
 
   const getItems = async (component: string, vendor: string, packingSize?: number) => {
-    const apiResponse = await getItemBySearch(component, vendor, packingSize)
+    const apiResponse = await getItemBySearch(component, vendor, packingSize);
 
     if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
-      setInsertItemOptions(apiResponse.data)
+      setInsertItemOptions(apiResponse.data);
     }
-  }
+  };
 
   const addNewComponentAsTemplateItem = (values: any): void => {
     if (Boolean(selectedPurchaseRequisitionTemplate.templateName)) {
       getItems(values.componentCode, values.vendorId, values.packingSize).then(() => {
-        setTemplateInsertItemSelect(true)
-      })
+        setTemplateInsertItemSelect(true);
+      });
     }
-  }
+  };
 
   const formValidationFailed = (errorInfo: any): void => {
-    console.log('Failed ', errorInfo)
-  }
+    console.log('Failed ', errorInfo);
+  };
 
   const closeTemplateInsertItemSelectModal = (): void => {
-    setTemplateInsertItemSelect(false)
-  }
+    setTemplateInsertItemSelect(false);
+  };
 
   const insertItemToTemplate = (values: any): void => {
     const itemToInsert: IPurchaseRequisitionTemplateItem = {
       ...values.selectedItem,
       sequence: values.itemSequence,
-    }
+    };
     const insertIndex: number =
-      values.itemSequence === 0 || values.itemSequence > selectedPurchaseRequisitionTemplate.templateItems.length ? selectedPurchaseRequisitionTemplate.templateItems.length : values.itemSequence
-    selectedPurchaseRequisitionTemplate.templateItems.splice(insertIndex, 0, itemToInsert)
-    const sortedResult = updateTemplateItemsSequence(selectedPurchaseRequisitionTemplate.templateItems)
-    selectedPurchaseRequisitionTemplate.templateItems = sortedResult
-    const deepCopy: IPurchaseRequisitionTemplate = CLONING_LIB.deepClone(selectedPurchaseRequisitionTemplate)
-    setSelectedPurchaseRequisitionTemplate(deepCopy)
-    setTemplateInsertItemSelect(false)
-    insertItemsForm.resetFields()
-    popNotification('Success Add Component', NotificationType.success)
-  }
+      values.itemSequence === 0 || values.itemSequence > selectedPurchaseRequisitionTemplate.templateItems.length ? selectedPurchaseRequisitionTemplate.templateItems.length : values.itemSequence;
+    selectedPurchaseRequisitionTemplate.templateItems.splice(insertIndex, 0, itemToInsert);
+    const sortedResult = updateTemplateItemsSequence(selectedPurchaseRequisitionTemplate.templateItems);
+    selectedPurchaseRequisitionTemplate.templateItems = sortedResult;
+    const deepCopy: IPurchaseRequisitionTemplate = CLONING_LIB.deepClone(selectedPurchaseRequisitionTemplate);
+    setSelectedPurchaseRequisitionTemplate(deepCopy);
+    setTemplateInsertItemSelect(false);
+    insertItemsForm.resetFields();
+    popNotification('Success Add Component', NotificationType.success);
+  };
 
   const updateTemplateItemsSequence = (templateItems: IPurchaseRequisitionTemplateItem[]): IPurchaseRequisitionTemplateItem[] => {
     const sortedResult = templateItems.map((item, index) => {
-      item.sequence = index + 1
-      return item
-    })
-    return sortedResult
-  }
+      item.sequence = index + 1;
+      return item;
+    });
+    return sortedResult;
+  };
 
   return (
     <>
@@ -228,7 +228,7 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
                 size="large"
                 className="float-end mb-2"
                 onClick={() => {
-                  console.log('Save Template')
+                  console.log('Save Template');
                 }}
               >
                 Save Template
@@ -266,7 +266,7 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
                 {insertItemOptions &&
                   insertItemOptions.length > 0 &&
                   insertItemOptions.map((item, index) => {
-                    return <Radio.Button id={`item-option-${index}`} value={item}>{`${item.componentName} - ${item.vendorName} ${item.packagingSize}`}</Radio.Button>
+                    return <Radio.Button id={`item-option-${index}`} value={item}>{`${item.componentName} - ${item.vendorName} ${item.packagingSize}`}</Radio.Button>;
                   })}
               </Space>
             </Radio.Group>
@@ -284,7 +284,7 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
         </Form>
       </Modal>
     </>
-  )
-}
+  );
+};
 
-export default PurchaseRequisitionTemplateList
+export default PurchaseRequisitionTemplateList;

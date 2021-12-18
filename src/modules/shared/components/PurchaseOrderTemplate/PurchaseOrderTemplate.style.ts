@@ -1,4 +1,4 @@
-import { StyleSheet } from '@react-pdf/renderer'
+import { StyleSheet } from '@react-pdf/renderer';
 
 export const styles = StyleSheet.create({
   cls_002: {
@@ -117,4 +117,4 @@ export const styles = StyleSheet.create({
   textRight: {
     textAlign: 'right',
   },
-})
+});

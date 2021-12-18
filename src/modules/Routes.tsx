@@ -1,16 +1,16 @@
-import React from 'react'
-import { Route } from 'react-router-dom'
+import React from 'react';
+import { Route } from 'react-router-dom';
 
-import PageRefresh from './shared/components/refresh-route'
-import PostLogInRoute from './shared/components/post-login-route'
-import SwitchWithFallback from './shared/components/switch-with-fallback'
+import PageRefresh from './shared/components/refresh-route';
+import PostLogInRoute from './shared/components/post-login-route';
+import SwitchWithFallback from './shared/components/switch-with-fallback';
 
-import LoginPage from './login/pages/login'
-import PurchaseRequisitionTemplateRoute from './purchase-requisition-template/pages'
-import PurchaseRequisitionRequestPage from './purchase-requisition-request/pages/purchase-requisition-request-page'
-import PurchaseRequisitionApprovalPage from './purchase-requisition-approval/pages/purchase-requisition-approval-page'
-import PurchaseRequisitionSubmissionPage from './purchase-requisition-submissioin-record/pages/purchase-requisition-submission-page'
-import PurchaseOrderPage from './purchase-order/pages/purchase-order-page'
+import LoginPage from './login/pages/login';
+import PurchaseRequisitionTemplateRoute from './purchase-requisition-template/pages';
+import PurchaseRequisitionRequestPage from './purchase-requisition-request/pages/purchase-requisition-request-page';
+import PurchaseRequisitionApprovalPage from './purchase-requisition-approval/pages/purchase-requisition-approval-page';
+import PurchaseRequisitionSubmissionPage from './purchase-requisition-submissioin-record/pages/purchase-requisition-submission-page';
+import PurchaseOrderPage from './purchase-order/pages/purchase-order-page';
 
 const Routes: React.FC = () => {
   return (
@@ -23,7 +23,7 @@ const Routes: React.FC = () => {
       <PostLogInRoute path="/purchase-requisition-approval" component={PurchaseRequisitionApprovalPage} />
       <PostLogInRoute path="/purchase-order" component={PurchaseOrderPage} />
     </SwitchWithFallback>
-  )
-}
+  );
+};
 
-export default Routes
+export default Routes;

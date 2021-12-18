@@ -1,134 +1,134 @@
-import { useState, useEffect } from 'react'
-import { Input, Button, Select, DatePicker } from 'antd'
-import Title from 'antd/lib/typography/Title'
-import { ReloadOutlined } from '@ant-design/icons'
-import moment from 'moment'
-import { getSearchText, SearchEngine } from '@utils/search/native-search'
-import { IPurchaseApprovalOrder } from '@dto/i-purchase-approval-order.dto'
-import { IPurchaseOrder } from '@dto/i-purchase-order.dto'
-import { convertToLocalString } from '@utils/date-time/date-time-format'
-import { Sort } from '@constant/sort.enum'
-import { getPurchaseOrders } from '@api/purchase-order.api'
-import { ApiResponseStatus } from '@constant/api-status.enum'
-import { genereateIndex } from '../components/purchase-order-indexer'
-import PurchaseOrderBrowser from '../components/purchase-order-record-browser'
-import PurchaseOrderTable from '../components/purchase-order-table'
-import { popNotification } from '@module/shared/components/notification'
-import { NotificationType } from '@constant/notification.enum'
-import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper'
+import { useState, useEffect } from 'react';
+import { Input, Button, Select, DatePicker } from 'antd';
+import Title from 'antd/lib/typography/Title';
+import { ReloadOutlined } from '@ant-design/icons';
+import moment from 'moment';
+import { getSearchText, SearchEngine } from '@utils/search/native-search';
+import { IPurchaseApprovalOrder } from '@dto/i-purchase-approval-order.dto';
+import { IPurchaseOrder } from '@dto/i-purchase-order.dto';
+import { convertToLocalString } from '@utils/date-time/date-time-format';
+import { Sort } from '@constant/sort.enum';
+import { getPurchaseOrders } from '@api/purchase-order.api';
+import { ApiResponseStatus } from '@constant/api-status.enum';
+import { genereateIndex } from '../components/purchase-order-indexer';
+import PurchaseOrderBrowser from '../components/purchase-order-record-browser';
+import PurchaseOrderTable from '../components/purchase-order-table';
+import { popNotification } from '@module/shared/components/notification';
+import { NotificationType } from '@constant/notification.enum';
+import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
 // import { PDFDownloadLink } from "@react-pdf/renderer";
 // import PurchaseOrderTemplate from "@module/shared/components/PurchaseOrderTemplate/PurchaseOrderTemplate";
 
 const PurchaseOrderPage: React.FC = () => {
-  const [purchaseApprovalOrders, setPurchaseApprovalOrders] = useState<IPurchaseApprovalOrder[]>()
-  const [filteredPurchaseApprovalOrders, setFilteredPurchaseApprovalOrders] = useState<IPurchaseApprovalOrder[]>()
-  const [selectedPurchaseApprovalOrder, setSelectedPurchaseApprovalOrder] = useState<IPurchaseApprovalOrder>()
+  const [purchaseApprovalOrders, setPurchaseApprovalOrders] = useState<IPurchaseApprovalOrder[]>();
+  const [filteredPurchaseApprovalOrders, setFilteredPurchaseApprovalOrders] = useState<IPurchaseApprovalOrder[]>();
+  const [selectedPurchaseApprovalOrder, setSelectedPurchaseApprovalOrder] = useState<IPurchaseApprovalOrder>();
 
-  const [filteredPurchaseOrders, setFilteredPurchaseOrders] = useState<IPurchaseOrder[]>()
+  const [filteredPurchaseOrders, setFilteredPurchaseOrders] = useState<IPurchaseOrder[]>();
 
-  const [searchText, setSearchText] = useState<string>('')
-  const searchEngine: SearchEngine<IPurchaseOrder> = new SearchEngine([], genereateIndex)
+  const [searchText, setSearchText] = useState<string>('');
+  const searchEngine: SearchEngine<IPurchaseOrder> = new SearchEngine([], genereateIndex);
 
-  const [startDateFilterCriteria, setStartDateFilterCriteria] = useState<Date>()
-  const [endDateFilterCriteria, setEndDateFilterCriteria] = useState<Date>()
-  const [sortCriteria, setSortCriteria] = useState<Sort>(Sort.DES)
+  const [startDateFilterCriteria, setStartDateFilterCriteria] = useState<Date>();
+  const [endDateFilterCriteria, setEndDateFilterCriteria] = useState<Date>();
+  const [sortCriteria, setSortCriteria] = useState<Sort>(Sort.DES);
 
   useEffect(() => {
     const getPurchaseApprovalOrderList = async () => {
-      const apiResponse = await getPurchaseOrders(new Date(), new Date(), Sort.ASC)
+      const apiResponse = await getPurchaseOrders(new Date(), new Date(), Sort.ASC);
 
       if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
-        const deepCopy: IPurchaseApprovalOrder[] = CLONING_LIB.deepClone(getPurchaseApprovalOrdersProgress(apiResponse.data))
-        setPurchaseApprovalOrders(deepCopy)
-        setFilteredPurchaseApprovalOrders(deepCopy)
+        const deepCopy: IPurchaseApprovalOrder[] = CLONING_LIB.deepClone(getPurchaseApprovalOrdersProgress(apiResponse.data));
+        setPurchaseApprovalOrders(deepCopy);
+        setFilteredPurchaseApprovalOrders(deepCopy);
       }
-    }
+    };
 
-    getPurchaseApprovalOrderList()
-  }, [])
+    getPurchaseApprovalOrderList();
+  }, []);
 
   useEffect(() => {
-    console.group(PurchaseOrderPage.name)
+    console.group(PurchaseOrderPage.name);
     console.log('Filtering list after filters are set >>: ', {
       startDateFilterCriteria,
       endDateFilterCriteria,
-    })
-    filterPurchaseApprovalOrders()
+    });
+    filterPurchaseApprovalOrders();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [startDateFilterCriteria, endDateFilterCriteria])
+  }, [startDateFilterCriteria, endDateFilterCriteria]);
 
   useEffect(() => {
-    console.group(PurchaseOrderPage.name)
+    console.group(PurchaseOrderPage.name);
     console.log('Sorting list after sort is set >>: ', {
       sortCriteria,
-    })
-    sortPurchaseApprovalOrderByDate(sortCriteria)
+    });
+    sortPurchaseApprovalOrderByDate(sortCriteria);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sortCriteria])
+  }, [sortCriteria]);
 
   const getPurchaseApprovalOrdersProgress = (purchaseApprovalOrders: IPurchaseApprovalOrder[]) => {
     const purchaseApprovalOrderProgress = purchaseApprovalOrders.map((purchaseApprovalOrder) => {
-      const incompletePO = purchaseApprovalOrder.purchaseOrders.filter((purchaseOrder) => !(purchaseOrder.emailed || purchaseOrder.downloaded))
-      purchaseApprovalOrder.completed = incompletePO.length === 0
-      return purchaseApprovalOrder
-    })
-    return purchaseApprovalOrderProgress
-  }
+      const incompletePO = purchaseApprovalOrder.purchaseOrders.filter((purchaseOrder) => !(purchaseOrder.emailed || purchaseOrder.downloaded));
+      purchaseApprovalOrder.completed = incompletePO.length === 0;
+      return purchaseApprovalOrder;
+    });
+    return purchaseApprovalOrderProgress;
+  };
 
   const search = () => {
     if (selectedPurchaseApprovalOrder) {
-      const sanitisedSearchText: string = getSearchText(searchText)
-      const filteredData = searchEngine.updateEngine(selectedPurchaseApprovalOrder.purchaseOrders ?? []).search(sanitisedSearchText)
-      setFilteredPurchaseOrders(filteredData)
+      const sanitisedSearchText: string = getSearchText(searchText);
+      const filteredData = searchEngine.updateEngine(selectedPurchaseApprovalOrder.purchaseOrders ?? []).search(sanitisedSearchText);
+      setFilteredPurchaseOrders(filteredData);
     }
-  }
+  };
 
   const filterByDateRange = (startDate?: string, endDate?: string) => {
-    const startDateValue = startDate === undefined ? startDate : new Date(new Date(startDate).setHours(0, 0, 0, 0))
-    setStartDateFilterCriteria(startDateValue)
-    const endDateValue = endDate === undefined ? endDate : new Date(new Date(endDate).setHours(23, 59, 59, 59))
-    setEndDateFilterCriteria(endDateValue)
-    filterPurchaseApprovalOrders()
-  }
+    const startDateValue = startDate === undefined ? startDate : new Date(new Date(startDate).setHours(0, 0, 0, 0));
+    setStartDateFilterCriteria(startDateValue);
+    const endDateValue = endDate === undefined ? endDate : new Date(new Date(endDate).setHours(23, 59, 59, 59));
+    setEndDateFilterCriteria(endDateValue);
+    filterPurchaseApprovalOrders();
+  };
 
   const filterPurchaseApprovalOrders = () => {
-    const filteredResult: IPurchaseApprovalOrder[] = []
+    const filteredResult: IPurchaseApprovalOrder[] = [];
     purchaseApprovalOrders?.forEach((purchaseApprovalOrder) => {
-      const purchaseApprovalOrderCreatedDate = new Date(purchaseApprovalOrder.createdDate)
+      const purchaseApprovalOrderCreatedDate = new Date(purchaseApprovalOrder.createdDate);
       if (startDateFilterCriteria !== undefined && purchaseApprovalOrderCreatedDate < startDateFilterCriteria) {
       } else if (endDateFilterCriteria !== undefined && purchaseApprovalOrderCreatedDate > endDateFilterCriteria) {
       } else {
-        filteredResult.push(purchaseApprovalOrder)
+        filteredResult.push(purchaseApprovalOrder);
       }
-    })
-    console.log('Filtered result >>:', filteredResult)
-    console.groupEnd()
-    setFilteredPurchaseApprovalOrders(filteredResult)
-  }
+    });
+    console.log('Filtered result >>:', filteredResult);
+    console.groupEnd();
+    setFilteredPurchaseApprovalOrders(filteredResult);
+  };
 
   const sortPurchaseApprovalOrderByDate = (sort: Sort) => {
-    setSortCriteria(sort)
+    setSortCriteria(sort);
     filteredPurchaseApprovalOrders?.sort((purchaseApprovalOrder1, purchaseApprovalOrder2) => {
       if (sort === Sort.ASC) {
-        return purchaseApprovalOrder1.createdDate < purchaseApprovalOrder2.createdDate ? -1 : 1
+        return purchaseApprovalOrder1.createdDate < purchaseApprovalOrder2.createdDate ? -1 : 1;
       } else if (sort === Sort.DES) {
-        return purchaseApprovalOrder1.createdDate > purchaseApprovalOrder2.createdDate ? -1 : 1
+        return purchaseApprovalOrder1.createdDate > purchaseApprovalOrder2.createdDate ? -1 : 1;
       }
-      return 0
-    })
-  }
+      return 0;
+    });
+  };
 
   const resetSortingAndFilter = () => {
-    setFilteredPurchaseApprovalOrders(purchaseApprovalOrders)
+    setFilteredPurchaseApprovalOrders(purchaseApprovalOrders);
 
-    setStartDateFilterCriteria(undefined)
-    setEndDateFilterCriteria(undefined)
-    setSortCriteria(Sort.DES)
-    sortPurchaseApprovalOrderByDate(Sort.DES)
+    setStartDateFilterCriteria(undefined);
+    setEndDateFilterCriteria(undefined);
+    setSortCriteria(Sort.DES);
+    sortPurchaseApprovalOrderByDate(Sort.DES);
 
-    filterPurchaseApprovalOrders()
-    popNotification('Success Reset Sorting & Filtering', NotificationType.success)
-  }
+    filterPurchaseApprovalOrders();
+    popNotification('Success Reset Sorting & Filtering', NotificationType.success);
+  };
 
   return (
     <>
@@ -213,7 +213,7 @@ const PurchaseOrderPage: React.FC = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default PurchaseOrderPage
+export default PurchaseOrderPage;

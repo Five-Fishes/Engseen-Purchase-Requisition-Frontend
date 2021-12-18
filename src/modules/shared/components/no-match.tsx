@@ -1,9 +1,9 @@
-import Title from 'antd/lib/typography/Title'
-import { useLocation } from 'react-router-dom'
+import Title from 'antd/lib/typography/Title';
+import { useLocation } from 'react-router-dom';
 
 const NoMatch: React.FC = () => {
-  const location = useLocation()
-  const sanitisedPath: string = location.pathname.replace(/\/|-/g, ' ').trim() + ' page'
+  const location = useLocation();
+  const sanitisedPath: string = location.pathname.replace(/\/|-/g, ' ').trim() + ' page';
 
   return (
     <div className="d-flex justify-content-center h-100">
@@ -11,7 +11,7 @@ const NoMatch: React.FC = () => {
         {sanitisedPath} is not available
       </Title>
     </div>
-  )
-}
+  );
+};
 
-export default NoMatch
+export default NoMatch;

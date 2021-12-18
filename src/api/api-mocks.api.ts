@@ -1,5 +1,5 @@
-import axios from 'axios'
-import MockAdapter from 'axios-mock-adapter'
+import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
 import {
   PURCHASE_REQUISITION_REQUEST,
   PURCHASE_REQUISITION_REQUEST_REGEX,
@@ -8,16 +8,16 @@ import {
   PURCHASE_ORDER_REGEX,
   PURCHASE_REQUISITION_APPROVAL,
   GET_COMPONENT_BY_SEARCH,
-} from '@constant/api-endpoints'
-import { IPurchaseRequisitionRequest } from '@dto/i-purchase-requisition-request.dto'
-import { IPurchaseRequisitionTemplate } from '@dto/i-purchase-requisition-template.dto'
-import { IPurchaseRequisitionTemplateItem } from '@dto/i-purchase-requisition-template-item.dto'
-import { IPurchaseApprovalOrder } from '@dto/i-purchase-approval-order.dto'
-import { IPurchaseRequisitionApproval } from '@dto/i-purchase-requisition-approval.dto'
-import { PurchaseRequisitionApprovalStatus } from '@constant/purchase-requisition-approval-status.enum'
+} from '@constant/api-endpoints';
+import { IPurchaseRequisitionRequest } from '@dto/i-purchase-requisition-request.dto';
+import { IPurchaseRequisitionTemplate } from '@dto/i-purchase-requisition-template.dto';
+import { IPurchaseRequisitionTemplateItem } from '@dto/i-purchase-requisition-template-item.dto';
+import { IPurchaseApprovalOrder } from '@dto/i-purchase-approval-order.dto';
+import { IPurchaseRequisitionApproval } from '@dto/i-purchase-requisition-approval.dto';
+import { PurchaseRequisitionApprovalStatus } from '@constant/purchase-requisition-approval-status.enum';
 
-const mock = new MockAdapter(axios)
-const getMock = () => mock
+const mock = new MockAdapter(axios);
+const getMock = () => mock;
 
 mock.onPost(PURCHASE_REQUISITION_REQUEST).reply<IPurchaseRequisitionRequest>(200, {
   id: 1,
@@ -36,7 +36,7 @@ mock.onPost(PURCHASE_REQUISITION_REQUEST).reply<IPurchaseRequisitionRequest>(200
     },
   ],
   remarks: 'abc',
-})
+});
 
 mock.onGet(PURCHASE_REQUISITION_REQUEST_REGEX).reply<IPurchaseRequisitionRequest[]>(200, [
   {
@@ -229,7 +229,7 @@ mock.onGet(PURCHASE_REQUISITION_REQUEST_REGEX).reply<IPurchaseRequisitionRequest
     ],
     remarks: 'abc',
   },
-])
+]);
 
 mock.onGet(GET_COMPONENT_BY_SEARCH).reply<IPurchaseRequisitionTemplateItem[]>(200, [
   {
@@ -268,7 +268,7 @@ mock.onGet(GET_COMPONENT_BY_SEARCH).reply<IPurchaseRequisitionTemplateItem[]>(20
     packagingSize: 100,
     sequence: 4,
   },
-])
+]);
 
 mock.onPost(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate>(200, {
   id: 1,
@@ -311,7 +311,7 @@ mock.onPost(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate>(2
       packagingSize: 100,
     },
   ],
-})
+});
 
 mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(200, [
   {
@@ -788,7 +788,7 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
       },
     ],
   },
-])
+]);
 
 mock.onPost(PURCHASE_ORDER).reply<IPurchaseApprovalOrder>(200, {
   id: 1,
@@ -818,7 +818,7 @@ mock.onPost(PURCHASE_ORDER).reply<IPurchaseApprovalOrder>(200, {
       downloaded: true,
     },
   ],
-})
+});
 
 mock.onGet(PURCHASE_ORDER_REGEX).reply<IPurchaseApprovalOrder[]>(200, [
   {
@@ -1053,7 +1053,7 @@ mock.onGet(PURCHASE_ORDER_REGEX).reply<IPurchaseApprovalOrder[]>(200, [
       },
     ],
   },
-])
+]);
 
 mock.onGet(PURCHASE_REQUISITION_APPROVAL).reply<IPurchaseRequisitionApproval[]>(200, [
   {
@@ -2946,5 +2946,5 @@ mock.onGet(PURCHASE_REQUISITION_APPROVAL).reply<IPurchaseRequisitionApproval[]>(
     ],
     remarks: '',
   },
-])
-export default getMock
+]);
+export default getMock;

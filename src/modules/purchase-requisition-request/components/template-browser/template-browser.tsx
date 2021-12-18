@@ -1,30 +1,30 @@
-import './template-browser.less'
-import { getPurchaseRequisitionTemplate } from '@api/purchase-requisition-template.api'
-import { ApiResponseStatus } from '@constant/api-status.enum'
-import { IPurchaseRequisitionTemplate } from '@dto/i-purchase-requisition-template.dto'
-import { useEffect, useState } from 'react'
-import { Button } from 'antd'
-import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper'
+import './template-browser.less';
+import { getPurchaseRequisitionTemplate } from '@api/purchase-requisition-template.api';
+import { ApiResponseStatus } from '@constant/api-status.enum';
+import { IPurchaseRequisitionTemplate } from '@dto/i-purchase-requisition-template.dto';
+import { useEffect, useState } from 'react';
+import { Button } from 'antd';
+import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
 
 interface IPurchaseRequisitionTemplateProps {
-  setSelectedTemplate: (template: IPurchaseRequisitionTemplate) => void
+  setSelectedTemplate: (template: IPurchaseRequisitionTemplate) => void;
 }
 
 const PurchaseRequisitionTemplateBrowser: React.FC<IPurchaseRequisitionTemplateProps> = (props) => {
-  const [purchaseRequisitionTemplates, setPurchaseRequisitionTemplates] = useState<IPurchaseRequisitionTemplate[]>()
-  const [selectedIndex, setSelectedIndex] = useState(-1)
+  const [purchaseRequisitionTemplates, setPurchaseRequisitionTemplates] = useState<IPurchaseRequisitionTemplate[]>();
+  const [selectedIndex, setSelectedIndex] = useState(-1);
 
   useEffect(() => {
     const getTemplates = async () => {
-      const apiResponse = await getPurchaseRequisitionTemplate()
+      const apiResponse = await getPurchaseRequisitionTemplate();
 
       if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
-        setPurchaseRequisitionTemplates(apiResponse.data)
+        setPurchaseRequisitionTemplates(apiResponse.data);
       }
-    }
+    };
 
-    getTemplates()
-  }, [])
+    getTemplates();
+  }, []);
 
   return (
     <>
@@ -39,18 +39,18 @@ const PurchaseRequisitionTemplateBrowser: React.FC<IPurchaseRequisitionTemplateP
                 className="m-2"
                 size="large"
                 onClick={() => {
-                  setSelectedIndex(index)
-                  const deepCopy: IPurchaseRequisitionTemplate = CLONING_LIB.deepClone(template)
-                  props.setSelectedTemplate(deepCopy)
+                  setSelectedIndex(index);
+                  const deepCopy: IPurchaseRequisitionTemplate = CLONING_LIB.deepClone(template);
+                  props.setSelectedTemplate(deepCopy);
                 }}
               >
                 {template.templateName}
               </Button>
-            )
+            );
           })}
       </div>
     </>
-  )
-}
+  );
+};
 
-export default PurchaseRequisitionTemplateBrowser
+export default PurchaseRequisitionTemplateBrowser;

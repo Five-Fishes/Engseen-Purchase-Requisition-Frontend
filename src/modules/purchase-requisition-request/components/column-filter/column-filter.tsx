@@ -1,23 +1,23 @@
-import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper'
-import { Checkbox, Table, Button } from 'antd'
-import { useState } from 'react'
+import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
+import { Checkbox, Table, Button } from 'antd';
+import { useState } from 'react';
 
 interface IPurchaseRequisitionColumnFilterProps {
-  setColumnFilter: (columnFilters: Map<string, boolean>) => void
+  setColumnFilter: (columnFilters: Map<string, boolean>) => void;
 }
 
 const PurchaseRequisitionColumnFilter: React.FC<IPurchaseRequisitionColumnFilterProps> = (props) => {
-  const [columnFilter] = useState<Map<string, boolean>>(new Map())
+  const [columnFilter] = useState<Map<string, boolean>>(new Map());
 
   const applyColumn = () => {
-    const deepCopy: Map<string, boolean> = CLONING_LIB.deepClone(columnFilter)
-    props.setColumnFilter(deepCopy)
-    console.log(columnFilter)
-  }
+    const deepCopy: Map<string, boolean> = CLONING_LIB.deepClone(columnFilter);
+    props.setColumnFilter(deepCopy);
+    console.log(columnFilter);
+  };
 
   const filterColumn = (column: IFilterColumnOption, checked: boolean) => {
-    columnFilter.set(column.key, !checked)
-  }
+    columnFilter.set(column.key, !checked);
+  };
 
   const COLUMN = [
     {
@@ -31,7 +31,7 @@ const PurchaseRequisitionColumnFilter: React.FC<IPurchaseRequisitionColumnFilter
       dataIndex: 'name',
       key: 'name',
     },
-  ]
+  ];
 
   return (
     <>
@@ -40,13 +40,13 @@ const PurchaseRequisitionColumnFilter: React.FC<IPurchaseRequisitionColumnFilter
         Apply Column
       </Button>
     </>
-  )
-}
+  );
+};
 
 interface IFilterColumnOption {
-  name: string
-  key: string
-  filterable: boolean
+  name: string;
+  key: string;
+  filterable: boolean;
 }
 
 const FILTER_COLUM_OPTION: IFilterColumnOption[] = [
@@ -80,6 +80,6 @@ const FILTER_COLUM_OPTION: IFilterColumnOption[] = [
     key: 'packagingSize',
     filterable: true,
   },
-]
+];
 
-export default PurchaseRequisitionColumnFilter
+export default PurchaseRequisitionColumnFilter;

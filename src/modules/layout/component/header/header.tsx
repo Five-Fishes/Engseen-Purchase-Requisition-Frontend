@@ -1,13 +1,13 @@
-import './header.less'
-import { Button } from 'antd'
-import { MenuOutlined } from '@ant-design/icons'
-import React from 'react'
+import './header.less';
+import { Button } from 'antd';
+import { MenuOutlined } from '@ant-design/icons';
+import React from 'react';
 
 interface IHeaderProps {
-  readonly sideBarOpened: boolean
-  readonly triggerSideBar: () => void
-  readonly loggedIn: boolean
-  readonly triggerLoggedIn: () => void
+  readonly sideBarOpened: boolean;
+  readonly triggerSideBar: () => void;
+  readonly loggedIn: boolean;
+  readonly triggerLoggedIn: () => void;
 }
 
 const Header: React.FC<IHeaderProps> = (props) => {
@@ -24,7 +24,7 @@ const Header: React.FC<IHeaderProps> = (props) => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

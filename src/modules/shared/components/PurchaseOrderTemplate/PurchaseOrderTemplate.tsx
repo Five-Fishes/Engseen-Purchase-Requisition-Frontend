@@ -1,20 +1,20 @@
-import React from 'react'
-import { Document, Page, View, Text } from '@react-pdf/renderer'
-import { IPurchaseOrderItem } from '@dto/i-purchase-order-item.dto'
-import { styles } from './PurchaseOrderTemplate.style'
-import { convertToLocalString } from '@utils/date-time/date-time-format'
+import React from 'react';
+import { Document, Page, View, Text } from '@react-pdf/renderer';
+import { IPurchaseOrderItem } from '@dto/i-purchase-order-item.dto';
+import { styles } from './PurchaseOrderTemplate.style';
+import { convertToLocalString } from '@utils/date-time/date-time-format';
 
 interface IPurchaseOrderTemplateProps {
-  purchaseOrderDate: string
-  purchaseOrderNumber: string
-  purchaseOrderVendorName: string
-  purchaseOrderVendorAddressLine1: string
-  purchaseOrderVendorAddressLine2: string
-  purchaseOrderItems?: IPurchaseOrderItem[]
+  purchaseOrderDate: string;
+  purchaseOrderNumber: string;
+  purchaseOrderVendorName: string;
+  purchaseOrderVendorAddressLine1: string;
+  purchaseOrderVendorAddressLine2: string;
+  purchaseOrderItems?: IPurchaseOrderItem[];
 }
 
 const PurchaseOrderTemplate: React.FC<IPurchaseOrderTemplateProps> = (props) => {
-  const { purchaseOrderDate, purchaseOrderNumber, purchaseOrderVendorName, purchaseOrderVendorAddressLine1, purchaseOrderVendorAddressLine2, purchaseOrderItems } = props
+  const { purchaseOrderDate, purchaseOrderNumber, purchaseOrderVendorName, purchaseOrderVendorAddressLine1, purchaseOrderVendorAddressLine2, purchaseOrderItems } = props;
 
   return (
     <Document>
@@ -502,7 +502,7 @@ const PurchaseOrderTemplate: React.FC<IPurchaseOrderTemplateProps> = (props) => 
                         <Text style={styles.cls_003}>{purchaseOrderItem.quantity * purchaseOrderItem.itemCost}</Text>
                       </View>
                     </View>
-                  )
+                  );
                 })}
             </View>
 
@@ -3198,7 +3198,7 @@ const PurchaseOrderTemplate: React.FC<IPurchaseOrderTemplateProps> = (props) => 
         </Page>
       </View>
     </Document>
-  )
-}
+  );
+};
 
-export default PurchaseOrderTemplate
+export default PurchaseOrderTemplate;

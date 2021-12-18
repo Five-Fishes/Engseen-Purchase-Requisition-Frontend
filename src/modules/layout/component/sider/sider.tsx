@@ -1,11 +1,11 @@
-import { DownloadOutlined, FileDoneOutlined, FileOutlined, FileTextOutlined, HistoryOutlined, LaptopOutlined } from '@ant-design/icons'
-import { Drawer, Menu } from 'antd'
-import { Link } from 'react-router-dom'
-import React from 'react'
+import { DownloadOutlined, FileDoneOutlined, FileOutlined, FileTextOutlined, HistoryOutlined, LaptopOutlined } from '@ant-design/icons';
+import { Drawer, Menu } from 'antd';
+import { Link } from 'react-router-dom';
+import React from 'react';
 
 interface IAppSider {
-  sideBarOpened: boolean
-  toggleSidebar?: () => void
+  sideBarOpened: boolean;
+  toggleSidebar?: () => void;
 }
 
 const AppSider: React.FC<IAppSider> = (props) => {
@@ -61,7 +61,7 @@ const AppSider: React.FC<IAppSider> = (props) => {
       </Drawer>
       {/* </Sider> */}
     </>
-  )
-}
+  );
+};
 
-export default AppSider
+export default AppSider;

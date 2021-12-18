@@ -1,6 +1,6 @@
-import { Button, DatePicker, InputNumber, Select } from 'antd'
+import { Button, DatePicker, InputNumber, Select } from 'antd';
 
-const DUMMY_COMPONENT = ['abc', 'abcd', 'def', 'ghi']
+const DUMMY_COMPONENT = ['abc', 'abcd', 'def', 'ghi'];
 
 const ComponentSelector: React.FC = () => {
   return (
@@ -31,7 +31,7 @@ const ComponentSelector: React.FC = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default ComponentSelector
+export default ComponentSelector;

@@ -5,8 +5,9 @@
       "@api/*": ["api/*"],
       "@constant/*": ["constant/*"],
       "@dto/*": ["dto/*"],
-      "@utils/*": ["utils/*"],
-      "@module/*": ["modules/*"]
+      "@hook/*": ["hook/*"],
+      "@module/*": ["modules/*"],
+      "@utils/*": ["utils/*"]
     }
   }
 }

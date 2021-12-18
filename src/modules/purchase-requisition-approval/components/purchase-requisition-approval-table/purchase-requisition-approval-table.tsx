@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button, DatePicker, Input, Table } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
+import moment, { Moment } from 'moment';
 
 import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
 import { getSearchText, SearchEngine } from '@utils/search/native-search';
@@ -13,7 +14,6 @@ import StatefulTextInput from '@module/shared/components/stateful-input/stateful
 import StatefulNumberInput from '@module/shared/components/stateful-input/stateful-number-input/stateful-number-input';
 
 import generateIndex from './purchase-requisition-approval-table-indexer';
-import moment, { Moment } from 'moment';
 interface IPurchaseRequititionApprovalTableProps {
   selectedPurchaseRequisitionApproval?: IPurchaseRequisitionApproval;
   updatePurchaseRequisitionApproval: (purchaseRequisitionApproval: IPurchaseRequisitionApproval) => void;

@@ -1,8 +1,8 @@
-import { ReloadOutlined } from "@ant-design/icons";
-import { Button, DatePicker, Select } from "antd";
-import moment from "moment";
+import { ReloadOutlined } from '@ant-design/icons';
+import { Button, DatePicker, Select } from 'antd';
+import moment from 'moment';
 
-import { Sort } from "@constant/sort.enum";
+import { Sort } from '@constant/sort.enum';
 
 interface IFilterAndSortProps {
   dateRange?: [Date, Date];

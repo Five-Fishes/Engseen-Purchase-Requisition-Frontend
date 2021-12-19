@@ -1,9 +1,9 @@
-import { IPurchaseRequisitionRequest } from "@dto/i-purchase-requisition-request.dto";
-import { useState } from "react";
-import { Button, Input } from "antd";
-import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
-import { convertToLocalString } from "@utils/date-time/date-time-format";
-import { IPurchaseRequisitionRequestItem } from "@dto/i-purchase-requisition-request-item.dto";
+import { IPurchaseRequisitionRequest } from '@dto/i-purchase-requisition-request.dto';
+import { useState } from 'react';
+import { Button, Input } from 'antd';
+import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
+import { convertToLocalString } from '@utils/date-time/date-time-format';
+import { IPurchaseRequisitionRequestItem } from '@dto/i-purchase-requisition-request-item.dto';
 
 interface IPurchaseRequisitionSubmissionProps {
   setSelectedSubmissionRecord: (submissionRecord: IPurchaseRequisitionRequest) => void;
@@ -17,13 +17,13 @@ const PurchaseRequisitionSubmissionBrowser: React.FC<IPurchaseRequisitionSubmiss
   const { purchaseRequisitionSubmissios } = props;
   return (
     <>
-      <div className="text-center d-flex flex-column py-2" style={{ overflowY: "scroll", maxHeight: "85%", width: "max-content" }}>
+      <div className="text-center d-flex flex-column py-2" style={{ overflowY: 'scroll', maxHeight: '85%', width: 'max-content' }}>
         {purchaseRequisitionSubmissios &&
           purchaseRequisitionSubmissios.map((submission, index) => {
             return (
               <Button
                 key={`submission-date-${index}`}
-                type={selectedIndex === index ? "primary" : "default"}
+                type={selectedIndex === index ? 'primary' : 'default'}
                 shape="round"
                 className="m-1 px-4"
                 size="large"
@@ -41,8 +41,7 @@ const PurchaseRequisitionSubmissionBrowser: React.FC<IPurchaseRequisitionSubmiss
           })}
       </div>
       <div className="fixed-bottom mx-4 remarks-box pb-1">
-        <Input.TextArea readOnly className="h-100"
-          value={selectedRemarks == null ? "Remarks: " : "Remarks: \n" + selectedRemarks} />
+        <Input.TextArea readOnly className="h-100" value={selectedRemarks == null ? 'Remarks: ' : 'Remarks: \n' + selectedRemarks} />
       </div>
     </>
   );

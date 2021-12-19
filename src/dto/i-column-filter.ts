@@ -3,4 +3,4 @@ export interface IColumnFilter {
   dataIndex: string;
   key: string;
   hidden?: boolean;
-};
+}

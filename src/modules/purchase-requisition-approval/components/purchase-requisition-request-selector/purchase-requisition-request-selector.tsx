@@ -1,9 +1,10 @@
-import { Button } from "antd";
-import { CheckCircleOutlined } from "@ant-design/icons";
+import { Button } from 'antd';
+import { CheckCircleOutlined } from '@ant-design/icons';
 
-import { PurchaseRequisitionApprovalStatus } from "@constant/purchase-requisition-approval-status.enum";
-import { IPurchaseRequisitionApprovalItem } from "@dto/i-purchase-requisition-approval-item.dto";
-import { IPurchaseRequisitionApproval } from "@dto/i-purchase-requisition-approval.dto";
+import { PurchaseRequisitionApprovalStatus } from '@constant/purchase-requisition-approval-status.enum';
+import { IPurchaseRequisitionApprovalItem } from '@dto/i-purchase-requisition-approval-item.dto';
+import { IPurchaseRequisitionApproval } from '@dto/i-purchase-requisition-approval.dto';
+import { convertToLocalString } from '@utils/date-time/date-time-format';
 
 interface IPurchaseRequisitionSelectorProps {
   purcahseRequisitionApprovalList?: IPurchaseRequisitionApproval[];
@@ -22,7 +23,7 @@ const PurchaseRequisitionSelector: React.FC<IPurchaseRequisitionSelectorProps> =
 
     return (
       <>
-        <div className="d-flex flex-column scrollable-menu" style={{ maxHeight: "480px" }}>
+        <div className="d-flex flex-column scrollable-menu" style={{ maxHeight: '480px' }}>
           {APPROVAL_LIST.map((purchaseRequisitionApproval, index) => (
             <Button
               className="m-2"
@@ -33,8 +34,8 @@ const PurchaseRequisitionSelector: React.FC<IPurchaseRequisitionSelectorProps> =
                 setSelectedPurcahseRequisitionApproval(purchaseRequisitionApproval);
               }}
             >
-              {new Date(purchaseRequisitionApproval.createdDate).toDateString()}{" "}
-              {isAllApprovalItemsIssued(purchaseRequisitionApproval.purchaseRequisitionApprovalItems) && <CheckCircleOutlined style={{ color: "#22A70C", transform: "translateY(-3px)" }} />}
+              {convertToLocalString(purchaseRequisitionApproval.createdDate)}{' '}
+              {isAllApprovalItemsIssued(purchaseRequisitionApproval.purchaseRequisitionApprovalItems) && <CheckCircleOutlined style={{ color: '#22A70C', transform: 'translateY(-3px)' }} />}
             </Button>
           ))}
         </div>

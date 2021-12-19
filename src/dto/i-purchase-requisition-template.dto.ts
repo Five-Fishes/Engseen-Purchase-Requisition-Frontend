@@ -1,7 +1,8 @@
-import { IPurchaseRequisitionTemplateItem } from "./i-purchase-requisition-template-item.dto";
+import { IPurchaseRequisitionTemplateItem } from './i-purchase-requisition-template-item.dto';
 
 export interface IPurchaseRequisitionTemplate {
   id: number;
   templateName: string;
   templateItems: IPurchaseRequisitionTemplateItem[];
+  remarks: string;
 }

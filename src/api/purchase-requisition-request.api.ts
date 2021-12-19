@@ -1,8 +1,8 @@
-import axios from "axios";
-import { IPurchaseRequisitionRequest } from "@dto/i-purchase-requisition-request.dto";
-import { Sort } from "@constant/sort.enum";
-import { QueryParamsBuilder } from "@utils/api/query-params-builder";
-import { PURCHASE_REQUISITION_REQUEST } from "@constant/api-endpoints";
+import axios from 'axios';
+import { IPurchaseRequisitionRequest } from '@dto/i-purchase-requisition-request.dto';
+import { Sort } from '@constant/sort.enum';
+import { QueryParamsBuilder } from '@utils/api/query-params-builder';
+import { PURCHASE_REQUISITION_REQUEST } from '@constant/api-endpoints';
 
 export async function createPurchaseRequisitionRequest(purchaseRequisitionRequest: IPurchaseRequisitionRequest) {
   return await axios.post<IPurchaseRequisitionRequest>(PURCHASE_REQUISITION_REQUEST, purchaseRequisitionRequest);

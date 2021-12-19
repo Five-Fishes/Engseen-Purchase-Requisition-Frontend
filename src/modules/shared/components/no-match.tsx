@@ -1,9 +1,9 @@
-import Title from "antd/lib/typography/Title";
-import { useLocation } from "react-router-dom";
+import Title from 'antd/lib/typography/Title';
+import { useLocation } from 'react-router-dom';
 
 const NoMatch: React.FC = () => {
   const location = useLocation();
-  const sanitisedPath: string = location.pathname.replace(/\/|-/g, " ").trim() + " page";
+  const sanitisedPath: string = location.pathname.replace(/\/|-/g, ' ').trim() + ' page';
 
   return (
     <div className="d-flex justify-content-center h-100">

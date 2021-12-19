@@ -1,12 +1,12 @@
-import { getPurchaseRequisitionTemplate } from "@api/purchase-requisition-template.api";
-import { ApiResponseStatus } from "@constant/api-status.enum";
-import { IPurchaseRequisitionTemplate } from "@dto/i-purchase-requisition-template.dto";
-import { useEffect, useState } from "react";
-import { Button, Input, Row, Col, Modal } from "antd";
-import { DeleteOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
-import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
-import { popNotification } from "@module/shared/components/notification";
-import { NotificationType } from "@constant/notification.enum";
+import { getPurchaseRequisitionTemplate } from '@api/purchase-requisition-template.api';
+import { ApiResponseStatus } from '@constant/api-status.enum';
+import { IPurchaseRequisitionTemplate } from '@dto/i-purchase-requisition-template.dto';
+import { useEffect, useState } from 'react';
+import { Button, Input, Row, Col, Modal } from 'antd';
+import { DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
+import { popNotification } from '@module/shared/components/notification';
+import { NotificationType } from '@constant/notification.enum';
 
 interface IPurchaseRequisitionTemplateProps {
   setSelectedTemplate: (template: IPurchaseRequisitionTemplate) => void;
@@ -15,7 +15,7 @@ interface IPurchaseRequisitionTemplateProps {
 const PurchaseRequisitionTemplateBrowser: React.FC<IPurchaseRequisitionTemplateProps> = (props) => {
   const [purchaseRequisitionTemplates, setPurchaseRequisitionTemplates] = useState<IPurchaseRequisitionTemplate[]>();
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  const [newTemplateText, setNewTemplateText] = useState("");
+  const [newTemplateText, setNewTemplateText] = useState('');
 
   useEffect(() => {
     const getTemplates = async () => {
@@ -29,13 +29,13 @@ const PurchaseRequisitionTemplateBrowser: React.FC<IPurchaseRequisitionTemplateP
   }, []);
 
   const showConfirmDeleteTemplate = (): void => {
-    if (purchaseRequisitionTemplates === undefined || selectedIndex  === -1) {
+    if (purchaseRequisitionTemplates === undefined || selectedIndex === -1) {
       return;
     }
     Modal.confirm({
       title: 'Are you sure?',
       icon: <ExclamationCircleOutlined />,
-      content: 'You won\'t be able to revert it',
+      content: "You won't be able to revert it",
       okText: 'Delete',
       okType: 'primary',
       cancelText: 'Cancel',
@@ -46,12 +46,13 @@ const PurchaseRequisitionTemplateBrowser: React.FC<IPurchaseRequisitionTemplateP
   };
 
   const createNewTemplate = () => {
-    if (newTemplateText.trim() !== "") {
+    if (newTemplateText.trim() !== '') {
       const newTemplate: IPurchaseRequisitionTemplate = {
         id: 0,
         templateName: newTemplateText,
-        templateItems: []
-      }
+        templateItems: [],
+        remarks: ""
+      };
       if (purchaseRequisitionTemplates === undefined || purchaseRequisitionTemplates.length === 0) {
         setPurchaseRequisitionTemplates([newTemplate]);
       } else {
@@ -59,13 +60,13 @@ const PurchaseRequisitionTemplateBrowser: React.FC<IPurchaseRequisitionTemplateP
         const deepCopy: IPurchaseRequisitionTemplate[] = CLONING_LIB.deepClone(purchaseRequisitionTemplates);
         setPurchaseRequisitionTemplates(deepCopy);
       }
-      popNotification("Success Create Template", NotificationType.success);
-      setNewTemplateText("");
+      popNotification('Success Create Template', NotificationType.success);
+      setNewTemplateText('');
     }
-  }
-  
+  };
+
   const deleteTemplate = () => {
-    if (purchaseRequisitionTemplates === undefined || selectedIndex  === -1) {
+    if (purchaseRequisitionTemplates === undefined || selectedIndex === -1) {
       return;
     }
     const selectedPurchaseRequisitionTemplate = purchaseRequisitionTemplates[selectedIndex];
@@ -78,8 +79,8 @@ const PurchaseRequisitionTemplateBrowser: React.FC<IPurchaseRequisitionTemplateP
     }
     setSelectedIndex(-1);
     props.setSelectedTemplate({} as IPurchaseRequisitionTemplate);
-    popNotification("Success Delete Template", NotificationType.success);
-  }
+    popNotification('Success Delete Template', NotificationType.success);
+  };
 
   return (
     <>
@@ -95,21 +96,16 @@ const PurchaseRequisitionTemplateBrowser: React.FC<IPurchaseRequisitionTemplateP
                 setNewTemplateText(e.target.value);
               }}
             />
-            <Button
-              className="input-group-btn mx-1"
-              key="create-new-template-button"
-              type="primary"
-              onClick={() => createNewTemplate()}
-            >Create</Button>
+            <Button className="input-group-btn mx-1" key="create-new-template-button" type="primary" onClick={() => createNewTemplate()}>
+              Create
+            </Button>
           </div>
         </Col>
         <Col span={8} offset={2}>
-          <Button
-            className="input-group-btn float-end d-inline-flex align-items-center"
-            key="create-new-template-button"
-            type="default"
-            onClick={() => showConfirmDeleteTemplate()}
-          ><DeleteOutlined />Delete Template</Button>
+          <Button className="input-group-btn float-end d-inline-flex align-items-center" key="create-new-template-button" type="default" onClick={() => showConfirmDeleteTemplate()}>
+            <DeleteOutlined />
+            Delete Template
+          </Button>
         </Col>
       </Row>
       <div className="d-inline-block text-center mt-2">
@@ -118,7 +114,7 @@ const PurchaseRequisitionTemplateBrowser: React.FC<IPurchaseRequisitionTemplateP
             return (
               <Button
                 key={index}
-                type={selectedIndex === index ? "primary" : "default"}
+                type={selectedIndex === index ? 'primary' : 'default'}
                 shape="round"
                 className="m-2"
                 size="middle"

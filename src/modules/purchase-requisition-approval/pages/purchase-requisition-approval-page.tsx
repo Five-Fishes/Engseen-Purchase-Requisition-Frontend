@@ -1,19 +1,19 @@
-import { useEffect, useState } from "react";
-import Title from "antd/lib/typography/Title";
-import { Button, Divider, Input } from "antd";
-import { CheckSquareOutlined } from "@ant-design/icons";
+import { useEffect, useState } from 'react';
+import Title from 'antd/lib/typography/Title';
+import { Button, Divider, Input } from 'antd';
+import { CheckSquareOutlined } from '@ant-design/icons';
 
-import { Sort } from "@constant/sort.enum";
-import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
-import { ApiResponseStatus } from "@constant/api-status.enum";
-import { PurchaseRequisitionApprovalStatus } from "@constant/purchase-requisition-approval-status.enum";
-import { getPurchaseRequisitionApproval } from "@api/purchase-requisition-approval.api";
-import { IPurchaseRequisitionApproval } from "@dto/i-purchase-requisition-approval.dto";
+import { Sort } from '@constant/sort.enum';
+import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
+import { ApiResponseStatus } from '@constant/api-status.enum';
+import { PurchaseRequisitionApprovalStatus } from '@constant/purchase-requisition-approval-status.enum';
+import { getPurchaseRequisitionApproval } from '@api/purchase-requisition-approval.api';
+import { IPurchaseRequisitionApproval } from '@dto/i-purchase-requisition-approval.dto';
 
-import FilterAndSort from "../components/filter-and-sort/filter-and-sort";
-import ComponentSelector from "../components/component-selector/component-selector";
-import PurchaseRequisitionSelector from "../components/purchase-requisition-request-selector/purchase-requisition-request-selector";
-import PurchaseRequititionApprovalTable from "../components/purchase-requisition-approval-table/purchase-requisition-approval-table";
+import FilterAndSort from '../components/filter-and-sort/filter-and-sort';
+import ComponentSelector from '../components/component-selector/component-selector';
+import PurchaseRequisitionSelector from '../components/purchase-requisition-request-selector/purchase-requisition-request-selector';
+import PurchaseRequititionApprovalTable from '../components/purchase-requisition-approval-table/purchase-requisition-approval-table';
 
 const PurchaseRequisitionApprovalPage: React.FC = () => {
   const [sort, setSort] = useState<Sort>();
@@ -123,7 +123,7 @@ const PurchaseRequisitionApprovalPage: React.FC = () => {
 
   return (
     <>
-      <div className="container-fluid h-100 mb-remark-fixed" style={{ overflowY: "scroll" }}>
+      <div className="container-fluid h-100 mb-remark-fixed" style={{ overflowY: 'scroll' }}>
         <div className="row">
           <Title level={4}>Purchase Approval</Title>
         </div>
@@ -159,11 +159,17 @@ const PurchaseRequisitionApprovalPage: React.FC = () => {
       </div>
       <div className="row fixed-bottom mx-3 pb-1 remark-wrapper">
         <div className="col-3 pt-3 remarks-box">
-          <Input.TextArea className="h-100" placeholder="Remarks" rows={3} value={selectedPurchaseRequisitionApproval && selectedPurchaseRequisitionApproval.remarks} onChange={(e) => updateRemarks(e)}></Input.TextArea>
+          <Input.TextArea
+            className="h-100"
+            placeholder="Remarks"
+            rows={3}
+            value={selectedPurchaseRequisitionApproval && selectedPurchaseRequisitionApproval.remarks}
+            onChange={(e) => updateRemarks(e)}
+          ></Input.TextArea>
         </div>
         <div className="col-9 d-flex justify-content-end align-items-center">
           <Button onClick={issuePurchaseOrder} type="primary" size="large">
-            <CheckSquareOutlined style={{ transform: "translateY(-3px)" }} /> Issue Confirmed PO
+            <CheckSquareOutlined style={{ transform: 'translateY(-3px)' }} /> Issue Confirmed PO
           </Button>
         </div>
       </div>

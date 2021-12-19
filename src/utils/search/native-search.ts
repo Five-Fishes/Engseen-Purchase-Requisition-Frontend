@@ -9,7 +9,7 @@ export class SearchEngine<T> {
 
   constructor(searchIn: T[], genIndex: (obj: T) => string) {
     this.genIndexFn = genIndex;
-    this.searchableModelList = searchIn.map<ISearchableModel<T>>(element => ({
+    this.searchableModelList = searchIn.map<ISearchableModel<T>>((element) => ({
       elem: element,
       index: this.genIndexFn(element),
     }));
@@ -17,16 +17,14 @@ export class SearchEngine<T> {
 
   search(searchWith: string): T[] {
     if (searchWith.trim().length === 0) {
-      return this.searchableModelList.map<T>(element => element.elem);
+      return this.searchableModelList.map<T>((element) => element.elem);
     }
 
-    return this.searchableModelList
-      .filter(element => element.index.toLowerCase().includes(searchWith.toLowerCase()))
-      .map<T>(element => element.elem);
+    return this.searchableModelList.filter((element) => element.index.toLowerCase().includes(searchWith.toLowerCase())).map<T>((element) => element.elem);
   }
 
   updateEngine(searchIn: T[]): SearchEngine<T> {
-    this.searchableModelList = searchIn.map<ISearchableModel<T>>(element => ({
+    this.searchableModelList = searchIn.map<ISearchableModel<T>>((element) => ({
       elem: element,
       index: this.genIndexFn(element),
     }));

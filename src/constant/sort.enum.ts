@@ -1,4 +1,4 @@
 export enum Sort {
-  ASC = "ASC",
-  DES = "DES",
+  ASC = 'ASC',
+  DES = 'DES',
 }

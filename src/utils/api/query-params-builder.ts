@@ -2,7 +2,7 @@ export class QueryParamsBuilder {
   private url: string;
 
   public static withUrl(url: string): QueryParamsBuilder {
-    const sanitisedUrl = url.endsWith("/") ? url.substr(0, url.length - 1) : url;
+    const sanitisedUrl = url.endsWith('/') ? url.substr(0, url.length - 1) : url;
     return new QueryParamsBuilder(sanitisedUrl);
   }
 
@@ -26,7 +26,7 @@ export class QueryParamsBuilder {
   }
 
   public build(): string {
-    const finalisedUrl = this.url.endsWith("&") ? this.url.substr(0, this.url.length - 1) : this.url;
+    const finalisedUrl = this.url.endsWith('&') ? this.url.substr(0, this.url.length - 1) : this.url;
     return finalisedUrl;
   }
 

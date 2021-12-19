@@ -1,9 +1,9 @@
-import axios from "axios";
-import { IPurchaseOrder } from "@dto/i-purchase-order.dto";
-import { Sort } from "@constant/sort.enum";
-import { QueryParamsBuilder } from "@utils/api/query-params-builder";
-import { PURCHASE_ORDER } from "@constant/api-endpoints";
-import { IPurchaseApprovalOrder } from "@dto/i-purchase-approval-order.dto";
+import axios from 'axios';
+import { IPurchaseOrder } from '@dto/i-purchase-order.dto';
+import { Sort } from '@constant/sort.enum';
+import { QueryParamsBuilder } from '@utils/api/query-params-builder';
+import { PURCHASE_ORDER } from '@constant/api-endpoints';
+import { IPurchaseApprovalOrder } from '@dto/i-purchase-approval-order.dto';
 
 export async function createPurchaseOrder(purchaseOrder: IPurchaseOrder) {
   return await axios.post<IPurchaseApprovalOrder>(PURCHASE_ORDER, purchaseOrder);

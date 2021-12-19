@@ -1,4 +1,4 @@
-import { LodashCloningLib } from "./cloning-lib-wrapper-impl";
+import { LodashCloningLib } from './cloning-lib-wrapper-impl';
 
 export interface CloningLib {
   deepClone: <T>(input: T) => T;

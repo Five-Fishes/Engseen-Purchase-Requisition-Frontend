@@ -1,7 +1,7 @@
-import { Route, Switch, SwitchProps } from "react-router";
-import NoMatch from "./no-match";
+import { Route, Switch, SwitchProps } from 'react-router';
+import NoMatch from './no-match';
 
-interface ISwitchWithFallbackProps extends SwitchProps {};
+interface ISwitchWithFallbackProps extends SwitchProps {}
 
 const SwitchWithFallback: React.FC<ISwitchWithFallbackProps> = (props) => {
   return (

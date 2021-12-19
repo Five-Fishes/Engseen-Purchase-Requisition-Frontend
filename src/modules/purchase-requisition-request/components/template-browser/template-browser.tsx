@@ -1,10 +1,10 @@
-import "./template-browser.less";
-import { getPurchaseRequisitionTemplate } from "@api/purchase-requisition-template.api";
-import { ApiResponseStatus } from "@constant/api-status.enum";
-import { IPurchaseRequisitionTemplate } from "@dto/i-purchase-requisition-template.dto";
-import { useEffect, useState } from "react";
-import { Button } from "antd";
-import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
+import './template-browser.less';
+import { getPurchaseRequisitionTemplate } from '@api/purchase-requisition-template.api';
+import { ApiResponseStatus } from '@constant/api-status.enum';
+import { IPurchaseRequisitionTemplate } from '@dto/i-purchase-requisition-template.dto';
+import { useEffect, useState } from 'react';
+import { Button } from 'antd';
+import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
 
 interface IPurchaseRequisitionTemplateProps {
   setSelectedTemplate: (template: IPurchaseRequisitionTemplate) => void;
@@ -34,7 +34,7 @@ const PurchaseRequisitionTemplateBrowser: React.FC<IPurchaseRequisitionTemplateP
             return (
               <Button
                 key={index}
-                type={selectedIndex === index ? "primary" : "default"}
+                type={selectedIndex === index ? 'primary' : 'default'}
                 shape="round"
                 className="m-2"
                 size="large"

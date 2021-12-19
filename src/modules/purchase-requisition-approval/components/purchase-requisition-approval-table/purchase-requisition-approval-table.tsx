@@ -1,18 +1,19 @@
-import { useEffect, useState } from "react";
-import { Button, Input, Table } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
+import { useEffect, useState } from 'react';
+import { Button, DatePicker, Input, Popover, Table } from 'antd';
+import { DeleteOutlined } from '@ant-design/icons';
+import moment, { Moment } from 'moment';
 
-import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
-import { getSearchText, SearchEngine } from "@utils/search/native-search";
-import { ChangeEvent } from "@constant/change-event.enum";
-import { TABLE_PAGINATION_CONFIG } from "@constant/pagination-config";
-import { PurchaseRequisitionApprovalStatus, PurchaseRequisitionApprovalStatusDisplayText } from "@constant/purchase-requisition-approval-status.enum";
-import { IPurchaseRequisitionApproval } from "@dto/i-purchase-requisition-approval.dto";
-import { IPurchaseRequisitionApprovalItem } from "@dto/i-purchase-requisition-approval-item.dto";
-import StatefulTextInput from "@module/shared/components/stateful-input/stateful-text-input/stateful-text-input";
-import StatefulNumberInput from "@module/shared/components/stateful-input/stateful-number-input/stateful-number-input";
+import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
+import { getSearchText, SearchEngine } from '@utils/search/native-search';
+import { ChangeEvent } from '@constant/change-event.enum';
+import { TABLE_PAGINATION_CONFIG } from '@constant/pagination-config';
+import { PurchaseRequisitionApprovalStatus, PurchaseRequisitionApprovalStatusDisplayText } from '@constant/purchase-requisition-approval-status.enum';
+import { IPurchaseRequisitionApproval } from '@dto/i-purchase-requisition-approval.dto';
+import { IPurchaseRequisitionApprovalItem } from '@dto/i-purchase-requisition-approval-item.dto';
+import StatefulTextInput from '@module/shared/components/stateful-input/stateful-text-input/stateful-text-input';
+import StatefulNumberInput from '@module/shared/components/stateful-input/stateful-number-input/stateful-number-input';
 
-import generateIndex from "./purchase-requisition-approval-table-indexer";
+import generateIndex from './purchase-requisition-approval-table-indexer';
 interface IPurchaseRequititionApprovalTableProps {
   selectedPurchaseRequisitionApproval?: IPurchaseRequisitionApproval;
   updatePurchaseRequisitionApproval: (purchaseRequisitionApproval: IPurchaseRequisitionApproval) => void;
@@ -44,6 +45,18 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
     }
   };
 
+  const updateAllDeliveryDate: (value: any) => void = (value) => {
+    if (props.selectedPurchaseRequisitionApproval) {
+      const updatedSelectedPurchaseRequisitionApproval = CLONING_LIB.deepClone(props.selectedPurchaseRequisitionApproval);
+      if (value) {
+        updatedSelectedPurchaseRequisitionApproval?.purchaseRequisitionApprovalItems.forEach((item) => {
+          item.status === PurchaseRequisitionApprovalStatus.TO_CONFIRM && (item.deliveryDate = (value as Moment).toDate());
+        });
+      }
+      updatePurchaseRequisitionApproval(updatedSelectedPurchaseRequisitionApproval);
+    }
+  };
+
   /**
    * Update the SelectedApprovalItem's field based on the provided key
    * @param changeEvent change event emitted by html element
@@ -58,19 +71,28 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
     key,
     index
   ) => {
-    console.group("dataChanged");
-    console.log("changeEventType >>: ", changeEventType);
-    console.log("changeEvent >>: ", changeEvent);
-    console.log("record >>: ", record);
-    console.log("key >>: ", key);
-    console.log("index >>: ", index);
+    console.group('dataChanged');
+    console.log('changeEventType >>: ', changeEventType);
+    console.log('changeEvent >>: ', changeEvent);
+    console.log('record >>: ', record);
+    console.log('key >>: ', key);
+    console.log('index >>: ', index);
     console.groupEnd();
 
     let valueToUpdate: any;
-    if (changeEventType === ChangeEvent.NUMBER_INPUT) {
-      valueToUpdate = changeEvent;
-    } else {
-      valueToUpdate = changeEvent.target.value;
+    switch (changeEventType) {
+      case ChangeEvent.NUMBER_INPUT:
+        valueToUpdate = changeEvent;
+        break;
+      case ChangeEvent.DATE_TIME:
+        valueToUpdate = changeEvent ? (changeEvent as Moment).toDate() : undefined;
+        break;
+      case ChangeEvent.TEXT_INPUT:
+        valueToUpdate = changeEvent.target.value;
+        break;
+      default:
+        valueToUpdate = '';
+        break;
     }
 
     if (props.selectedPurchaseRequisitionApproval) {
@@ -96,7 +118,7 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
           udpatedValue = PurchaseRequisitionApprovalStatus.TO_CONFIRM;
           break;
       }
-      const updatedApproval = updateData(props.selectedPurchaseRequisitionApproval, udpatedValue, item, "status");
+      const updatedApproval = updateData(props.selectedPurchaseRequisitionApproval, udpatedValue, item, 'status');
       updatePurchaseRequisitionApproval(updatedApproval);
     }
   };
@@ -120,12 +142,12 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
   };
 
   const handleSearch = (value: string, event: React.ChangeEvent<HTMLInputElement> | React.MouseEvent<HTMLElement, MouseEvent> | React.KeyboardEvent<HTMLInputElement> | undefined) => {
-    console.group("Search [PurchaseRequititionApprovalTable]");
-    console.log("value >>: ", value);
-    console.log("event >>: ", event);
+    console.group('Search [PurchaseRequititionApprovalTable]');
+    console.log('value >>: ', value);
+    console.log('event >>: ', event);
     if (props.selectedPurchaseRequisitionApproval) {
       console.log('selectedPurchaseRequisitionApproval >>: ', props.selectedPurchaseRequisitionApproval);
-      const sanitisedSearchText: string = getSearchText(value)
+      const sanitisedSearchText: string = getSearchText(value);
       const searchOutput = searchEngine.updateEngine(props.selectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems).search(sanitisedSearchText);
       setSearchResult(searchOutput);
     }
@@ -145,13 +167,7 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
             <Input.Search placeholder="Search" onSearch={handleSearch} allowClear></Input.Search>
           </div>
         </div>
-        <Table
-          dataSource={SELECTED_PURCHASE_REQUISITION_APPROVAL_ITEMS}
-          rowKey="id"
-          className="my-2"
-          scroll={{ x: 2000, y: 500 }}
-          pagination={TABLE_PAGINATION_CONFIG}
-        >
+        <Table dataSource={SELECTED_PURCHASE_REQUISITION_APPROVAL_ITEMS} rowKey="id" className="my-2" scroll={{ x: 2000, y: 500 }} pagination={TABLE_PAGINATION_CONFIG}>
           <Table.Column title="Component Name" dataIndex="componentName" key="componentName" />
           <Table.Column
             title={
@@ -162,7 +178,7 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
             dataIndex="itemCost"
             key="itemCost"
             render={(value, record: IPurchaseRequisitionApprovalItem, index: number) => {
-              return <StatefulNumberInput state={record.status} value={value} onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, "itemCost", index)} />;
+              return <StatefulNumberInput state={record.status} value={value} onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, 'itemCost', index)} />;
             }}
           />
           <Table.Column
@@ -171,7 +187,7 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
             key="vendorName"
             width="300px"
             render={(value, record: IPurchaseRequisitionApprovalItem, index: number) => {
-              return <StatefulTextInput state={record.status} value={value} onChange={(e) => dataChanged(ChangeEvent.TEXT_INPUT, e, record, "vendorName", index)} />;
+              return <StatefulTextInput state={record.status} value={value} onChange={(e) => dataChanged(ChangeEvent.TEXT_INPUT, e, record, 'vendorName', index)} />;
             }}
           />
           <Table.Column
@@ -196,7 +212,7 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
             dataIndex="packagingSize"
             key="packagingSize"
             render={(value, record: IPurchaseRequisitionApprovalItem, index: number) => {
-              return <StatefulNumberInput state={record.status} value={value} onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, "packagingSize", index)} />;
+              return <StatefulNumberInput state={record.status} value={value} onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, 'packagingSize', index)} />;
             }}
           />
           <Table.Column
@@ -204,22 +220,52 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
             dataIndex="noOfPacks"
             key="noOfPacks"
             render={(value, record: IPurchaseRequisitionApprovalItem, index: number) => {
-              return <StatefulNumberInput state={record.status} value={value} onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, "noOfPacks", index)} />;
+              return <StatefulNumberInput state={record.status} value={value} onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, 'noOfPacks', index)} />;
             }}
           />
           <Table.Column title="Total Quantity To Order (kgs)" dataIndex="quantity" key="quantity" />
           <Table.Column
-            title="Delivery Date"
+            title={
+              <Popover
+                content={
+                  <DatePicker
+                    onChange={(moment) => {
+                      updateAllDeliveryDate(moment);
+                    }}
+                  />
+                }
+                trigger="click"
+              >
+                <div className="cursor-pointer">
+                  <span>Delivery Date</span>
+                  <br />
+                  <span style={{ fontSize: '8px' }}>*Click to change all</span>
+                </div>
+              </Popover>
+            }
             dataIndex="deliveryDate"
             key="deliveryDate"
             render={(value, record: IPurchaseRequisitionApprovalItem, index: number) => {
-              return new Date(value).toDateString();
+              let castedValue = undefined;
+              if (value) {
+                castedValue = moment(new Date(value));
+              }
+              return (
+                <DatePicker
+                  disabled={!(record.status === PurchaseRequisitionApprovalStatus.TO_CONFIRM)}
+                  value={castedValue}
+                  onChange={(moment) => dataChanged(ChangeEvent.DATE_TIME, moment, record, 'deliveryDate', index)}
+                />
+              );
             }}
           />
           <Table.Column title="Balance" dataIndex="balance" key="balance" />
-          <Table.Column title="Action" render={(value, record: IPurchaseRequisitionApprovalItem, index: number) => {
-              return <Button icon={<DeleteOutlined/>}/>
-            }}/>
+          <Table.Column
+            title="Action"
+            render={(value, record: IPurchaseRequisitionApprovalItem, index: number) => {
+              return <Button icon={<DeleteOutlined />} />;
+            }}
+          />
         </Table>
       </div>
     </>

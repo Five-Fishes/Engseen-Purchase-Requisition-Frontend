@@ -1,4 +1,4 @@
-import { Redirect, Route, RouteProps } from "react-router-dom";
+import { Redirect, Route, RouteProps } from 'react-router-dom';
 
 interface IPostLogInRouteProps extends RouteProps {}
 

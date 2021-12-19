@@ -1,4 +1,4 @@
-import { IPurchaseOrderItem } from "./i-purchase-order-item.dto";
+import { IPurchaseOrderItem } from './i-purchase-order-item.dto';
 
 export interface IPurchaseOrder {
   id: number;

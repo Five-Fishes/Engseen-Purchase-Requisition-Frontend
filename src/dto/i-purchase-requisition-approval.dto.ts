@@ -1,4 +1,4 @@
-import { IPurchaseRequisitionApprovalItem } from "./i-purchase-requisition-approval-item.dto";
+import { IPurchaseRequisitionApprovalItem } from './i-purchase-requisition-approval-item.dto';
 
 export interface IPurchaseRequisitionApproval {
   id: number;

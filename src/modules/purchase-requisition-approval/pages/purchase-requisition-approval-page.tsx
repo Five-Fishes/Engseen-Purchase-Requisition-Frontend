@@ -157,7 +157,7 @@ const PurchaseRequisitionApprovalPage: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="row fixed-bottom mx-3 pb-1 remark-wrapper">
+      <div className="row fixed-bottom mx-3 pb-1 remark-wrapper bg-white">
         <div className="col-3 pt-3 remarks-box">
           <Input.TextArea
             className="h-100"

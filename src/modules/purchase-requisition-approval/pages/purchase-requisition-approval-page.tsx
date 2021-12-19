@@ -83,10 +83,19 @@ const PurchaseRequisitionApprovalPage: React.FC = () => {
     setDateRange(value);
   };
 
+  /**
+   * - Pass in the currently selected purchase requisition approval with udpated data
+   * - Update the approval list
+   * - Updated the selected item
+   * @param value The currently selected purchase requisition approval
+   */
   const updatePurchaseRequisitionApproval = (value: IPurchaseRequisitionApproval) => {
     if (purchaseRequisitionApprovalList) {
       const updatedPurcahseRequisitionApprovalList = CLONING_LIB.deepClone(purchaseRequisitionApprovalList).map((approval) => {
         const updatedApproval = approval.id === value.id ? value : approval;
+        updatedApproval.purchaseRequisitionApprovalItems.forEach(item => {
+          item.quantity = item.packagingSize * item.noOfPacks;
+        })
         return updatedApproval;
       });
       setPurchaseRequisitionApprovalList(updatedPurcahseRequisitionApprovalList);

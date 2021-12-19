@@ -221,8 +221,6 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
                   </Row>
                 </Form>
               </div>
-              <Divider />
-              
             </Col>
           </Row>
         </div>

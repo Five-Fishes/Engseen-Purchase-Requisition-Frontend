@@ -14,6 +14,7 @@ import StatefulTextInput from '@module/shared/components/stateful-input/stateful
 import StatefulNumberInput from '@module/shared/components/stateful-input/stateful-number-input/stateful-number-input';
 
 import generateIndex from './purchase-requisition-approval-table-indexer';
+import { convertToLocalString } from '@utils/date-time/date-time-format';
 interface IPurchaseRequititionApprovalTableProps {
   selectedPurchaseRequisitionApproval?: IPurchaseRequisitionApproval;
   updatePurchaseRequisitionApproval: (purchaseRequisitionApproval: IPurchaseRequisitionApproval) => void;
@@ -161,7 +162,7 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
       <div>
         <div className="d-flex justify-content-between">
           <div>
-            <strong>Submission Date</strong>: {props.selectedPurchaseRequisitionApproval && new Date(props.selectedPurchaseRequisitionApproval.createdDate).toDateString()}
+            <strong>Submission Date</strong>: {props.selectedPurchaseRequisitionApproval && convertToLocalString(props.selectedPurchaseRequisitionApproval.createdDate)}
           </div>
           <div>
             <Input.Search placeholder="Search" onSearch={handleSearch} allowClear></Input.Search>

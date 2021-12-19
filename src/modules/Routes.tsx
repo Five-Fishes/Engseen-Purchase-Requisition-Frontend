@@ -6,7 +6,7 @@ import PostLogInRoute from './shared/components/post-login-route';
 import SwitchWithFallback from './shared/components/switch-with-fallback';
 
 import LoginPage from './login/pages/login';
-import PurchaseRequisitionTemplateRoute from './purchase-requisition-template/pages';
+import PurchaseRequisitionTemplatePage from './purchase-requisition-template/pages/purchase-requisition-template-list';
 import PurchaseRequisitionRequestPage from './purchase-requisition-request/pages/purchase-requisition-request-page';
 import PurchaseRequisitionApprovalPage from './purchase-requisition-approval/pages/purchase-requisition-approval-page';
 import PurchaseRequisitionSubmissionPage from './purchase-requisition-submissioin-record/pages/purchase-requisition-submission-page';
@@ -17,7 +17,7 @@ const Routes: React.FC = () => {
     <SwitchWithFallback>
       <Route exact path="/" component={LoginPage} />
       <Route path="/page-refresh/:destination" component={PageRefresh} /> {/* TODO: @LUXIANZE Remove this before production deployment */}
-      <PostLogInRoute path="/purchase-requisition-template" component={PurchaseRequisitionTemplateRoute} />
+      <PostLogInRoute path="/purchase-requisition-template" component={PurchaseRequisitionTemplatePage} />
       <PostLogInRoute path="/purchase-requisition-request" component={PurchaseRequisitionRequestPage} />
       <PostLogInRoute path="/purchase-requisition-submission-record" component={PurchaseRequisitionSubmissionPage} />
       <PostLogInRoute path="/purchase-requisition-approval" component={PurchaseRequisitionApprovalPage} />

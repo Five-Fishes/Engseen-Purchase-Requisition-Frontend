@@ -222,20 +222,22 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
                 </Form>
               </div>
               <Divider />
-              <Button
-                key="save-template-button"
-                type="primary"
-                size="large"
-                className="float-end mb-2"
-                onClick={() => {
-                  console.log('Save Template');
-                }}
-              >
-                Save Template
-              </Button>
+              
             </Col>
           </Row>
         </div>
+        <Button
+          key="save-template-button"
+          type="primary"
+          size="large"
+          className="fixed-bottom mb-2"
+          style={{ left: "auto", right: "5%" }}
+          onClick={() => {
+            console.log('Save Template');
+          }}
+        >
+          Save Template
+        </Button>
       </div>
       <Modal title="Edit Template Name" key="edit-templateName-modal" visible={editTemplateNameModal} footer={null} onCancel={closeTemplateNameModal}>
         <Form onFinish={editTemplateName}>

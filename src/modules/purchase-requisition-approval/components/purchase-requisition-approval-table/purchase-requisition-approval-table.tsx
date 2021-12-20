@@ -47,12 +47,21 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
     }
   };
 
+  /**
+   * Update deliveryDate for all columns:
+   * - If the order qty > 0
+   * @param value The selected date
+   */
   const updateAllDeliveryDate: (value: any) => void = (value) => {
     if (props.selectedPurchaseRequisitionApproval) {
       const updatedSelectedPurchaseRequisitionApproval = CLONING_LIB.deepClone(props.selectedPurchaseRequisitionApproval);
       if (value) {
         updatedSelectedPurchaseRequisitionApproval?.purchaseRequisitionApprovalItems.forEach((item) => {
-          item.status === PurchaseRequisitionApprovalStatus.TO_CONFIRM && (item.deliveryDate = (value as Moment).toDate());
+          const isToConfirm = item.status === PurchaseRequisitionApprovalStatus.TO_CONFIRM;
+          const isQtyMoreThan0 = item.quantity > 0;
+          if (isToConfirm && isQtyMoreThan0) {
+            item.deliveryDate = (value as Moment).toDate();
+          }
         });
       }
       updatePurchaseRequisitionApproval(updatedSelectedPurchaseRequisitionApproval);
@@ -238,7 +247,7 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
               return <StatefulNumberInput state={record.status} value={value} onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, 'noOfPacks', index)} />;
             }}
           />
-          <Table.Column title="Total Quantity To Order (kgs)" dataIndex="quantity" key="quantity" />
+          <Table.Column title="Total Quantity To Order (kgs)" dataIndex="quantity" key="quantity"/>
           <Table.Column
             title={
               <Popover

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, DatePicker, Input, Popover, Table } from 'antd';
+import { Button, DatePicker, Input, Popconfirm, Popover, Table } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 import moment, { Moment } from 'moment';
 
@@ -14,6 +14,8 @@ import StatefulTextInput from '@module/shared/components/stateful-input/stateful
 import StatefulNumberInput from '@module/shared/components/stateful-input/stateful-number-input/stateful-number-input';
 
 import generateIndex from './purchase-requisition-approval-table-indexer';
+import { popNotification } from '@module/shared/components/notification';
+import { NotificationType } from '@constant/notification.enum';
 interface IPurchaseRequititionApprovalTableProps {
   selectedPurchaseRequisitionApproval?: IPurchaseRequisitionApproval;
   updatePurchaseRequisitionApproval: (purchaseRequisitionApproval: IPurchaseRequisitionApproval) => void;
@@ -56,6 +58,19 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
       updatePurchaseRequisitionApproval(updatedSelectedPurchaseRequisitionApproval);
     }
   };
+
+  const removeApprovalItem: (record: IPurchaseRequisitionApprovalItem) => void = (record) => {
+    if(record.status !== PurchaseRequisitionApprovalStatus.TO_CONFIRM) {
+      const recordStatus = PurchaseRequisitionApprovalStatusDisplayText(record.status);
+      popNotification(`Cannot delete item with status "${recordStatus}", please change to status "To be confirmed"`, NotificationType.error);
+    } else {
+      if(props.selectedPurchaseRequisitionApproval) {
+        const updatedSelectedPurchaseRequisitionApproval = CLONING_LIB.deepClone(props.selectedPurchaseRequisitionApproval);
+        updatedSelectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems = updatedSelectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems.filter(item => item.id !== record.id);
+        updatePurchaseRequisitionApproval(updatedSelectedPurchaseRequisitionApproval);
+      }
+    }
+  }
 
   /**
    * Update the SelectedApprovalItem's field based on the provided key
@@ -263,7 +278,7 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
           <Table.Column
             title="Action"
             render={(value, record: IPurchaseRequisitionApprovalItem, index: number) => {
-              return <Button icon={<DeleteOutlined />} />;
+              return <Popconfirm title="Are you sure you want to delete this item?" okText="OK" cancelText="Cancel" onConfirm={() => removeApprovalItem(record)}><Button icon={<DeleteOutlined />} /></Popconfirm>;
             }}
           />
         </Table>

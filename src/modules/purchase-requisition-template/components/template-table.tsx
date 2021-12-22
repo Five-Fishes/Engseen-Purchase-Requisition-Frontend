@@ -22,12 +22,14 @@ const PurchaseRequisitionTemplateTable: React.FC<IPurchaseRequisitionTemplateTab
       dataIndex: 'sequence',
       key: 'row',
       align: 'center',
+      width: "65px",
     },
     {
       title: 'Component',
       dataIndex: 'componentCode',
       key: 'component',
       align: 'center',
+      width: "322px",
       render: (text: string, record: IPurchaseRequisitionTemplateItem) => (
         <span>
           {text} - {record.componentName}
@@ -39,6 +41,7 @@ const PurchaseRequisitionTemplateTable: React.FC<IPurchaseRequisitionTemplateTab
       dataIndex: 'vendorId',
       key: 'vendor',
       align: 'center',
+      width: "309px",
       render: (text: string, record: IPurchaseRequisitionTemplateItem) => (
         <span>
           {text} - {record.vendorName}
@@ -50,12 +53,14 @@ const PurchaseRequisitionTemplateTable: React.FC<IPurchaseRequisitionTemplateTab
       dataIndex: 'packagingSize',
       key: 'packingSize',
       align: 'center',
+      width: "136px",
     },
     {
       title: 'Action',
       dataIndex: 'id',
       key: 'action',
       align: 'center',
+      width: "88px",
       render: (id: number, record: IPurchaseRequisitionTemplateItem, index: number) => (
         <Button type="text">
           <DeleteOutlined
@@ -78,20 +83,12 @@ const PurchaseRequisitionTemplateTable: React.FC<IPurchaseRequisitionTemplateTab
     },
   ];
 
-  if (props.currentTemplate && props.currentTemplate.templateName != null) {
-    const templateItems = props.filteredItems === undefined ? props.currentTemplate.templateItems : props.filteredItems;
-    return (
-      <>
-        <Table className="my-4" dataSource={templateItems} columns={PURCHASE_REQUISITION_TEMPLATE_TABLE_COLUMN} rowKey="sequence" scroll={{ y: 370 }} pagination={TABLE_PAGINATION_CONFIG}></Table>
-      </>
-    );
-  } else {
-    return (
-      <div className="d-flex flex-column justify-content-center my-4">
-        <span className="text-center">No Template Selected</span>
-      </div>
-    );
-  }
+  const templateItems = props.filteredItems === undefined ? (props.currentTemplate?.templateItems ?? []) : props.filteredItems;
+  return (
+    <>
+      <Table className="my-4" dataSource={templateItems} columns={PURCHASE_REQUISITION_TEMPLATE_TABLE_COLUMN} rowKey="sequence" scroll={{ y: 'calc(100vh - 250px)' }} pagination={TABLE_PAGINATION_CONFIG}></Table>
+    </>
+  );
 };
 
 export default PurchaseRequisitionTemplateTable;

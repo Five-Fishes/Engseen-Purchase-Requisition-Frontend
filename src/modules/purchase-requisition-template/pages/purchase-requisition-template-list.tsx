@@ -133,109 +133,110 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
 
   return (
     <>
-      <div className="container-fluid h-100">
-        <div className="d-flex flex-column justify-content-center">
-          <Title level={4}>Purchase Requisition Template</Title>
+      <div className="d-flex flex-row">
+        <div className="container-fluid h-100">
+          <div className="d-flex flex-column justify-content-center">
+            <Title level={4}>Purchase Requisition Template</Title>
+          </div>
+            <div className="border-right-2 mx-2">
+            <div className="my-2 position-relative">
+              <b className="d-inline-flex align-items-center">
+                {selectedPurchaseRequisitionTemplate.templateName}&nbsp;
+                <EditOutlined className="cursor-pointer" onClick={changeTemplateNameModal} hidden={selectedPurchaseRequisitionTemplate.templateName === undefined} />
+              </b>
+              <div className="col d-flex flex-column justify-content-center">
+                <Input.Search
+                  allowClear
+                  placeholder="Search"
+                  bordered={false}
+                  value={searchText}
+                  onChange={(e: any) => setSearchText(e.target.value)}
+                  onSearch={search}
+                  style={{
+                    width: '40%',
+                    borderBottom: '1px solid #d9d9d9',
+                    position: 'absolute',
+                    right: '5px',
+                  }}
+                />
+              </div>
+            </div>
+            <PurchaseRequisitionTemplateTable currentTemplate={selectedPurchaseRequisitionTemplate} deleteTemplateComponent={deleteTemplateItem} filteredItems={filteredTemplateItems} />
+          </div>
         </div>
-        <div>
+
+        <Divider type="vertical" style={{ height: '100vh' }} className="mx-4" />
+
+        <div className="px-2" style={{ minWidth: "680px" }}>
+          <PurchaseRequisitionTemplateBrowser setSelectedTemplate={setSelectedPurchaseRequisitionTemplate} />
+          <Divider />
+          {/* Excel Upload */}
           <Row>
-            <Col span={14}>
-              <div className="border-right-2 mx-2">
-                <div className="my-2 position-relative">
-                  <b className="d-inline-flex align-items-center">
-                    {selectedPurchaseRequisitionTemplate.templateName}&nbsp;
-                    <EditOutlined className="cursor-pointer" onClick={changeTemplateNameModal} hidden={selectedPurchaseRequisitionTemplate.templateName === undefined} />
-                  </b>
-                  <div className="col d-flex flex-column justify-content-center">
-                    <Input.Search
-                      allowClear
-                      placeholder="Search"
-                      bordered={false}
-                      value={searchText}
-                      onChange={(e: any) => setSearchText(e.target.value)}
-                      onSearch={search}
-                      style={{
-                        width: '40%',
-                        borderBottom: '1px solid #d9d9d9',
-                        position: 'absolute',
-                        right: '5px',
-                      }}
-                    />
-                  </div>
-                </div>
-                <PurchaseRequisitionTemplateTable currentTemplate={selectedPurchaseRequisitionTemplate} deleteTemplateComponent={deleteTemplateItem} filteredItems={filteredTemplateItems} />
+            <Col span={16}>
+              <div className="input-group align-items-center">
+                <Input className="form-control" key="template-excel-input" type="file" onChange={(e: any) => setExcelFile(e.target.files[0])} />
+                <Button className="input-group-btn mx-1" key="upload-excel-button" type="default" onClick={() => uploadExcelFile()}>
+                  Upload
+                </Button>
               </div>
             </Col>
-            <Col span={10}>
-              <PurchaseRequisitionTemplateBrowser setSelectedTemplate={setSelectedPurchaseRequisitionTemplate} />
-              <Divider />
-              {/* Excel Upload */}
-              <Row>
-                <Col span={16}>
-                  <div className="input-group align-items-center">
-                    <Input className="form-control" key="template-excel-input" type="file" onChange={(e: any) => setExcelFile(e.target.files[0])} />
-                    <Button className="input-group-btn mx-1" key="upload-excel-button" type="default" onClick={() => uploadExcelFile()}>
-                      Upload
-                    </Button>
-                  </div>
-                </Col>
-                <Col span={6} offset={2}>
-                  <Button className="input-group-btn float-end" key="load-database-button" type="primary" onClick={() => loadDatabaseWithExcelData()}>
-                    Load Database
-                  </Button>
-                </Col>
-              </Row>
-              {/* Add Component */}
-              <div className="mt-5">
-                <Form onFinish={addNewComponentAsTemplateItem} onFinishFailed={formValidationFailed}>
-                  <Row>
-                    <Col span={16}>
-                      <Form.Item className="input-group" name="componentCode" rules={[{ required: true, message: 'Enter component code' }]}>
-                        <Input key="component-input" type="text" placeholder="Component" />
-                      </Form.Item>
-                      <Form.Item className="input-group" name="vendorId" rules={[{ required: true, message: 'Enter vendor ID' }]}>
-                        <Input key="vendor-input" type="text" placeholder="Vendor" />
-                      </Form.Item>
-                      <Form.Item
-                        className="input-group"
-                        name="packagingSize"
-                        rules={[
-                          { required: true, message: 'Enter packing size' },
-                          {
-                            type: 'number',
-                            min: 1,
-                            message: 'Packing Size must be positive',
-                          },
-                        ]}
-                      >
-                        <InputNumber className="w-100" key="packing-size-input" placeholder="Packing Size" />
-                      </Form.Item>
-                    </Col>
-                    <Col span={6} offset={2}>
-                      <Form.Item>
-                        <Button className="input-group-btn float-end" key="load-database-button" type="primary" htmlType="submit">
-                          Add Component
-                        </Button>
-                      </Form.Item>
-                    </Col>
-                  </Row>
-                </Form>
-              </div>
-              <Divider />
-              <Button
-                key="save-template-button"
-                type="primary"
-                size="large"
-                className="float-end mb-2"
-                onClick={() => {
-                  console.log('Save Template');
-                }}
-              >
-                Save Template
+            <Col span={6} offset={2}>
+              <Button className="input-group-btn float-end" key="load-database-button" type="primary" onClick={() => loadDatabaseWithExcelData()}>
+                Load Database
               </Button>
             </Col>
           </Row>
+          {/* Add Component */}
+          <div className="mt-5">
+            <Form onFinish={addNewComponentAsTemplateItem} onFinishFailed={formValidationFailed}>
+              <Row>
+                <Col span={16}>
+                  <Form.Item className="input-group" name="componentCode" rules={[{ required: true, message: 'Enter component code' }]}>
+                    <Input key="component-input" type="text" placeholder="Component" />
+                  </Form.Item>
+                  <Form.Item className="input-group" name="vendorId" rules={[{ required: true, message: 'Enter vendor ID' }]}>
+                    <Input key="vendor-input" type="text" placeholder="Vendor" />
+                  </Form.Item>
+                  <Form.Item
+                    className="input-group"
+                    name="packagingSize"
+                    rules={[
+                      { required: true, message: 'Enter packing size' },
+                      {
+                        type: 'number',
+                        min: 1,
+                        message: 'Packing Size must be positive',
+                      },
+                    ]}
+                  >
+                    <InputNumber className="w-100" key="packing-size-input" placeholder="Packing Size" />
+                  </Form.Item>
+                </Col>
+                <Col span={6} offset={2}>
+                  <Form.Item>
+                    <Button className="input-group-btn float-end" key="load-database-button" type="primary" htmlType="submit">
+                      Add Component
+                    </Button>
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Form>
+          
+            <Divider />
+            <Button
+              key="save-template-button"
+              type="primary"
+              size="large"
+              className="float-end mb-2"
+              onClick={() => {
+                console.log('Save Template');
+              }}
+            >
+              Save Template
+            </Button>
+          </div>
         </div>
+        
       </div>
       <Modal title="Edit Template Name" key="edit-templateName-modal" visible={editTemplateNameModal} footer={null} onCancel={closeTemplateNameModal}>
         <Form onFinish={editTemplateName}>

@@ -317,7 +317,7 @@ mock.onPost(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate>(2
 mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(200, [
   {
     id: 1,
-    templateName: 'template 1',
+    templateName: 'Kong Long HUAT CHEMICAL',
     templateItems: [
       {
         id: 1,

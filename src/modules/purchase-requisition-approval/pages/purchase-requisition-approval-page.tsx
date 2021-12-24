@@ -149,8 +149,8 @@ const PurchaseRequisitionApprovalPage: React.FC = () => {
 
         <Divider />
 
-        <div className="row">
-          <div className="col-3">
+        <div className="mx-2 d-inline-flex">
+          <div className="mb-2">
             <PurchaseRequisitionSelector
               purcahseRequisitionApprovalList={filteredPurchaseRequisitionApprovalList}
               setPurcahseRequisitionApprovalList={setFilteredPurchaseRequisitionApprovalList}
@@ -158,7 +158,7 @@ const PurchaseRequisitionApprovalPage: React.FC = () => {
               setSelectedPurcahseRequisitionApproval={setSelectedPurchaseRequisitionApproval}
             ></PurchaseRequisitionSelector>
           </div>
-          <div className="col-9">
+          <div className="m-2 mx-3">
             <PurchaseRequititionApprovalTable
               selectedPurchaseRequisitionApproval={selectedPurchaseRequisitionApproval}
               updatePurchaseRequisitionApproval={updatePurchaseRequisitionApproval}

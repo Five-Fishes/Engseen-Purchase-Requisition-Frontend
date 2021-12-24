@@ -26,7 +26,8 @@ const PurchaseRequisitionSelector: React.FC<IPurchaseRequisitionSelectorProps> =
         <div className="d-flex flex-column scrollable-menu" style={{ maxHeight: '480px' }}>
           {APPROVAL_LIST.map((purchaseRequisitionApproval, index) => (
             <Button
-              className="m-2"
+              type={purchaseRequisitionApproval.id === props.selectedPurcahseRequisitionApproval?.id ? 'primary' : 'default'}
+              className="m-1 px-4"
               shape="round"
               size="large"
               key={index}

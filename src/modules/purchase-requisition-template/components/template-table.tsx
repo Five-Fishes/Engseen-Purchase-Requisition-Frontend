@@ -86,7 +86,7 @@ const PurchaseRequisitionTemplateTable: React.FC<IPurchaseRequisitionTemplateTab
   const templateItems = props.filteredItems === undefined ? (props.currentTemplate?.templateItems ?? []) : props.filteredItems;
   return (
     <>
-      <Table className="my-4" dataSource={templateItems} columns={PURCHASE_REQUISITION_TEMPLATE_TABLE_COLUMN} rowKey="sequence" scroll={{ y: 'calc(100vh - 250px)' }} pagination={TABLE_PAGINATION_CONFIG}></Table>
+      <Table className="my-4" style={{ width: "940px", maxWidth: "1000px" }} dataSource={templateItems} columns={PURCHASE_REQUISITION_TEMPLATE_TABLE_COLUMN} rowKey="sequence" scroll={{ y: 'calc(100vh - 250px)' }} pagination={TABLE_PAGINATION_CONFIG}></Table>
     </>
   );
 };

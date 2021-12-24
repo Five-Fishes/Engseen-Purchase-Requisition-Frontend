@@ -134,11 +134,11 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
   return (
     <>
       <div className="d-flex flex-row">
-        <div className="container-fluid h-100">
+        <div className="container-fluid h-100" style={{ width: "max-content" }}>
           <div className="d-flex flex-column justify-content-center">
             <Title level={4}>Purchase Requisition Template</Title>
           </div>
-            <div className="border-right-2 mx-2">
+          <div className="border-right-2 mx-2">
             <div className="my-2 position-relative">
               <b className="d-inline-flex align-items-center">
                 {selectedPurchaseRequisitionTemplate.templateName}&nbsp;

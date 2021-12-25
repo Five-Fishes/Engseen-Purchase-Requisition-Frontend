@@ -19,7 +19,7 @@ const ComponentSelector: React.FC = () => {
           </div>
           <div className="row mt-1">
             <div className="col">
-              <InputNumber className="w-100" placeholder="No of Pack to Order"></InputNumber>
+              <InputNumber type="number" className="w-100" placeholder="No of Pack to Order"/>
             </div>
             <div className="col">
               <DatePicker className="w-100"></DatePicker>

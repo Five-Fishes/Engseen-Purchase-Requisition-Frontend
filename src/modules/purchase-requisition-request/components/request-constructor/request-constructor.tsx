@@ -155,14 +155,14 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
             </span>
           }
           dataIndex="packagingSize"
-          render={(value: number, record: IPurchaseRequisitionTemplateItem, index: number) => <InputNumber onChange={ e => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, "packagingSize", index)} value={value} />}
+          render={(value: number, record: IPurchaseRequisitionTemplateItem, index: number) => <InputNumber type="number" onChange={ e => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, "packagingSize", index)} value={value} />}
           key="packagingSize"
         />
       )}
       <Table.Column
         title="No. of Packs to Order"
         dataIndex="quantity"
-        render={(value: number, record: IPurchaseRequisitionTemplateItem, index: number) => <InputNumber onChange={ e => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, "quantity", index)} value={value} />}
+        render={(value: number, record: IPurchaseRequisitionTemplateItem, index: number) => <InputNumber type="number" onChange={ e => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, "quantity", index)} value={value} />}
         key="quantity"
       />
       <Table.Column title="Total Quantity to Order (kgs)" render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <>{record.packagingSize * (record.quantity || 0)}</>} />

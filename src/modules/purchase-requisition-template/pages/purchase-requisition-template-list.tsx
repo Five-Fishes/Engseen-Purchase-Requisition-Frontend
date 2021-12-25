@@ -208,7 +208,7 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
                           },
                         ]}
                       >
-                        <InputNumber className="w-100" key="packing-size-input" placeholder="Packing Size" />
+                        <InputNumber type="number" className="w-100" key="packing-size-input" placeholder="Packing Size" />
                       </Form.Item>
                     </Col>
                     <Col span={6} offset={2}>
@@ -258,7 +258,7 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
       <Modal title="Select Item to Insert" key="template-item-select-modal" visible={templateInsertItemSelect} footer={null} onCancel={closeTemplateInsertItemSelectModal}>
         <Form onFinish={insertItemToTemplate} form={insertItemsForm}>
           <Form.Item label="Item Row" name="itemSequence">
-            <InputNumber placeholder="Row to insert" />
+            <InputNumber type="number" placeholder="Row to insert" />
           </Form.Item>
           <Form.Item label="Items" name="selectedItem" rules={[{ required: true, message: 'Please select 1 item' }]}>
             <Radio.Group>

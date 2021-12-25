@@ -132,7 +132,7 @@ const PurchaseRequisitionApprovalPage: React.FC = () => {
 
   return (
     <>
-      <div className="container-fluid h-100 mb-remark-fixed" style={{ overflowY: 'scroll' }}>
+      <div className="container-fluid h-100" style={{ overflowY: 'scroll' }}>
         <div className="row">
           <Title level={4}>Purchase Approval</Title>
         </div>
@@ -154,9 +154,26 @@ const PurchaseRequisitionApprovalPage: React.FC = () => {
             <PurchaseRequisitionSelector
               purcahseRequisitionApprovalList={filteredPurchaseRequisitionApprovalList}
               setPurcahseRequisitionApprovalList={setFilteredPurchaseRequisitionApprovalList}
-              selectedPurcahseRequisitionApproval={selectedPurchaseRequisitionApproval}
+              selectedPurchaseRequisitionApproval={selectedPurchaseRequisitionApproval}
               setSelectedPurcahseRequisitionApproval={setSelectedPurchaseRequisitionApproval}
             ></PurchaseRequisitionSelector>
+            <div className="mx-1 pb-1 d-flex d-flex-column pt-3">
+              <div style={{ width: "213px", height: "207px" }}>
+                <Input.TextArea
+                  className="h-100"
+                  placeholder="Remarks"
+                  rows={3}
+                  readOnly
+                  value={selectedPurchaseRequisitionApproval && selectedPurchaseRequisitionApproval.remarks}
+                  onChange={(e) => updateRemarks(e)}
+                ></Input.TextArea>
+              </div>
+              <div className=" mx-2">
+                <Button onClick={issuePurchaseOrder} type="primary" size="middle" className="issue-po-btn">
+                  Issue<br/>Confirmed<br/>PO &nbsp; <CheckSquareOutlined style={{ transform: 'translateY(-3px)' }} />
+                </Button>
+              </div>
+            </div>
           </div>
           <div className="m-2 mx-3">
             <PurchaseRequititionApprovalTable
@@ -166,7 +183,7 @@ const PurchaseRequisitionApprovalPage: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="row fixed-bottom mx-3 pb-1 remark-wrapper">
+      {/* <div className="row fixed-bottom mx-3 pb-1 remark-wrapper">
         <div className="col-3 pt-3 remarks-box">
           <Input.TextArea
             className="h-100"
@@ -181,7 +198,7 @@ const PurchaseRequisitionApprovalPage: React.FC = () => {
             <CheckSquareOutlined style={{ transform: 'translateY(-3px)' }} /> Issue Confirmed PO
           </Button>
         </div>
-      </div>
+      </div> */}
     </>
   );
 };

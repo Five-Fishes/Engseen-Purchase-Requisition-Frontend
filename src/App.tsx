@@ -12,6 +12,8 @@ import getMock from '@api/api-mocks.api';
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
+import { Button, Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -39,6 +41,8 @@ if (process.env.NODE_ENV === 'development') {
 const App: React.FC = () => {
   const [sideBarOpened, setSideBarOpened] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [loading, setLoading] = useState(true);
+
   function triggerSideBar(): void {
     setSideBarOpened(!sideBarOpened);
   }
@@ -56,12 +60,15 @@ const App: React.FC = () => {
       <Router>
         <Layout className="h-100">
           <AppSider sideBarOpened={sideBarOpened} toggleSidebar={triggerSideBar} />
-          <Layout>
-            <Header triggerSideBar={triggerSideBar} sideBarOpened={sideBarOpened} loggedIn={loggedIn} triggerLoggedIn={triggerLoggedIn} />
-            <Content className="h-100 px-3 pt-3 page" style={{ backgroundColor: '#ffffff' }}>
-              <Routes />
-            </Content>
-          </Layout>
+          <Button onClick={() => setLoading(!loading)}>Toggle Loading</Button>
+          <Spin spinning={loading} indicator={<LoadingOutlined style={{ fontSize: 40 }} spin />}>
+            <Layout>
+              <Header triggerSideBar={triggerSideBar} sideBarOpened={sideBarOpened} loggedIn={loggedIn} triggerLoggedIn={triggerLoggedIn} />
+              <Content className="h-100 px-3 pt-3 page" style={{ backgroundColor: '#ffffff' }}>
+                <Routes />
+              </Content>
+            </Layout>
+          </Spin>
         </Layout>
       </Router>
     </>

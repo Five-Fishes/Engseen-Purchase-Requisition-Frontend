@@ -2,19 +2,20 @@ import { ChangeEvent, useEffect, useState } from 'react';
 import { Input, Divider, Button } from 'antd';
 import Title from 'antd/lib/typography/Title';
 
+import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
+import { ITableColumnDisplaySettings } from '@dto/i-table-columns';
+import { getSearchText, SearchEngine } from '@utils/search/native-search';
 import { IPurchaseRequisitionTemplate } from '@dto/i-purchase-requisition-template.dto';
+import { IPurchaseRequisitionTemplateItem } from '@dto/i-purchase-requisition-template-item.dto';
 
 import PurchaseRequisitionTemplateBrowser from '../components/template-browser/template-browser';
 import PurchaseRequisitionRequestConstructor from '../components/request-constructor/request-constructor';
-import PurchaseRequisitionColumnFilter from '../components/column-filter/column-filter';
-import { getSearchText, SearchEngine } from '@utils/search/native-search';
-import { IPurchaseRequisitionTemplateItem } from '@dto/i-purchase-requisition-template-item.dto';
+import PurchaseRequisitionRequestTableDisplaySettings from '../components/table-column-display-settings/table-column-display-settings';
 import generateIndex from '../components/request-constructor/request-constructor-indexer';
-import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
 
 const PurchaseRequisitionRequestPage: React.FC = () => {
   const [selectedTemplate, setSelectedTemplate] = useState<IPurchaseRequisitionTemplate>();
-  const [columnFilter, setColumnFilter] = useState<Map<string, boolean>>(new Map());
+  const [tableColumnDisplaySettings, setTableColumnDisplaySettings] = useState<ITableColumnDisplaySettings[]>();
   const [searchResult, setSearchResult] = useState<IPurchaseRequisitionTemplateItem[]>();
   const searchEngine: SearchEngine<IPurchaseRequisitionTemplateItem> = new SearchEngine([], generateIndex);
 
@@ -26,13 +27,13 @@ const PurchaseRequisitionRequestPage: React.FC = () => {
   }, [selectedTemplate]);
 
   const updateRemarks: (event: ChangeEvent<HTMLTextAreaElement> | undefined) => void = (event) => {
-    if(selectedTemplate && event) {
-      const updatedTemplate = CLONING_LIB.deepClone(selectedTemplate)
-      updatedTemplate.remarks = event.target.value
+    if (selectedTemplate && event) {
+      const updatedTemplate = CLONING_LIB.deepClone(selectedTemplate);
+      updatedTemplate.remarks = event.target.value;
       setSelectedTemplate(updatedTemplate);
     }
-  }
-  
+  };
+
   const handleSearch = (value: string, event: React.ChangeEvent<HTMLInputElement> | React.MouseEvent<HTMLElement, MouseEvent> | React.KeyboardEvent<HTMLInputElement> | undefined) => {
     console.group('Search [PurchaseRequititionApprovalTable]');
     console.log('value >>: ', value);
@@ -58,20 +59,19 @@ const PurchaseRequisitionRequestPage: React.FC = () => {
               <PurchaseRequisitionTemplateBrowser setSelectedTemplate={setSelectedTemplate} />
             </div>
             <div className="col d-flex flex-column justify-content-center">
-              <Input.Search
-                placeholder="Search"
-                onSearch={handleSearch}
-                allowClear
-              ></Input.Search>
+              <Input.Search placeholder="Search" onSearch={handleSearch} allowClear></Input.Search>
             </div>
           </div>
           <div className="row">
             <div className="col">
-              <PurchaseRequisitionRequestConstructor searchResult={searchResult} currentTemplate={selectedTemplate} columnFilter={columnFilter} updateTemplate={setSelectedTemplate} />
+              <PurchaseRequisitionRequestConstructor
+                searchResult={searchResult}
+                currentTemplate={selectedTemplate}
+                tableColumnDisplaySettings={tableColumnDisplaySettings}
+                updateTemplate={setSelectedTemplate}
+              />
             </div>
           </div>
-
-          <Divider />
 
           <div className="row fixed-bottom mx-3 pb-1 remark-wrapper bg-white">
             <div className="col my-auto">
@@ -89,7 +89,7 @@ const PurchaseRequisitionRequestPage: React.FC = () => {
         <Divider type="vertical" style={{ height: '100vh' }} />
 
         <div className="mx-2">
-          <PurchaseRequisitionColumnFilter setColumnFilter={setColumnFilter} />
+          <PurchaseRequisitionRequestTableDisplaySettings tableColumnDisplaySettings={tableColumnDisplaySettings} setTableColumnDisplaySettings={setTableColumnDisplaySettings} />
         </div>
       </div>
     </>

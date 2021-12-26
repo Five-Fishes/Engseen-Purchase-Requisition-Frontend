@@ -128,12 +128,19 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
   };
 
   return (
-    <Table className="my-2" dataSource={props.searchResult} rowKey="id" scroll={{ x: 2000, y: 500 }} pagination={TABLE_PAGINATION_CONFIG}>
-      {console.log(props.columnFilter.get('sequence'))}
-      {props.columnFilter.get('sequence') !== true && <Table.Column title="Row" render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <>{index + 1}</>} />}
-      {props.columnFilter.get('componentCode') !== true && <Table.Column title="Component ID" dataIndex="componentCode" key="componentCode" />}
-      {props.columnFilter.get('componentName') !== true && <Table.Column title="Component Name" width={300} dataIndex="componentName" key="componentName" />}
-      {props.columnFilter.get('vendor') !== true && <Table.Column title="Vendor" width={300} dataIndex="vendorName" key="vendorName" />}
+    <Table className="my-2" style={{ width: "1450px", maxWidth: "2000px" }} dataSource={props.searchResult} rowKey="id" scroll={{ y: "calc(100vh - 350px)" }} pagination={TABLE_PAGINATION_CONFIG}>
+      {props.columnFilter.get('sequence') !== true &&
+        <Table.Column title="Row" width="60px" render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <>{index + 1}</>} />
+      }
+      {props.columnFilter.get('componentCode') !== true && 
+        <Table.Column title="Component ID" width="150px" dataIndex="componentCode" key="componentCode" />
+      }
+      {props.columnFilter.get('componentName') !== true &&
+        <Table.Column title="Component Name" width="172px" dataIndex="componentName" key="componentName" />
+      }
+      {props.columnFilter.get('vendor') !== true &&
+        <Table.Column title="Vendor" width="172px" dataIndex="vendorName" key="vendorName" />
+      }
       {props.columnFilter.get('balance') !== true && (
         <Table.Column
           title={
@@ -142,6 +149,7 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
               (kgs)
             </span>
           }
+          width="133px"
           key="balance"
           render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <>{Math.floor(Math.random() * 10000)}</>}
         />
@@ -154,6 +162,7 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
               (kgs per pack)
             </span>
           }
+          width="150px"
           dataIndex="packagingSize"
           render={(value: number, record: IPurchaseRequisitionTemplateItem, index: number) => <InputNumber onChange={ e => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, "packagingSize", index)} value={value} />}
           key="packagingSize"
@@ -161,11 +170,12 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
       )}
       <Table.Column
         title="No. of Packs to Order"
+        width="150px"
         dataIndex="quantity"
         render={(value: number, record: IPurchaseRequisitionTemplateItem, index: number) => <InputNumber onChange={ e => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, "quantity", index)} value={value} />}
         key="quantity"
       />
-      <Table.Column title="Total Quantity to Order (kgs)" render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <>{record.packagingSize * (record.quantity || 0)}</>} />
+      <Table.Column title="Total Quantity to Order (kgs)" width="133px" render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <>{record.packagingSize * (record.quantity || 0)}</>} />
       <Table.Column
         title={
           <Popover
@@ -185,6 +195,7 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
             </div>
           </Popover>
         }
+        width="136px"
         dataIndex="deliveryDate"
         render={(value: Date, record: IPurchaseRequisitionTemplateItem, index: number) => {
           let castedValue = undefined;
@@ -204,6 +215,7 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
             </div>
           </Popconfirm>
         }
+        width="114px"
         render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <Button onClick={() => clearInputByItemId(record)} icon={<ClearOutlined />} />}
       />
     </Table>

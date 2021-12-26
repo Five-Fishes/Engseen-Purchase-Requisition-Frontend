@@ -1,7 +1,7 @@
 import { AnyAction } from 'redux';
 export interface IAppState {
-  loading: Boolean,
-  loggedIn: Boolean,
+  loading: boolean,
+  loggedIn: boolean,
 };
 
 export const ACTION_TYPES = {
@@ -16,9 +16,11 @@ const initialState: IAppState = {
 
 // Reducer
 const appReducer = (state: IAppState = initialState, action: AnyAction): IAppState => {
+  console.log(action);
   switch (action.type) {
     case ACTION_TYPES.SET_LOADING:
       const { loading } = action.payload;
+      console.log(loading);
       return {
         ...state,
         loading: loading,

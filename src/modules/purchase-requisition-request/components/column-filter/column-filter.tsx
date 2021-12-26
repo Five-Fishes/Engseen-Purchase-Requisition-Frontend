@@ -4,15 +4,20 @@ import { useState } from 'react';
 
 interface IPurchaseRequisitionColumnFilterProps {
   setColumnFilter: (columnFilters: Map<string, boolean>) => void;
+  setLoading?: (loading: boolean) => void;
 }
 
 const PurchaseRequisitionColumnFilter: React.FC<IPurchaseRequisitionColumnFilterProps> = (props) => {
   const [columnFilter] = useState<Map<string, boolean>>(new Map());
 
   const applyColumn = () => {
+    props.setLoading && props.setLoading(true);
     const deepCopy: Map<string, boolean> = CLONING_LIB.deepClone(columnFilter);
     props.setColumnFilter(deepCopy);
     console.log(columnFilter);
+    setTimeout(function() {
+      props.setLoading && props.setLoading(false);
+    }, 500);
   };
 
   const filterColumn = (column: IFilterColumnOption, checked: boolean) => {

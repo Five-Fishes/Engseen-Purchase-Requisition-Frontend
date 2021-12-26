@@ -50,7 +50,7 @@ const PurchaseRequisitionRequestPage: React.FC = () => {
   return (
     <>
       <div className=" d-flex flex-row">
-        <div className="container-fluid h-100 pb-2 mb-remark-fixed">
+        <div className="container-fluid pb-2" style={{ width: 'max-content' }}>
           <div className="row">
             <div className="col d-flex flex-column justify-content-center">
               <Title level={4}>Purchase Requisition</Title>
@@ -79,9 +79,9 @@ const PurchaseRequisitionRequestPage: React.FC = () => {
                 Submit Request
               </Button>
             </div>
-            <div className="col row ml-auto  remark-box">
-              <span className="w-25">Remarks</span>
-              <Input.TextArea className="col h-100" value={selectedTemplate?.remarks} onChange={updateRemarks} rows={3} placeholder="Remarks here"></Input.TextArea>
+            <div className="d-flex d-flex-column">
+              <span className="mx-2">Remarks</span>
+              <Input.TextArea className="remarks-textbox" value={selectedTemplate?.remarks} onChange={updateRemarks} rows={3} placeholder="Remarks here"></Input.TextArea>
             </div>
           </div>
         </div>

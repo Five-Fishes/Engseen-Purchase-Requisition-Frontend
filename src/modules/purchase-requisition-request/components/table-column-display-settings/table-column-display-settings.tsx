@@ -6,6 +6,8 @@ import Checkbox, { CheckboxChangeEvent } from 'antd/lib/checkbox/Checkbox';
 import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
 import { ITableColumnDisplaySettings } from '@dto/i-table-columns';
 import DEFAULT_PURCHASE_REQUISITION_REQUEST_TABLE_DISPLAY_SETTINGS from '@constant/purchase-requisition-request/purchase-requisition-request-table-display-settings';
+import { popNotification } from '@module/shared/components/notification';
+import { NotificationType } from '@constant/notification.enum';
 
 interface IPurchaseRequisitionColumnFilterProps {
   tableColumnDisplaySettings?: ITableColumnDisplaySettings[];
@@ -24,16 +26,21 @@ const PurchaseRequisitionRequestTableDisplaySettings: React.FC<IPurchaseRequisit
       setTableColumnDisplaySettings(parsedSavedPurchaseRequisitionRequestTableDisplaySettings);
     } else {
       setTableColumnDisplaySettings(DEFAULT_PURCHASE_REQUISITION_REQUEST_TABLE_DISPLAY_SETTINGS);
+
+      /**
+       * Only save it in non local environment
+       */
+      if (process.env.NODE_ENV !== 'development') {
+        localStorage.setItem('purchaseRequisitionRequestTableDisplaySettings', JSON.stringify(DEFAULT_PURCHASE_REQUISITION_REQUEST_TABLE_DISPLAY_SETTINGS));
+      }
     }
 
-    /**
-     * Only save it in non local environment
-     */
-    if (process.env.NODE_ENV !== 'development') {
-      localStorage.setItem('purchaseRequisitionRequestTableDisplaySettings', JSON.stringify(DEFAULT_PURCHASE_REQUISITION_REQUEST_TABLE_DISPLAY_SETTINGS));
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem('purchaseRequisitionRequestTableDisplaySettings', JSON.stringify(tableColumnDisplaySettings));
+  }, [tableColumnDisplaySettings]);
 
   const updateVisibility = (e: CheckboxChangeEvent, item: ITableColumnDisplaySettings) => {
     if (tableColumnDisplaySettings) {
@@ -69,6 +76,8 @@ const PurchaseRequisitionRequestTableDisplaySettings: React.FC<IPurchaseRequisit
         updatedTableColumnDisplaySettings[currentIndex + moveIndex] = item;
         updatedTableColumnDisplaySettings[currentIndex] = destinationItem;
         setTableColumnDisplaySettings([...updatedTableColumnDisplaySettings]);
+      } else {
+        popNotification('Cannot move outside of sequence range', NotificationType.warning);
       }
     }
   };

@@ -5,6 +5,7 @@ export interface IPurchaseOrder {
   purchaseRequisitionApprovalId?: number;
   email: string;
   vendorId: string;
+  vendorName?: string;
   revisionDate: Date;
   poNumber: string;
   purchaseOrderItems?: IPurchaseOrderItem[];

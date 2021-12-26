@@ -172,6 +172,7 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
     noOfPacks: (
       <Table.Column
         title="No. of Packs to Order"
+        width="150px"
         dataIndex="quantity"
         render={(value: number, record: IPurchaseRequisitionTemplateItem, index: number) => (
           <InputNumber onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, 'quantity', index)} value={value} />
@@ -206,6 +207,7 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
             </div>
           </Popover>
         }
+        width="136px"
         dataIndex="deliveryDate"
         render={(value: Date, record: IPurchaseRequisitionTemplateItem, index: number) => {
           let castedValue = undefined;
@@ -228,6 +230,7 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
             </div>
           </Popconfirm>
         }
+        width="114px"
         render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <Button onClick={() => clearInputByItemId(record)} icon={<ClearOutlined />} />}
         key="clearInput"
       />
@@ -235,10 +238,14 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
   };
 
   return (
-    <Table className="my-2" dataSource={props.searchResult} rowKey="id" scroll={{ x: 2000, y: 500 }} pagination={TABLE_PAGINATION_CONFIG}>
-      {props.tableColumnDisplaySettings &&
-        props.tableColumnDisplaySettings.filter((columnDisplaySetting) => columnDisplaySetting.visible).map((columnDisplaySetting) => COLUMNS[columnDisplaySetting.columnKey])}
-    </Table>
+    <>
+      {props.tableColumnDisplaySettings && (
+        <Table className="my-2" dataSource={props.searchResult} rowKey="id" scroll={{ y: 500 }} pagination={TABLE_PAGINATION_CONFIG}>
+          {props.tableColumnDisplaySettings &&
+            props.tableColumnDisplaySettings.filter((columnDisplaySetting) => columnDisplaySetting.visible).map((columnDisplaySetting) => COLUMNS[columnDisplaySetting.columnKey])}
+        </Table>
+      )}
+    </>
   );
 };
 

@@ -3,6 +3,7 @@ import { ApiResponseStatus } from '@constant/api-status.enum';
 import { IPurchaseRequisitionTemplate } from '@dto/i-purchase-requisition-template.dto';
 import { useEffect, useState } from 'react';
 import { Button, Input, Row, Col, Modal } from 'antd';
+import Text from 'antd/lib/typography/Text';
 import { DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
 import { popNotification } from '@module/shared/components/notification';
@@ -116,7 +117,7 @@ const PurchaseRequisitionTemplateBrowser: React.FC<IPurchaseRequisitionTemplateP
                 key={index}
                 type={selectedIndex === index ? 'primary' : 'default'}
                 shape="round"
-                className="m-2"
+                className="m-1 selection-pile-button"
                 size="middle"
                 onClick={() => {
                   setSelectedIndex(index);
@@ -124,7 +125,7 @@ const PurchaseRequisitionTemplateBrowser: React.FC<IPurchaseRequisitionTemplateP
                   props.setSelectedTemplate(deepCopy);
                 }}
               >
-                {template.templateName}
+                <Text ellipsis className={selectedIndex === index ? 'text-white' : 'text-dark'}>{template.templateName}</Text>
               </Button>
             );
           })}

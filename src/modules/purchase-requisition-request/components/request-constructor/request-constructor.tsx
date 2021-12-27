@@ -138,10 +138,10 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
   };
 
   const COLUMNS: ITableColumn = {
-    sequence: <Table.Column title="Row" render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <>{index + 1}</>} key="sequence" />,
-    componentCode: <Table.Column title="Component ID" dataIndex="componentCode" key="componentCode" />,
-    componentName: <Table.Column title="Component Name" width={300} dataIndex="componentName" key="componentName" />,
-    vendor: <Table.Column title="Vendor" width={300} dataIndex="vendorName" key="vendorName" />,
+    sequence: <Table.Column title="Row" width="60px" render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <>{index + 1}</>} key="sequence" />,
+    componentCode: <Table.Column title="Component ID" width="150px" dataIndex="componentCode" key="componentCode" />,
+    componentName: <Table.Column title="Component Name" width="172px" dataIndex="componentName" key="componentName" />,
+    vendor: <Table.Column title="Vendor" width="172px" dataIndex="vendorName" key="vendorName" />,
     balance: (
       <Table.Column
         title={
@@ -150,6 +150,7 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
             (kgs)
           </span>
         }
+        width="133px"
         render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <>{Math.floor(Math.random() * 10000)}</>}
         key="balance"
       />
@@ -162,9 +163,10 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
             (kgs per pack)
           </span>
         }
+        width="150px"
         dataIndex="packagingSize"
         render={(value: number, record: IPurchaseRequisitionTemplateItem, index: number) => (
-          <InputNumber onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, 'packagingSize', index)} value={value} />
+          <InputNumber type="number" onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, 'packagingSize', index)} value={value} />
         )}
         key="packagingSize"
       />
@@ -175,7 +177,7 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
         width="150px"
         dataIndex="quantity"
         render={(value: number, record: IPurchaseRequisitionTemplateItem, index: number) => (
-          <InputNumber onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, 'quantity', index)} value={value} />
+          <InputNumber type="number" onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, 'quantity', index)} value={value} />
         )}
         key="quantity"
       />
@@ -183,6 +185,7 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
     quantity: (
       <Table.Column
         title="Total Quantity to Order (kgs)"
+        width="133px"
         render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <>{record.packagingSize * (record.quantity || 0)}</>}
         key="quantity"
       />
@@ -240,7 +243,7 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
   return (
     <>
       {props.tableColumnDisplaySettings && (
-        <Table className="my-2" dataSource={props.searchResult} rowKey="id" scroll={{ y: 500 }} pagination={TABLE_PAGINATION_CONFIG}>
+        <Table className="my-2"  style={{ width: "1450px", maxWidth: "2000px" }} dataSource={props.searchResult} rowKey="id" scroll={{ y: "calc(100vh - 350px)" }} pagination={TABLE_PAGINATION_CONFIG}>
           {props.tableColumnDisplaySettings &&
             props.tableColumnDisplaySettings.filter((columnDisplaySetting) => columnDisplaySetting.visible).map((columnDisplaySetting) => COLUMNS[columnDisplaySetting.columnKey])}
         </Table>

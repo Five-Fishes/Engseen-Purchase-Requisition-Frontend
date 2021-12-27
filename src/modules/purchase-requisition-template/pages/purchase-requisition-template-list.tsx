@@ -209,7 +209,7 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
                       },
                     ]}
                   >
-                    <InputNumber className="w-100" key="packing-size-input" placeholder="Packing Size" />
+                    <InputNumber type="number" className="w-100" key="packing-size-input" placeholder="Packing Size" />
                   </Form.Item>
                 </Col>
                 <Col span={6} offset={2}>
@@ -221,20 +221,55 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
                 </Col>
               </Row>
             </Form>
-          
-            <Divider />
-            <Button
-              key="save-template-button"
-              type="primary"
-              size="large"
-              className="float-end mb-2"
-              onClick={() => {
-                console.log('Save Template');
-              }}
-            >
-              Save Template
-            </Button>
+            </div>
+          {/* Add Component */}
+          <div className="mt-5">
+            <Form onFinish={addNewComponentAsTemplateItem} onFinishFailed={formValidationFailed}>
+              <Row>
+                <Col span={16}>
+                  <Form.Item className="input-group" name="componentCode" rules={[{ required: true, message: 'Enter component code' }]}>
+                    <Input key="component-input" type="text" placeholder="Component" />
+                  </Form.Item>
+                  <Form.Item className="input-group" name="vendorId" rules={[{ required: true, message: 'Enter vendor ID' }]}>
+                    <Input key="vendor-input" type="text" placeholder="Vendor" />
+                  </Form.Item>
+                  <Form.Item
+                    className="input-group"
+                    name="packagingSize"
+                    rules={[
+                      { required: true, message: 'Enter packing size' },
+                      {
+                        type: 'number',
+                        min: 1,
+                        message: 'Packing Size must be positive',
+                      },
+                    ]}
+                  >
+                    <InputNumber type="number" className="w-100" key="packing-size-input" placeholder="Packing Size" />
+                  </Form.Item>
+                </Col>
+                <Col span={6} offset={2}>
+                  <Form.Item>
+                    <Button className="input-group-btn float-end" key="load-database-button" type="primary" htmlType="submit">
+                      Add Component
+                    </Button>
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Form>
           </div>
+          <Divider />
+          <Button
+            key="save-template-button"
+            type="primary"
+            size="large"
+            className="float-end mb-2"
+            onClick={() => {
+              console.log('Save Template');
+            }}
+          >
+            Save Template
+          </Button>
         </div>
         
       </div>
@@ -259,7 +294,7 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
       <Modal title="Select Item to Insert" key="template-item-select-modal" visible={templateInsertItemSelect} footer={null} onCancel={closeTemplateInsertItemSelectModal}>
         <Form onFinish={insertItemToTemplate} form={insertItemsForm}>
           <Form.Item label="Item Row" name="itemSequence">
-            <InputNumber placeholder="Row to insert" />
+            <InputNumber type="number" placeholder="Row to insert" />
           </Form.Item>
           <Form.Item label="Items" name="selectedItem" rules={[{ required: true, message: 'Please select 1 item' }]}>
             <Radio.Group>

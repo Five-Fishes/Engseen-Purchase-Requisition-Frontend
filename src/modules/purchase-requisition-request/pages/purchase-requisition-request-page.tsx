@@ -73,8 +73,8 @@ const PurchaseRequisitionRequestPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="row fixed-bottom mx-3 pb-1 remark-wrapper bg-white">
-            <div className="col my-auto">
+          <div className="mx-3 pb-1 bg-white d-flex d-flex-column justify-content-between" style={{ width: "700px" }}>
+            <div className="my-auto">
               <Button type="primary" size="large">
                 Submit Request
               </Button>

@@ -8,7 +8,7 @@ import { IStatefulComponentProps } from '../i-stateful-component-props';
 interface IStatefulNumberInputProps extends IStatefulComponentProps, InputNumberProps {}
 const StatefulNumberInput: React.FC<IStatefulNumberInputProps> = (props) => {
   if (props.state === PurchaseRequisitionApprovalStatus.TO_CONFIRM) {
-    return <InputNumber {...props} />;
+    return <InputNumber type="number" {...props} />;
   }
   return <>{props.value}</>;
 };

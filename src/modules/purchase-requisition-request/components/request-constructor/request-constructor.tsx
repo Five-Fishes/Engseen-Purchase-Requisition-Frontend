@@ -1,26 +1,36 @@
 import React from 'react';
 import Table from 'antd/lib/table';
+import moment from 'moment';
 import { Moment } from 'moment';
+import { ClearOutlined } from '@ant-design/icons';
 import { Button, DatePicker, InputNumber, Popconfirm, Popover } from 'antd';
 
 import { TABLE_PAGINATION_CONFIG } from '@constant/pagination-config';
 import { IPurchaseRequisitionTemplate } from '@dto/i-purchase-requisition-template.dto';
 import { IPurchaseRequisitionTemplateItem } from '@dto/i-purchase-requisition-template-item.dto';
-import { ClearOutlined } from '@ant-design/icons';
 import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
 import { ChangeEvent } from '@constant/change-event.enum';
-import moment from 'moment';
+import { ITableColumn, ITableColumnDisplaySettings } from '@dto/i-table-columns';
 
 interface IPurchaseRequisitionRequestConstructorProps {
   readonly currentTemplate?: IPurchaseRequisitionTemplate;
-  readonly searchResult?: IPurchaseRequisitionTemplateItem[]
+  readonly searchResult?: IPurchaseRequisitionTemplateItem[];
   updateTemplate: (template: IPurchaseRequisitionTemplate) => void;
-  columnFilter: Map<string, boolean>;
+  tableColumnDisplaySettings?: ITableColumnDisplaySettings[];
 }
 
+/**
+ * Due to the need of dynamic column settings, the implementation details are as follows:
+ * - The columns are stored as key value data structure as a local constant (const COLUMNS: ITableColumn)
+ * - The sequence and visibility of columns are supplied by parent component, the constructor table generates column structure based on:
+ *   - The sequence of column list provided
+ *   - The visible as defined
+ * @param props IPurchaseRequisitionRequestConstructorProps
+ * @returns PurchaseRequisitionRequestConstructor
+ */
 const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionRequestConstructorProps> = (props) => {
   const updateTemplate = props.updateTemplate;
-  
+
   const updateAllDeliveryDate: (value: any) => void = (value) => {
     if (props.currentTemplate) {
       const updatedPurchaseRequisitionTemplate = CLONING_LIB.deepClone(props.currentTemplate);
@@ -37,13 +47,13 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
     if (props.currentTemplate) {
       const updatedPurchaseRequisitionTemplate = CLONING_LIB.deepClone(props.currentTemplate);
       updatedPurchaseRequisitionTemplate.templateItems.forEach((item) => {
-        item.quantity = 0
-        item.packagingSize = 0
-        item.deliveryDate = undefined
+        item.quantity = 0;
+        item.packagingSize = 0;
+        item.deliveryDate = undefined;
       });
       updateTemplate(updatedPurchaseRequisitionTemplate);
     }
-  }
+  };
 
   const updateData: (selectedPurchaseRequisitionApproval: IPurchaseRequisitionTemplate, value: any, record: IPurchaseRequisitionTemplateItem, key: string) => IPurchaseRequisitionTemplate = (
     selectedPurchaseRequisitionApproval,
@@ -66,22 +76,22 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
   const clearInputByItemId: (record: IPurchaseRequisitionTemplateItem) => void = (record) => {
     if (props.currentTemplate) {
       const updatedPurchaseRequisitionTemplate = CLONING_LIB.deepClone(props.currentTemplate);
-      const updatedPurchaseRequisitionTemplateItems: IPurchaseRequisitionTemplateItem[] =  updatedPurchaseRequisitionTemplate.templateItems.map((item) => {
+      const updatedPurchaseRequisitionTemplateItems: IPurchaseRequisitionTemplateItem[] = updatedPurchaseRequisitionTemplate.templateItems.map((item) => {
         if (item.id === record.id) {
           return {
             ...item,
             quantity: 0,
             deliveryDate: undefined,
             packagingSize: 0,
-          }
-        }else {
-          return item
+          };
+        } else {
+          return item;
         }
       });
       updatedPurchaseRequisitionTemplate.templateItems = updatedPurchaseRequisitionTemplateItems;
       updateTemplate(updatedPurchaseRequisitionTemplate);
     }
-  }
+  };
 
   /**
    * Update the SelectedApprovalItem's field based on the provided key
@@ -127,55 +137,57 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
     }
   };
 
-  return (
-    <Table className="my-2" style={{ width: "1450px", maxWidth: "2000px" }} dataSource={props.searchResult} rowKey="id" scroll={{ y: "calc(100vh - 350px)" }} pagination={TABLE_PAGINATION_CONFIG}>
-      {props.columnFilter.get('sequence') !== true &&
-        <Table.Column title="Row" width="60px" render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <>{index + 1}</>} />
-      }
-      {props.columnFilter.get('componentCode') !== true && 
-        <Table.Column title="Component ID" width="150px" dataIndex="componentCode" key="componentCode" />
-      }
-      {props.columnFilter.get('componentName') !== true &&
-        <Table.Column title="Component Name" width="172px" dataIndex="componentName" key="componentName" />
-      }
-      {props.columnFilter.get('vendor') !== true &&
-        <Table.Column title="Vendor" width="172px" dataIndex="vendorName" key="vendorName" />
-      }
-      {props.columnFilter.get('balance') !== true && (
-        <Table.Column
-          title={
-            <span>
-              Balance Qty <br />
-              (kgs)
-            </span>
-          }
-          width="133px"
-          key="balance"
-          render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <>{Math.floor(Math.random() * 10000)}</>}
-        />
-      )}
-      {props.columnFilter.get('packagingSize') !== true && (
-        <Table.Column
-          title={
-            <span>
-              Packaging Size <br />
-              (kgs per pack)
-            </span>
-          }
-          width="150px"
-          dataIndex="packagingSize"
-          render={(value: number, record: IPurchaseRequisitionTemplateItem, index: number) => <InputNumber onChange={ e => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, "packagingSize", index)} value={value} />}
-          key="packagingSize"
-        />
-      )}
+  const COLUMNS: ITableColumn = {
+    sequence: <Table.Column title="Row" render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <>{index + 1}</>} key="sequence" />,
+    componentCode: <Table.Column title="Component ID" dataIndex="componentCode" key="componentCode" />,
+    componentName: <Table.Column title="Component Name" width={300} dataIndex="componentName" key="componentName" />,
+    vendor: <Table.Column title="Vendor" width={300} dataIndex="vendorName" key="vendorName" />,
+    balance: (
+      <Table.Column
+        title={
+          <span>
+            Balance Qty <br />
+            (kgs)
+          </span>
+        }
+        render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <>{Math.floor(Math.random() * 10000)}</>}
+        key="balance"
+      />
+    ),
+    packagingSize: (
+      <Table.Column
+        title={
+          <span>
+            Packaging Size <br />
+            (kgs per pack)
+          </span>
+        }
+        dataIndex="packagingSize"
+        render={(value: number, record: IPurchaseRequisitionTemplateItem, index: number) => (
+          <InputNumber onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, 'packagingSize', index)} value={value} />
+        )}
+        key="packagingSize"
+      />
+    ),
+    noOfPacks: (
       <Table.Column
         title="No. of Packs to Order"
         width="150px"
         dataIndex="quantity"
-        render={(value: number, record: IPurchaseRequisitionTemplateItem, index: number) => <InputNumber onChange={ e => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, "quantity", index)} value={value} />}
+        render={(value: number, record: IPurchaseRequisitionTemplateItem, index: number) => (
+          <InputNumber onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, 'quantity', index)} value={value} />
+        )}
         key="quantity"
       />
-      <Table.Column title="Total Quantity to Order (kgs)" width="133px" render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <>{record.packagingSize * (record.quantity || 0)}</>} />
+    ),
+    quantity: (
+      <Table.Column
+        title="Total Quantity to Order (kgs)"
+        render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <>{record.packagingSize * (record.quantity || 0)}</>}
+        key="quantity"
+      />
+    ),
+    deliveryDate: (
       <Table.Column
         title={
           <Popover
@@ -204,7 +216,10 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
           }
           return <DatePicker value={castedValue} onChange={(moment) => dataChanged(ChangeEvent.DATE_TIME, moment, record, 'deliveryDate', index)} />;
         }}
+        key="deliveryDate"
       />
+    ),
+    clearInput: (
       <Table.Column
         title={
           <Popconfirm title="Are you sure you want to clear input for all rows?" okText="OK" cancelText="Cancel" onConfirm={() => clearAllInput()}>
@@ -217,8 +232,20 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
         }
         width="114px"
         render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <Button onClick={() => clearInputByItemId(record)} icon={<ClearOutlined />} />}
+        key="clearInput"
       />
-    </Table>
+    ),
+  };
+
+  return (
+    <>
+      {props.tableColumnDisplaySettings && (
+        <Table className="my-2" dataSource={props.searchResult} rowKey="id" scroll={{ y: 500 }} pagination={TABLE_PAGINATION_CONFIG}>
+          {props.tableColumnDisplaySettings &&
+            props.tableColumnDisplaySettings.filter((columnDisplaySetting) => columnDisplaySetting.visible).map((columnDisplaySetting) => COLUMNS[columnDisplaySetting.columnKey])}
+        </Table>
+      )}
+    </>
   );
 };
 

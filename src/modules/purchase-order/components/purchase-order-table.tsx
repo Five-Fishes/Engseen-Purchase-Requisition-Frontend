@@ -19,6 +19,7 @@ const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
       dataIndex: 'poNumber',
       key: 'poNumber',
       align: 'center',
+      width: "136px",
       render: (text: string, record: IPurchaseOrder) => <span>{text}</span>,
     },
     {
@@ -26,13 +27,15 @@ const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
       dataIndex: 'vendorId',
       key: 'vendor',
       align: 'center',
-      render: (text: string, record: IPurchaseOrder) => <span>{text}</span>,
+      width: "276px",
+      render: (text: string, record: IPurchaseOrder) => <span>{text} {record.vendorName ? '- ' + record.vendorName : ''}</span>,
     },
     {
       title: 'Generate PDF',
       dataIndex: 'id',
       key: 'generatePdf',
       align: 'center',
+      width: "181px",
       render: (text: string, record: IPurchaseOrder) => (
         <Button className="d-inline-flex align-items-center po-action-button" onClick={() => downloadPO(record)}>
           <DownloadOutlined />
@@ -45,13 +48,15 @@ const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
       dataIndex: 'id',
       key: 'filename',
       align: 'center',
-      render: (text: string, record: IPurchaseOrder) => <span>{text}</span>,
+      width: "150px",
+      render: (text: string, record: IPurchaseOrder) => <span>{record.poNumber} {record.vendorId}.pdf</span>,
     },
     {
       title: 'Email to Vendor',
       dataIndex: 'id',
       key: 'email',
       align: 'center',
+      width: "166px",
       render: (text: string, record: IPurchaseOrder) => (
         <Button disabled={record.emailed} className="d-inline-flex align-items-center po-action-button" onClick={() => emailPO(record)}>
           <MailOutlined />
@@ -103,8 +108,7 @@ const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
 
   const { currentPurchaseApprovalOrderRecord, filteredItems } = props;
 
-  if (currentPurchaseApprovalOrderRecord && currentPurchaseApprovalOrderRecord != null) {
-    const submissionItems = filteredItems === undefined ? currentPurchaseApprovalOrderRecord.purchaseOrders : filteredItems;
+  const submissionItems = filteredItems === undefined ? (currentPurchaseApprovalOrderRecord?.purchaseOrders ?? []) : filteredItems;
     return (
       <>
         <Table
@@ -112,7 +116,7 @@ const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
           dataSource={submissionItems}
           columns={PURCHASE_ORDER_TABLE_COLUMN}
           rowKey="id"
-          scroll={{ y: 370, x: 700 }}
+          scroll={{ y: 'calc(100vh - 400px)' }}
           pagination={TABLE_PAGINATION_CONFIG}
           summary={() => (
             <Table.Summary fixed>
@@ -127,7 +131,7 @@ const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
                 </Table.Summary.Cell>
                 <Table.Summary.Cell index={3}></Table.Summary.Cell>
                 <Table.Summary.Cell index={4} align="center">
-                  <Button disabled={currentPurchaseApprovalOrderRecord.completed} className="d-inline-flex align-items-center po-action-button" onClick={() => emailAllPO()}>
+                  <Button disabled={currentPurchaseApprovalOrderRecord?.completed} className="d-inline-flex align-items-center po-action-button" onClick={() => emailAllPO()}>
                     <MailOutlined />
                     &nbsp;Email All
                   </Button>
@@ -136,20 +140,13 @@ const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
             </Table.Summary>
           )}
         ></Table>
-        <Space className="float-end mt-5">
+        <Space className="float-end">
           <Button type="primary" className="d-inline-flex align-items-center" onClick={() => downloadAndEmailAll()}>
             One Click to Download &#38; Email all PO
           </Button>
         </Space>
       </>
     );
-  } else {
-    return (
-      <div className="d-flex flex-column justify-content-center my-4">
-        <span className="text-center">No Purchase Order Selected</span>
-      </div>
-    );
-  }
 };
 
 export default PurchaseOrderTable;

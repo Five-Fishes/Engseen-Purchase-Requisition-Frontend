@@ -152,7 +152,7 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
                 setFilteredSubmissionsItems={setFilteredSubmissionItems}
               />
             </div>
-            <div className="my-2 mx-4 position-relative w-100">
+            <div className="m-2 position-relative">
               <span>
                 Submission Date: <b color="primary">{selectedSubmissionRequest ? convertToLocalString(selectedSubmissionRequest.createdDate) : ''}</b>
               </span>

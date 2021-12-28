@@ -20,6 +20,7 @@ import { convertToLocalString } from '@utils/date-time/date-time-format';
 interface IPurchaseRequititionApprovalTableProps {
   selectedPurchaseRequisitionApproval?: IPurchaseRequisitionApproval;
   updatePurchaseRequisitionApproval: (purchaseRequisitionApproval: IPurchaseRequisitionApproval) => void;
+  setLoading?: (loading: boolean) => void;
 }
 
 const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTableProps> = (props) => {
@@ -27,15 +28,18 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
   const [searchResult, setSearchResult] = useState<IPurchaseRequisitionApprovalItem[]>();
   const searchEngine: SearchEngine<IPurchaseRequisitionApprovalItem> = new SearchEngine([], generateIndex);
 
+  const { setLoading } = props;
+
   useEffect(() => {
     if (props.selectedPurchaseRequisitionApproval) {
       const initSearchResult = CLONING_LIB.deepClone(props.selectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems);
       setSearchResult(initSearchResult);
     }
-  }, [props.selectedPurchaseRequisitionApproval]);
+  }, [props.selectedPurchaseRequisitionApproval, setLoading]);
 
   const confirmAll: () => void = () => {
     if (props.selectedPurchaseRequisitionApproval) {
+      setLoading && setLoading(true);
       const updatedSelectedPurchaseRequisitionApprovalItems = props.selectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems.map((item) => {
         if (item.status !== PurchaseRequisitionApprovalStatus.ISSUED) {
           item.status = PurchaseRequisitionApprovalStatus.CONFIRMED;
@@ -45,6 +49,9 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
       const updatedSelectedPurchaseRequisitionApproval = CLONING_LIB.deepClone(props.selectedPurchaseRequisitionApproval);
       updatedSelectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems = updatedSelectedPurchaseRequisitionApprovalItems;
       updatePurchaseRequisitionApproval(updatedSelectedPurchaseRequisitionApproval);
+      setTimeout(function () {
+        setLoading && setLoading(false);
+      }, 500);
     }
   };
 
@@ -55,6 +62,7 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
    */
   const updateAllDeliveryDate: (value: any) => void = (value) => {
     if (props.selectedPurchaseRequisitionApproval) {
+      setLoading && setLoading(true);
       const updatedSelectedPurchaseRequisitionApproval = CLONING_LIB.deepClone(props.selectedPurchaseRequisitionApproval);
       if (value) {
         updatedSelectedPurchaseRequisitionApproval?.purchaseRequisitionApprovalItems.forEach((item) => {
@@ -66,6 +74,9 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
         });
       }
       updatePurchaseRequisitionApproval(updatedSelectedPurchaseRequisitionApproval);
+      setTimeout(function () {
+        setLoading && setLoading(false);
+      }, 500);
     }
   };
 
@@ -167,6 +178,7 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
   };
 
   const handleSearch = (value: string, event: React.ChangeEvent<HTMLInputElement> | React.MouseEvent<HTMLElement, MouseEvent> | React.KeyboardEvent<HTMLInputElement> | undefined) => {
+    setLoading && setLoading(true);
     console.group('Search [PurchaseRequititionApprovalTable]');
     console.log('value >>: ', value);
     console.log('event >>: ', event);
@@ -177,6 +189,9 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
       setSearchResult(searchOutput);
     }
     console.groupEnd();
+    setTimeout(function () {
+      setLoading && setLoading(false);
+    }, 500);
   };
 
   const SELECTED_PURCHASE_REQUISITION_APPROVAL_ITEMS: IPurchaseRequisitionApprovalItem[] = searchResult || [];

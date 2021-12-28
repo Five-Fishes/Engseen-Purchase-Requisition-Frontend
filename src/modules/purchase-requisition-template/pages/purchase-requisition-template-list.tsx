@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import { Col, Form, Input, Row, Button, InputNumber, Modal, Space, Divider, Radio } from 'antd';
+import Title from 'antd/lib/typography/Title';
+import readXlsxFile from 'read-excel-file';
+
 import PurchaseRequisitionTemplateTable from '../components/template-table';
 import { IPurchaseRequisitionTemplate } from '@dto/i-purchase-requisition-template.dto';
-import Title from 'antd/lib/typography/Title';
 import PurchaseRequisitionTemplateBrowser from '../components/template-browser';
 import { generateIndex } from '../components/template-indexer';
 import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
-import readXlsxFile from 'read-excel-file';
 import { getSearchText, SearchEngine } from '@utils/search/native-search';
 import { IPurchaseRequisitionTemplateItem } from '@dto/i-purchase-requisition-template-item.dto';
 import { EditOutlined } from '@ant-design/icons';
@@ -14,8 +16,11 @@ import { popNotification } from '@module/shared/components/notification';
 import { ApiResponseStatus } from '@constant/api-status.enum';
 import { getItemBySearch } from '@api/purchase-requisition-template.api';
 import { NotificationType } from '@constant/notification.enum';
+import { setLoading } from '@module/shared/reducers/app-reducers';
 
-const PurchaseRequisitionTemplateList: React.FC = () => {
+interface IPurchaseRequisitionTemplateProps  extends StateProps, DispatchProps {};
+
+const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProps> = (props: IPurchaseRequisitionTemplateProps) => {
   const [selectedPurchaseRequisitionTemplate, setSelectedPurchaseRequisitionTemplate] = useState<IPurchaseRequisitionTemplate>({} as IPurchaseRequisitionTemplate);
   const [filteredTemplateItems, setFilteredTemplateItems] = useState<IPurchaseRequisitionTemplateItem[]>();
 
@@ -33,9 +38,13 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
   const [insertItemsForm] = Form.useForm();
 
   const search = () => {
+    props.setLoading(true);
     const sanitisedSearchText: string = getSearchText(searchText);
     const filteredData = searchEngine.updateEngine(selectedPurchaseRequisitionTemplate.templateItems).search(sanitisedSearchText);
     setFilteredTemplateItems(filteredData);
+    setTimeout(function () {
+      props.setLoading(false);
+    }, 500);
   };
 
   const changeTemplateNameModal = () => {
@@ -69,11 +78,13 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
 
   const uploadExcelFile = (): void => {
     if (excelFile !== undefined) {
+      props.setLoading(true);
       readXlsxFile(excelFile).then((rows) => {
         // Convert to Array of JSON Object
         setExcelData(rows);
         popNotification('Success Upload Excel', NotificationType.success);
-      });
+      })
+      .then(() => props.setLoading(false));
     }
   };
 
@@ -112,7 +123,7 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
       sequence: values.itemSequence,
     };
     const insertIndex: number =
-      values.itemSequence === 0 || values.itemSequence > selectedPurchaseRequisitionTemplate.templateItems.length ? selectedPurchaseRequisitionTemplate.templateItems.length : values.itemSequence;
+      values.itemSequence === 0 || values.itemSequence > selectedPurchaseRequisitionTemplate.templateItems.length ? selectedPurchaseRequisitionTemplate.templateItems.length : values.itemSequence - 1;
     selectedPurchaseRequisitionTemplate.templateItems.splice(insertIndex, 0, itemToInsert);
     const sortedResult = updateTemplateItemsSequence(selectedPurchaseRequisitionTemplate.templateItems);
     selectedPurchaseRequisitionTemplate.templateItems = sortedResult;
@@ -168,7 +179,7 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
         <Divider type="vertical" style={{ height: '100vh' }} className="mx-4" />
 
         <div className="px-2" style={{ minWidth: "680px" }}>
-          <PurchaseRequisitionTemplateBrowser setSelectedTemplate={setSelectedPurchaseRequisitionTemplate} />
+          <PurchaseRequisitionTemplateBrowser setSelectedTemplate={setSelectedPurchaseRequisitionTemplate} setLoading={props.setLoading} />
           <Divider />
           {/* Excel Upload */}
           <Row>
@@ -323,4 +334,13 @@ const PurchaseRequisitionTemplateList: React.FC = () => {
   );
 };
 
-export default PurchaseRequisitionTemplateList;
+const mapStateToProps = () => ({});
+
+const mapDispatchToProps = {
+  setLoading,
+};
+
+type StateProps = ReturnType<typeof mapStateToProps>;
+type DispatchProps = typeof mapDispatchToProps;
+
+export default connect(mapStateToProps, mapDispatchToProps)(PurchaseRequisitionTemplateList);

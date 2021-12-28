@@ -1,4 +1,5 @@
 import { ChangeEvent, useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import { Input, Divider, Button } from 'antd';
 import Title from 'antd/lib/typography/Title';
 
@@ -12,8 +13,11 @@ import PurchaseRequisitionTemplateBrowser from '../components/template-browser/t
 import PurchaseRequisitionRequestConstructor from '../components/request-constructor/request-constructor';
 import PurchaseRequisitionRequestTableDisplaySettings from '../components/table-column-display-settings/table-column-display-settings';
 import generateIndex from '../components/request-constructor/request-constructor-indexer';
+import { setLoading } from '@module/shared/reducers/app-reducers';
 
-const PurchaseRequisitionRequestPage: React.FC = () => {
+interface IPurchaseRequisitionRequestPageProps  extends StateProps, DispatchProps {};
+
+const PurchaseRequisitionRequestPage: React.FC<IPurchaseRequisitionRequestPageProps> = (props: IPurchaseRequisitionRequestPageProps) => {
   const [selectedTemplate, setSelectedTemplate] = useState<IPurchaseRequisitionTemplate>();
   const [tableColumnDisplaySettings, setTableColumnDisplaySettings] = useState<ITableColumnDisplaySettings[]>();
   const [searchResult, setSearchResult] = useState<IPurchaseRequisitionTemplateItem[]>();
@@ -35,6 +39,7 @@ const PurchaseRequisitionRequestPage: React.FC = () => {
   };
 
   const handleSearch = (value: string, event: React.ChangeEvent<HTMLInputElement> | React.MouseEvent<HTMLElement, MouseEvent> | React.KeyboardEvent<HTMLInputElement> | undefined) => {
+    props.setLoading(true);
     console.group('Search [PurchaseRequititionApprovalTable]');
     console.log('value >>: ', value);
     console.log('event >>: ', event);
@@ -44,6 +49,9 @@ const PurchaseRequisitionRequestPage: React.FC = () => {
       const searchOutput = searchEngine.updateEngine(selectedTemplate.templateItems).search(sanitisedSearchText);
       setSearchResult(searchOutput);
     }
+    setTimeout(function() {
+      props.setLoading(false);
+    }, 500);
     console.groupEnd();
   };
 
@@ -56,7 +64,7 @@ const PurchaseRequisitionRequestPage: React.FC = () => {
               <Title level={4}>Purchase Requisition</Title>
             </div>
             <div className="col-7">
-              <PurchaseRequisitionTemplateBrowser setSelectedTemplate={setSelectedTemplate} />
+              <PurchaseRequisitionTemplateBrowser setSelectedTemplate={setSelectedTemplate} setLoading={props.setLoading} />
             </div>
             <div className="col d-flex flex-column justify-content-center">
               <Input.Search placeholder="Search" onSearch={handleSearch} allowClear></Input.Search>
@@ -96,4 +104,13 @@ const PurchaseRequisitionRequestPage: React.FC = () => {
   );
 };
 
-export default PurchaseRequisitionRequestPage;
+const mapStateToProps = () => ({});
+
+const mapDispatchToProps = {
+  setLoading,
+};
+
+type StateProps = ReturnType<typeof mapStateToProps>;
+type DispatchProps = typeof mapDispatchToProps;
+
+export default connect(mapStateToProps, mapDispatchToProps)(PurchaseRequisitionRequestPage);

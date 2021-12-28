@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import 'antd/dist/antd.less';
+import { Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 import Layout, { Content } from 'antd/lib/layout/layout';
 import Routes from './modules/Routes';
 import { BrowserRouter as Router } from 'react-router-dom';
@@ -12,6 +15,7 @@ import getMock from '@api/api-mocks.api';
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
+import { IRootState } from '@module/shared/reducers';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -36,9 +40,12 @@ if (process.env.NODE_ENV === 'development') {
   getMock();
 }
 
-const App: React.FC = () => {
+export interface IAppProps extends StateProps, DispatchProps {}
+
+const App: React.FC<IAppProps> = (props: IAppProps) => {
   const [sideBarOpened, setSideBarOpened] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
+  
   function triggerSideBar(): void {
     setSideBarOpened(!sideBarOpened);
   }
@@ -51,21 +58,34 @@ const App: React.FC = () => {
     setLoggedIn(!loggedIn);
   }
 
+  const { loading } = props;
+  
   return (
     <>
       <Router>
         <Layout className="h-100">
           <AppSider sideBarOpened={sideBarOpened} toggleSidebar={triggerSideBar} />
-          <Layout>
-            <Header triggerSideBar={triggerSideBar} sideBarOpened={sideBarOpened} loggedIn={loggedIn} triggerLoggedIn={triggerLoggedIn} />
-            <Content className="px-3 pt-3 page" style={{ backgroundColor: '#ffffff' }}>
-              <Routes />
-            </Content>
-          </Layout>
+          <Spin spinning={loading} indicator={<LoadingOutlined style={{ fontSize: 40 }} spin />}>
+            <Layout>
+              <Header triggerSideBar={triggerSideBar} sideBarOpened={sideBarOpened} loggedIn={loggedIn} triggerLoggedIn={triggerLoggedIn} />
+              <Content className="px-3 pt-3 page" style={{ backgroundColor: '#ffffff' }}>
+                <Routes />
+              </Content>
+            </Layout>
+          </Spin>
         </Layout>
       </Router>
     </>
   );
 };
 
-export default App;
+const mapStateToProps = ({ appState }: IRootState) => ({
+  loading: appState.loading
+});
+
+const mapDispatchToProps = {};
+
+type StateProps = ReturnType<typeof mapStateToProps>;
+type DispatchProps = typeof mapDispatchToProps;
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

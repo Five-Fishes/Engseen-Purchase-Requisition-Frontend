@@ -11,6 +11,7 @@ interface IPurchaseRequisitionSelectorProps {
   setPurcahseRequisitionApprovalList: (purcahseRequisitionApprovalList: IPurchaseRequisitionApproval[]) => void;
   selectedPurchaseRequisitionApproval?: IPurchaseRequisitionApproval;
   setSelectedPurcahseRequisitionApproval: (purcahseRequisitionApprovalList: IPurchaseRequisitionApproval) => void;
+  setLoading?: (loading: boolean) => void;
 }
 
 const PurchaseRequisitionSelector: React.FC<IPurchaseRequisitionSelectorProps> = (props) => {
@@ -32,7 +33,11 @@ const PurchaseRequisitionSelector: React.FC<IPurchaseRequisitionSelectorProps> =
               size="large"
               key={index}
               onClick={() => {
+                props.setLoading && props.setLoading(true);
                 setSelectedPurcahseRequisitionApproval(purchaseRequisitionApproval);
+                setTimeout(function () {
+                  props.setLoading && props.setLoading(false);
+                }, 500);
               }}
             >
               {convertToLocalString(purchaseRequisitionApproval.createdDate)}{' '}

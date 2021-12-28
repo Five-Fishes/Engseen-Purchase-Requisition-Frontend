@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import Title from 'antd/lib/typography/Title';
 import { Button, Divider, Input } from 'antd';
 import { CheckSquareOutlined } from '@ant-design/icons';
@@ -9,19 +10,23 @@ import { ApiResponseStatus } from '@constant/api-status.enum';
 import { PurchaseRequisitionApprovalStatus } from '@constant/purchase-requisition-approval-status.enum';
 import { getPurchaseRequisitionApproval } from '@api/purchase-requisition-approval.api';
 import { IPurchaseRequisitionApproval } from '@dto/i-purchase-requisition-approval.dto';
+import { setLoading } from '@module/shared/reducers/app-reducers';
 
 import FilterAndSort from '../components/filter-and-sort/filter-and-sort';
 import ComponentSelector from '../components/component-selector/component-selector';
 import PurchaseRequisitionSelector from '../components/purchase-requisition-request-selector/purchase-requisition-request-selector';
 import PurchaseRequititionApprovalTable from '../components/purchase-requisition-approval-table/purchase-requisition-approval-table';
 
-const PurchaseRequisitionApprovalPage: React.FC = () => {
+interface IPurchaseRequisitionApprovalProps extends StateProps, DispatchProps {};
+
+const PurchaseRequisitionApprovalPage: React.FC<IPurchaseRequisitionApprovalProps> = (props: IPurchaseRequisitionApprovalProps) => {
   const [sort, setSort] = useState<Sort>();
   const [dateRange, setDateRange] = useState<[Date, Date]>();
   const [purchaseRequisitionApprovalList, setPurchaseRequisitionApprovalList] = useState<IPurchaseRequisitionApproval[]>();
   const [filteredPurchaseRequisitionApprovalList, setFilteredPurchaseRequisitionApprovalList] = useState<IPurchaseRequisitionApproval[]>();
   const [selectedPurchaseRequisitionApproval, setSelectedPurchaseRequisitionApproval] = useState<IPurchaseRequisitionApproval>();
 
+  const { setLoading } = props;
   /**
    * Initial data load
    */
@@ -42,6 +47,7 @@ const PurchaseRequisitionApprovalPage: React.FC = () => {
    */
   useEffect(() => {
     if (purchaseRequisitionApprovalList) {
+      setLoading(true);
       let filteredAndSortedList: IPurchaseRequisitionApproval[] = CLONING_LIB.deepClone(purchaseRequisitionApprovalList);
 
       if (dateRange) {
@@ -60,8 +66,11 @@ const PurchaseRequisitionApprovalPage: React.FC = () => {
       }
 
       setFilteredPurchaseRequisitionApprovalList(filteredAndSortedList);
+      setTimeout(function () {
+        setLoading(false);
+      }, 500);
     }
-  }, [sort, dateRange, purchaseRequisitionApprovalList]);
+  }, [sort, dateRange, purchaseRequisitionApprovalList, setLoading]);
 
   /**
    * Update the selected content when purchaseRequisitionApprovalList changes
@@ -156,6 +165,7 @@ const PurchaseRequisitionApprovalPage: React.FC = () => {
               setPurcahseRequisitionApprovalList={setFilteredPurchaseRequisitionApprovalList}
               selectedPurchaseRequisitionApproval={selectedPurchaseRequisitionApproval}
               setSelectedPurcahseRequisitionApproval={setSelectedPurchaseRequisitionApproval}
+              setLoading={props.setLoading}
             ></PurchaseRequisitionSelector>
             <div className="mx-1 pb-1 d-flex d-flex-column pt-3">
               <div style={{ width: "213px", height: "207px" }}>
@@ -179,6 +189,7 @@ const PurchaseRequisitionApprovalPage: React.FC = () => {
             <PurchaseRequititionApprovalTable
               selectedPurchaseRequisitionApproval={selectedPurchaseRequisitionApproval}
               updatePurchaseRequisitionApproval={updatePurchaseRequisitionApproval}
+              setLoading={props.setLoading}
             ></PurchaseRequititionApprovalTable>
           </div>
         </div>
@@ -203,4 +214,13 @@ const PurchaseRequisitionApprovalPage: React.FC = () => {
   );
 };
 
-export default PurchaseRequisitionApprovalPage;
+const mapStateToProps = () => ({});
+
+const mapDispatchToProps = {
+  setLoading,
+};
+
+type StateProps = ReturnType<typeof mapStateToProps>;
+type DispatchProps = typeof mapDispatchToProps;
+
+export default connect(mapStateToProps, mapDispatchToProps)(PurchaseRequisitionApprovalPage);

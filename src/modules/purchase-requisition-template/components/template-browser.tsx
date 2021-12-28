@@ -11,6 +11,7 @@ import { NotificationType } from '@constant/notification.enum';
 
 interface IPurchaseRequisitionTemplateProps {
   setSelectedTemplate: (template: IPurchaseRequisitionTemplate) => void;
+  setLoading?: (loading: boolean) => void;
 }
 
 const PurchaseRequisitionTemplateBrowser: React.FC<IPurchaseRequisitionTemplateProps> = (props) => {
@@ -120,9 +121,13 @@ const PurchaseRequisitionTemplateBrowser: React.FC<IPurchaseRequisitionTemplateP
                 className="m-1 selection-pile-button"
                 size="middle"
                 onClick={() => {
+                  props.setLoading && props.setLoading(true);
                   setSelectedIndex(index);
                   const deepCopy: IPurchaseRequisitionTemplate = CLONING_LIB.deepClone(template);
                   props.setSelectedTemplate(deepCopy);
+                  setTimeout(function () {
+                    props.setLoading && props.setLoading(false);
+                  }, 500);
                 }}
               >
                 <Text ellipsis className={selectedIndex === index ? 'text-white' : 'text-dark'}>{template.templateName}</Text>

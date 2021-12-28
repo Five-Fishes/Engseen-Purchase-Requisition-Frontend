@@ -18,7 +18,7 @@ const PurchaseRequisitionSubmissionBrowser: React.FC<IPurchaseRequisitionSubmiss
   const { purchaseRequisitionSubmissios } = props;
   return (
     <>
-      <div className="text-center d-flex flex-column py-2" style={{ overflowY: 'scroll', maxHeight: '85%', width: 'max-content' }}>
+      <div className="text-center d-flex flex-column py-2" style={{ overflowY: 'scroll', maxHeight: '60vh', width: 'max-content' }}>
         {purchaseRequisitionSubmissios &&
           purchaseRequisitionSubmissios.map((submission, index) => {
             return (
@@ -45,8 +45,8 @@ const PurchaseRequisitionSubmissionBrowser: React.FC<IPurchaseRequisitionSubmiss
             );
           })}
       </div>
-      <div className="fixed-bottom mx-4 remarks-box pb-1">
-        <Input.TextArea readOnly className="h-100" value={selectedRemarks == null ? 'Remarks: ' : 'Remarks: \n' + selectedRemarks} />
+      <div className="pb-1">
+        <Input.TextArea readOnly style={{ width: "240px", height: "218px" }} value={selectedRemarks == null ? 'Remarks: ' : 'Remarks: \n' + selectedRemarks} />
       </div>
     </>
   );

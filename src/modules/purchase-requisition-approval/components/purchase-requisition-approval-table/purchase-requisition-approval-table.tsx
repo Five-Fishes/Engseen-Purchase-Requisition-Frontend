@@ -16,6 +16,7 @@ import StatefulNumberInput from '@module/shared/components/stateful-input/statef
 import generateIndex from './purchase-requisition-approval-table-indexer';
 import { popNotification } from '@module/shared/components/notification';
 import { NotificationType } from '@constant/notification.enum';
+import { convertToLocalString } from '@utils/date-time/date-time-format';
 interface IPurchaseRequititionApprovalTableProps {
   selectedPurchaseRequisitionApproval?: IPurchaseRequisitionApproval;
   updatePurchaseRequisitionApproval: (purchaseRequisitionApproval: IPurchaseRequisitionApproval) => void;
@@ -200,20 +201,22 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
       <div>
         <div className="d-flex justify-content-between">
           <div>
-            <strong>Submission Date</strong>: {props.selectedPurchaseRequisitionApproval && new Date(props.selectedPurchaseRequisitionApproval.createdDate).toDateString()}
+            <strong>Submission Date</strong>: {props.selectedPurchaseRequisitionApproval && convertToLocalString(props.selectedPurchaseRequisitionApproval.createdDate)}
           </div>
           <div>
             <Input.Search placeholder="Search" onSearch={handleSearch} allowClear></Input.Search>
           </div>
         </div>
-        <Table dataSource={SELECTED_PURCHASE_REQUISITION_APPROVAL_ITEMS} rowKey="id" className="my-2" scroll={{ x: 2000, y: 500 }} pagination={TABLE_PAGINATION_CONFIG}>
-          <Table.Column title="Component Name" dataIndex="componentName" key="componentName" />
+        <Table dataSource={SELECTED_PURCHASE_REQUISITION_APPROVAL_ITEMS} rowKey="id" className="my-2" style={{ width: "1580px", maxWidth: "1700px" }} scroll={{ y: 'calc(100vh - 350px)' }} pagination={TABLE_PAGINATION_CONFIG}>
+          <Table.Column title="Component Name" width="330px" align="center" dataIndex="componentName" key="componentName" />
           <Table.Column
             title={
               <div>
                 Item Cost <br /> (RM/kg)
               </div>
             }
+            width="122px"
+            align="center"
             dataIndex="itemCost"
             key="itemCost"
             render={(value, record: IPurchaseRequisitionApprovalItem, index: number) => {
@@ -222,9 +225,10 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
           />
           <Table.Column
             title="Vendor"
+            align="center"
             dataIndex="vendorName"
             key="vendorName"
-            width="300px"
+            width="290px"
             render={(value, record: IPurchaseRequisitionApprovalItem, index: number) => {
               return <StatefulTextInput state={record.status} value={value} onChange={(e) => dataChanged(ChangeEvent.TEXT_INPUT, e, record, 'vendorName', index)} />;
             }}
@@ -237,7 +241,8 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
             }
             dataIndex="status"
             key="status"
-            width="200px"
+            width="120px"
+            align="center"
             render={(value: PurchaseRequisitionApprovalStatus, record: IPurchaseRequisitionApprovalItem, index: number) => {
               return <Button onClick={() => updateApprovalItemStatus(record)}>{`${PurchaseRequisitionApprovalStatusDisplayText(value)}`}</Button>;
             }}
@@ -248,6 +253,8 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
                 Packing Size <br /> (kgs per pack)
               </div>
             }
+            width="136px"
+            align="center"
             dataIndex="packagingSize"
             key="packagingSize"
             render={(value, record: IPurchaseRequisitionApprovalItem, index: number) => {
@@ -256,13 +263,15 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
           />
           <Table.Column
             title="No. of Packs to Order"
+            width="109px"
+            align="center"
             dataIndex="noOfPacks"
             key="noOfPacks"
             render={(value, record: IPurchaseRequisitionApprovalItem, index: number) => {
               return <StatefulNumberInput state={record.status} value={value} onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, 'noOfPacks', index)} />;
             }}
           />
-          <Table.Column title="Total Quantity To Order (kgs)" dataIndex="quantity" key="quantity"/>
+          <Table.Column title="Total Quantity To Order (kgs)" width="128px" align="center" dataIndex="quantity" key="quantity"/>
           <Table.Column
             title={
               <Popover
@@ -282,6 +291,8 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
                 </div>
               </Popover>
             }
+            width="119px"
+            align="center"
             dataIndex="deliveryDate"
             key="deliveryDate"
             render={(value, record: IPurchaseRequisitionApprovalItem, index: number) => {
@@ -298,9 +309,11 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
               );
             }}
           />
-          <Table.Column title="Balance" dataIndex="balance" key="balance" />
+          <Table.Column title="Balance" width="119px" align="center" dataIndex="balance" key="balance" />
           <Table.Column
             title="Action"
+            width="88px"
+            align="center"
             render={(value, record: IPurchaseRequisitionApprovalItem, index: number) => {
               return <Popconfirm title="Are you sure you want to delete this item?" okText="OK" cancelText="Cancel" onConfirm={() => removeApprovalItem(record)}><Button icon={<DeleteOutlined />} /></Popconfirm>;
             }}

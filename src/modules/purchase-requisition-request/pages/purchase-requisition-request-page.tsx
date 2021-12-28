@@ -3,22 +3,23 @@ import { connect } from 'react-redux';
 import { Input, Divider, Button } from 'antd';
 import Title from 'antd/lib/typography/Title';
 
+import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
+import { ITableColumnDisplaySettings } from '@dto/i-table-columns';
+import { getSearchText, SearchEngine } from '@utils/search/native-search';
 import { IPurchaseRequisitionTemplate } from '@dto/i-purchase-requisition-template.dto';
+import { IPurchaseRequisitionTemplateItem } from '@dto/i-purchase-requisition-template-item.dto';
 
 import PurchaseRequisitionTemplateBrowser from '../components/template-browser/template-browser';
 import PurchaseRequisitionRequestConstructor from '../components/request-constructor/request-constructor';
-import PurchaseRequisitionColumnFilter from '../components/column-filter/column-filter';
-import { getSearchText, SearchEngine } from '@utils/search/native-search';
-import { IPurchaseRequisitionTemplateItem } from '@dto/i-purchase-requisition-template-item.dto';
+import PurchaseRequisitionRequestTableDisplaySettings from '../components/table-column-display-settings/table-column-display-settings';
 import generateIndex from '../components/request-constructor/request-constructor-indexer';
-import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
 import { setLoading } from '@module/shared/reducers/app-reducers';
 
 interface IPurchaseRequisitionRequestPageProps  extends StateProps, DispatchProps {};
 
 const PurchaseRequisitionRequestPage: React.FC<IPurchaseRequisitionRequestPageProps> = (props: IPurchaseRequisitionRequestPageProps) => {
   const [selectedTemplate, setSelectedTemplate] = useState<IPurchaseRequisitionTemplate>();
-  const [columnFilter, setColumnFilter] = useState<Map<string, boolean>>(new Map());
+  const [tableColumnDisplaySettings, setTableColumnDisplaySettings] = useState<ITableColumnDisplaySettings[]>();
   const [searchResult, setSearchResult] = useState<IPurchaseRequisitionTemplateItem[]>();
   const searchEngine: SearchEngine<IPurchaseRequisitionTemplateItem> = new SearchEngine([], generateIndex);
 
@@ -30,13 +31,13 @@ const PurchaseRequisitionRequestPage: React.FC<IPurchaseRequisitionRequestPagePr
   }, [selectedTemplate]);
 
   const updateRemarks: (event: ChangeEvent<HTMLTextAreaElement> | undefined) => void = (event) => {
-    if(selectedTemplate && event) {
-      const updatedTemplate = CLONING_LIB.deepClone(selectedTemplate)
-      updatedTemplate.remarks = event.target.value
+    if (selectedTemplate && event) {
+      const updatedTemplate = CLONING_LIB.deepClone(selectedTemplate);
+      updatedTemplate.remarks = event.target.value;
       setSelectedTemplate(updatedTemplate);
     }
-  }
-  
+  };
+
   const handleSearch = (value: string, event: React.ChangeEvent<HTMLInputElement> | React.MouseEvent<HTMLElement, MouseEvent> | React.KeyboardEvent<HTMLInputElement> | undefined) => {
     props.setLoading(true);
     console.group('Search [PurchaseRequititionApprovalTable]');
@@ -57,7 +58,7 @@ const PurchaseRequisitionRequestPage: React.FC<IPurchaseRequisitionRequestPagePr
   return (
     <>
       <div className=" d-flex flex-row">
-        <div className="container-fluid h-100 pb-2 mb-remark-fixed">
+        <div className="container-fluid pb-2" style={{ width: 'max-content' }}>
           <div className="row">
             <div className="col d-flex flex-column justify-content-center">
               <Title level={4}>Purchase Requisition</Title>
@@ -66,30 +67,29 @@ const PurchaseRequisitionRequestPage: React.FC<IPurchaseRequisitionRequestPagePr
               <PurchaseRequisitionTemplateBrowser setSelectedTemplate={setSelectedTemplate} setLoading={props.setLoading} />
             </div>
             <div className="col d-flex flex-column justify-content-center">
-              <Input.Search
-                placeholder="Search"
-                onSearch={handleSearch}
-                allowClear
-              ></Input.Search>
+              <Input.Search placeholder="Search" onSearch={handleSearch} allowClear></Input.Search>
             </div>
           </div>
           <div className="row">
             <div className="col">
-              <PurchaseRequisitionRequestConstructor searchResult={searchResult} currentTemplate={selectedTemplate} columnFilter={columnFilter} updateTemplate={setSelectedTemplate} />
+              <PurchaseRequisitionRequestConstructor
+                searchResult={searchResult}
+                currentTemplate={selectedTemplate}
+                tableColumnDisplaySettings={tableColumnDisplaySettings}
+                updateTemplate={setSelectedTemplate}
+              />
             </div>
           </div>
 
-          <Divider />
-
-          <div className="row fixed-bottom mx-3 pb-1 remark-wrapper bg-white">
-            <div className="col my-auto">
+          <div className="mx-3 pb-1 bg-white d-flex d-flex-column justify-content-between" style={{ width: "700px" }}>
+            <div className="my-auto">
               <Button type="primary" size="large">
                 Submit Request
               </Button>
             </div>
-            <div className="col row ml-auto  remark-box">
-              <span className="w-25">Remarks</span>
-              <Input.TextArea className="col h-100" value={selectedTemplate?.remarks} onChange={updateRemarks} rows={3} placeholder="Remarks here"></Input.TextArea>
+            <div className="d-flex d-flex-column">
+              <span className="mx-2">Remarks</span>
+              <Input.TextArea className="remarks-textbox" value={selectedTemplate?.remarks} onChange={updateRemarks} rows={3} placeholder="Remarks here"></Input.TextArea>
             </div>
           </div>
         </div>
@@ -97,7 +97,7 @@ const PurchaseRequisitionRequestPage: React.FC<IPurchaseRequisitionRequestPagePr
         <Divider type="vertical" style={{ height: '100vh' }} />
 
         <div className="mx-2">
-          <PurchaseRequisitionColumnFilter setColumnFilter={setColumnFilter} setLoading={props.setLoading} />
+          <PurchaseRequisitionRequestTableDisplaySettings tableColumnDisplaySettings={tableColumnDisplaySettings} setTableColumnDisplaySettings={setTableColumnDisplaySettings} />
         </div>
       </div>
     </>

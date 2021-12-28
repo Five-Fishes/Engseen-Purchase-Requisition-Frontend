@@ -9,7 +9,7 @@ import { convertToLocalString } from '@utils/date-time/date-time-format';
 interface IPurchaseRequisitionSelectorProps {
   purcahseRequisitionApprovalList?: IPurchaseRequisitionApproval[];
   setPurcahseRequisitionApprovalList: (purcahseRequisitionApprovalList: IPurchaseRequisitionApproval[]) => void;
-  selectedPurcahseRequisitionApproval?: IPurchaseRequisitionApproval;
+  selectedPurchaseRequisitionApproval?: IPurchaseRequisitionApproval;
   setSelectedPurcahseRequisitionApproval: (purcahseRequisitionApprovalList: IPurchaseRequisitionApproval) => void;
   setLoading?: (loading: boolean) => void;
 }
@@ -24,10 +24,11 @@ const PurchaseRequisitionSelector: React.FC<IPurchaseRequisitionSelectorProps> =
 
     return (
       <>
-        <div className="d-flex flex-column scrollable-menu" style={{ maxHeight: '480px' }}>
+        <div className="d-flex flex-column scrollable-menu" style={{ maxHeight: '55vh' }}>
           {APPROVAL_LIST.map((purchaseRequisitionApproval, index) => (
             <Button
-              className="m-2"
+              type={purchaseRequisitionApproval.id === props.selectedPurchaseRequisitionApproval?.id ? 'primary' : 'default'}
+              className="m-1 px-4"
               shape="round"
               size="large"
               key={index}

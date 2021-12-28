@@ -19,7 +19,7 @@ const PurchaseOrderBrowser: React.FC<IPurchaseOrderProps> = (props) => {
 
   return (
     <>
-      <div className="text-center d-flex flex-column py-2" style={{ overflowY: 'scroll' }}>
+      <div className="text-center d-flex flex-column py-2" style={{ overflowY: 'scroll', maxHeight: '80vh' }}>
         {purchaseApprovalOrders &&
           purchaseApprovalOrders.map((purchaseApprovalOrder, index) => {
             return (
@@ -44,7 +44,8 @@ const PurchaseOrderBrowser: React.FC<IPurchaseOrderProps> = (props) => {
                 <CheckCircleTwoTone hidden={!purchaseApprovalOrder.completed} twoToneColor="#52c41a" style={{ fontSize: '1.3em' }} />
               </Button>
             );
-          })}
+          })
+        }
       </div>
     </>
   );

@@ -4,6 +4,7 @@ import { ApiResponseStatus } from '@constant/api-status.enum';
 import { IPurchaseRequisitionTemplate } from '@dto/i-purchase-requisition-template.dto';
 import { useEffect, useState } from 'react';
 import { Button } from 'antd';
+import Text from 'antd/lib/typography/Text';
 import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
 
 interface IPurchaseRequisitionTemplateProps {
@@ -37,7 +38,7 @@ const PurchaseRequisitionTemplateBrowser: React.FC<IPurchaseRequisitionTemplateP
                 key={index}
                 type={selectedIndex === index ? 'primary' : 'default'}
                 shape="round"
-                className="m-2"
+                className="m-2 selection-pile-button"
                 size="large"
                 onClick={() => {
                   props.setLoading && props.setLoading(true);
@@ -49,7 +50,7 @@ const PurchaseRequisitionTemplateBrowser: React.FC<IPurchaseRequisitionTemplateP
                   }, 500);
                 }}
               >
-                {template.templateName}
+                <Text ellipsis className={selectedIndex === index ? 'text-white' : 'text-dark'}>{template.templateName}</Text>
               </Button>
             );
           })}

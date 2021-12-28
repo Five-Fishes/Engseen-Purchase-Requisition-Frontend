@@ -68,7 +68,7 @@ const App: React.FC<IAppProps> = (props: IAppProps) => {
           <Spin spinning={loading} indicator={<LoadingOutlined style={{ fontSize: 40 }} spin />}>
             <Layout>
               <Header triggerSideBar={triggerSideBar} sideBarOpened={sideBarOpened} loggedIn={loggedIn} triggerLoggedIn={triggerLoggedIn} />
-              <Content className="h-100 px-3 pt-3 page" style={{ backgroundColor: '#ffffff' }}>
+              <Content className="px-3 pt-3 page" style={{ backgroundColor: '#ffffff' }}>
                 <Routes />
               </Content>
             </Layout>

@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import { Input, Button, Select, DatePicker } from 'antd';
 import Title from 'antd/lib/typography/Title';
 import { ReloadOutlined } from '@ant-design/icons';
 import moment from 'moment';
+
 import { getSearchText, SearchEngine } from '@utils/search/native-search';
 import { IPurchaseApprovalOrder } from '@dto/i-purchase-approval-order.dto';
 import { IPurchaseOrder } from '@dto/i-purchase-order.dto';
@@ -16,10 +18,13 @@ import PurchaseOrderTable from '../components/purchase-order-table';
 import { popNotification } from '@module/shared/components/notification';
 import { NotificationType } from '@constant/notification.enum';
 import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
+import { setLoading } from '@module/shared/reducers/app-reducers';
 // import { PDFDownloadLink } from "@react-pdf/renderer";
 // import PurchaseOrderTemplate from "@module/shared/components/PurchaseOrderTemplate/PurchaseOrderTemplate";
 
-const PurchaseOrderPage: React.FC = () => {
+interface IPurchaseOrderProps extends StateProps, DispatchProps {};
+
+const PurchaseOrderPage: React.FC<IPurchaseOrderProps> = (props: IPurchaseOrderProps) => {
   const [purchaseApprovalOrders, setPurchaseApprovalOrders] = useState<IPurchaseApprovalOrder[]>();
   const [filteredPurchaseApprovalOrders, setFilteredPurchaseApprovalOrders] = useState<IPurchaseApprovalOrder[]>();
   const [selectedPurchaseApprovalOrder, setSelectedPurchaseApprovalOrder] = useState<IPurchaseApprovalOrder>();
@@ -77,9 +82,13 @@ const PurchaseOrderPage: React.FC = () => {
 
   const search = () => {
     if (selectedPurchaseApprovalOrder) {
+      props.setLoading(true);
       const sanitisedSearchText: string = getSearchText(searchText);
       const filteredData = searchEngine.updateEngine(selectedPurchaseApprovalOrder.purchaseOrders ?? []).search(sanitisedSearchText);
       setFilteredPurchaseOrders(filteredData);
+      setTimeout(function () {
+        props.setLoading(false);
+      }, 500);
     }
   };
 
@@ -93,6 +102,7 @@ const PurchaseOrderPage: React.FC = () => {
 
   const filterPurchaseApprovalOrders = () => {
     const filteredResult: IPurchaseApprovalOrder[] = [];
+    props.setLoading(true);
     purchaseApprovalOrders?.forEach((purchaseApprovalOrder) => {
       const purchaseApprovalOrderCreatedDate = new Date(purchaseApprovalOrder.createdDate);
       if (startDateFilterCriteria !== undefined && purchaseApprovalOrderCreatedDate < startDateFilterCriteria) {
@@ -104,9 +114,13 @@ const PurchaseOrderPage: React.FC = () => {
     console.log('Filtered result >>:', filteredResult);
     console.groupEnd();
     setFilteredPurchaseApprovalOrders(filteredResult);
+    setTimeout(function () {
+      props.setLoading(false);
+    }, 500);
   };
 
   const sortPurchaseApprovalOrderByDate = (sort: Sort) => {
+    props.setLoading(true);
     setSortCriteria(sort);
     filteredPurchaseApprovalOrders?.sort((purchaseApprovalOrder1, purchaseApprovalOrder2) => {
       if (sort === Sort.ASC) {
@@ -116,6 +130,9 @@ const PurchaseOrderPage: React.FC = () => {
       }
       return 0;
     });
+    setTimeout(function () {
+      props.setLoading(false);
+    }, 500);
   };
 
   const resetSortingAndFilter = () => {
@@ -185,6 +202,7 @@ const PurchaseOrderPage: React.FC = () => {
                 setSelectedPurchaseApprovalOrder={setSelectedPurchaseApprovalOrder}
                 purchaseApprovalOrders={filteredPurchaseApprovalOrders ?? []}
                 setFilteredPurchaseOrders={setFilteredPurchaseOrders}
+                setLoading={props.setLoading}
               />
             </div>
             <div className="my-2 mx-4 position-relative w-100">
@@ -216,4 +234,13 @@ const PurchaseOrderPage: React.FC = () => {
   );
 };
 
-export default PurchaseOrderPage;
+const mapStateToProps = () => ({});
+
+const mapDispatchToProps = {
+  setLoading,
+};
+
+type StateProps = ReturnType<typeof mapStateToProps>;
+type DispatchProps = typeof mapDispatchToProps;
+
+export default connect(mapStateToProps, mapDispatchToProps)(PurchaseOrderPage);

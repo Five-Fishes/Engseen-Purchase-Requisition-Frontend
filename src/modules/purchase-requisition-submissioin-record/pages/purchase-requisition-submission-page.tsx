@@ -1,8 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import { Input, Button, Select, DatePicker } from 'antd';
 import Title from 'antd/lib/typography/Title';
-import { IPurchaseRequisitionRequest } from '@dto/i-purchase-requisition-request.dto';
 import { ArrowRightOutlined, ReloadOutlined } from '@ant-design/icons';
+import moment from 'moment';
+
+import { IPurchaseRequisitionRequest } from '@dto/i-purchase-requisition-request.dto';
 import PurchaseRequisitionSubmissionTable from '../components/submission-table';
 import PurchaseRequisitionSubmissionBrowser from '../components/submission-record-browser';
 import { getSearchText, SearchEngine } from '@utils/search/native-search';
@@ -10,13 +13,14 @@ import { genereateIndex } from '../components/submission-indexer';
 import { IPurchaseRequisitionRequestItem } from '@dto/i-purchase-requisition-request-item.dto';
 import { convertToLocalString } from '@utils/date-time/date-time-format';
 import { Sort } from '@constant/sort.enum';
-import { useEffect } from 'react';
 import { getPurchaseRequisitionRequest } from '@api/purchase-requisition-request.api';
 import { ApiResponseStatus } from '@constant/api-status.enum';
 import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
-import moment from 'moment';
+import { setLoading } from '@module/shared/reducers/app-reducers';
 
-const PurchaseRequisitionSubmissionPage: React.FC = () => {
+interface IPurchaseRequisitionSubmissionProps extends StateProps, DispatchProps {};
+
+const PurchaseRequisitionSubmissionPage: React.FC<IPurchaseRequisitionSubmissionProps> = (props: IPurchaseRequisitionSubmissionProps) => {
   const [purchaseRequisitionSubmissios, setPurchaseRequisitionSubmissions] = useState<IPurchaseRequisitionRequest[]>();
   const [filteredPurchaseRequisitionSubmissios, setFilteredPurchaseRequisitionSubmissions] = useState<IPurchaseRequisitionRequest[]>();
   const [selectedSubmissionRequest, setSelectedSubmissionRequest] = useState<IPurchaseRequisitionRequest>();
@@ -61,9 +65,13 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
 
   const search = () => {
     if (selectedSubmissionRequest) {
+      props.setLoading(true);
       const sanitisedSearchText: string = getSearchText(searchText);
       const filteredData = searchEngine.updateEngine(selectedSubmissionRequest.purchaseRequisitionRequestItems).search(sanitisedSearchText);
       setFilteredSubmissionItems(filteredData);
+      setTimeout(function () {
+        props.setLoading(false);
+      }, 500);
     }
   };
 
@@ -76,6 +84,7 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
   };
 
   const filterSubmissionRequest = () => {
+    props.setLoading(true);
     const filteredResult: IPurchaseRequisitionRequest[] = [];
     purchaseRequisitionSubmissios?.forEach((submission) => {
       const submissionCreatedDate = new Date(submission.createdDate);
@@ -88,9 +97,13 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
     console.log('Filtered result >>:', filteredResult);
     console.groupEnd();
     setFilteredPurchaseRequisitionSubmissions(filteredResult);
+    setTimeout(function () {
+      props.setLoading(false);
+    }, 500);
   };
 
   const sortSubmissionRequestByDate = (sort: Sort) => {
+    props.setLoading(true);
     const sortedResult = CLONING_LIB.deepClone(filteredPurchaseRequisitionSubmissios)?.sort((submission1, submission2) => {
       if (sort === Sort.ASC) {
         return submission1.createdDate < submission2.createdDate ? -1 : 1;
@@ -102,6 +115,9 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
     console.log('Sorted result', sortedResult);
     console.groupEnd();
     setFilteredPurchaseRequisitionSubmissions(sortedResult);
+    setTimeout(function () {
+      props.setLoading(false);
+    }, 500);
   };
 
   const resetSortingAndFilter = () => {
@@ -150,6 +166,7 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
                 setSelectedSubmissionRecord={setSelectedSubmissionRequest}
                 purchaseRequisitionSubmissios={filteredPurchaseRequisitionSubmissios ?? []}
                 setFilteredSubmissionsItems={setFilteredSubmissionItems}
+                setLoading={props.setLoading}
               />
             </div>
             <div className="my-2 mx-4 position-relative w-100">
@@ -181,4 +198,13 @@ const PurchaseRequisitionSubmissionPage: React.FC = () => {
   );
 };
 
-export default PurchaseRequisitionSubmissionPage;
+const mapStateToProps = () => ({});
+
+const mapDispatchToProps = {
+  setLoading,
+};
+
+type StateProps = ReturnType<typeof mapStateToProps>;
+type DispatchProps = typeof mapDispatchToProps;
+
+export default connect(mapStateToProps, mapDispatchToProps)(PurchaseRequisitionSubmissionPage);

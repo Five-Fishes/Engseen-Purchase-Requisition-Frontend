@@ -10,6 +10,7 @@ interface IPurchaseOrderProps {
   setSelectedPurchaseApprovalOrder: (submissionRecord: IPurchaseApprovalOrder) => void;
   purchaseApprovalOrders: IPurchaseApprovalOrder[];
   setFilteredPurchaseOrders: (purchaseOrders: IPurchaseOrder[]) => void;
+  setLoading?: (loading: boolean) => void;
 }
 
 const PurchaseOrderBrowser: React.FC<IPurchaseOrderProps> = (props) => {
@@ -29,10 +30,14 @@ const PurchaseOrderBrowser: React.FC<IPurchaseOrderProps> = (props) => {
                 className="m-2 d-inline-flex align-items-center"
                 size="large"
                 onClick={() => {
+                  props.setLoading && props.setLoading(true);
                   setSelectedIndex(index);
                   const deepCopy: IPurchaseApprovalOrder = CLONING_LIB.deepClone(purchaseApprovalOrder);
                   props.setSelectedPurchaseApprovalOrder(deepCopy);
                   props.setFilteredPurchaseOrders(deepCopy.purchaseOrders);
+                  setTimeout(function () {
+                    props.setLoading && props.setLoading(false);
+                  }, 500);
                 }}
               >
                 {convertToLocalString(purchaseApprovalOrder.createdDate)}

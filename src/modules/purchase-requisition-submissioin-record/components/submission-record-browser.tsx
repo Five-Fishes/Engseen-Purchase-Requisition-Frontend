@@ -9,6 +9,7 @@ interface IPurchaseRequisitionSubmissionProps {
   setSelectedSubmissionRecord: (submissionRecord: IPurchaseRequisitionRequest) => void;
   purchaseRequisitionSubmissios: IPurchaseRequisitionRequest[];
   setFilteredSubmissionsItems: (submissionItems: IPurchaseRequisitionRequestItem[]) => void;
+  setLoading?: (loading: boolean) => void;
 }
 
 const PurchaseRequisitionSubmissionBrowser: React.FC<IPurchaseRequisitionSubmissionProps> = (props) => {
@@ -28,11 +29,15 @@ const PurchaseRequisitionSubmissionBrowser: React.FC<IPurchaseRequisitionSubmiss
                 className="m-1 px-4"
                 size="large"
                 onClick={() => {
+                  props.setLoading && props.setLoading(true);
                   setSelectedIndex(index);
                   setSelectedRemarks(submission.remarks);
                   const deepCopy: IPurchaseRequisitionRequest = CLONING_LIB.deepClone(submission);
                   props.setSelectedSubmissionRecord(deepCopy);
                   props.setFilteredSubmissionsItems(deepCopy.purchaseRequisitionRequestItems);
+                  setTimeout(function () {
+                    props.setLoading && props.setLoading(false);
+                  }, 500);
                 }}
               >
                 {convertToLocalString(submission.createdDate)}

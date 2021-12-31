@@ -196,6 +196,7 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
           <Popover
             content={
               <DatePicker
+                inputReadOnly
                 onChange={(moment) => {
                   updateAllDeliveryDate(moment);
                 }}
@@ -217,7 +218,7 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
           if (value) {
             castedValue = moment(new Date(value));
           }
-          return <DatePicker value={castedValue} onChange={(moment) => dataChanged(ChangeEvent.DATE_TIME, moment, record, 'deliveryDate', index)} />;
+          return <DatePicker inputReadOnly value={castedValue} onChange={(moment) => dataChanged(ChangeEvent.DATE_TIME, moment, record, 'deliveryDate', index)} />;
         }}
         key="deliveryDate"
       />
@@ -243,7 +244,7 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
   return (
     <>
       {props.tableColumnDisplaySettings && (
-        <Table className="my-2"  style={{ width: "1450px", maxWidth: "2000px" }} dataSource={props.searchResult} rowKey="id" scroll={{ y: "calc(100vh - 350px)" }} pagination={TABLE_PAGINATION_CONFIG}>
+        <Table className="my-2" style={{ width: '1450px', maxWidth: '2000px' }} dataSource={props.searchResult} rowKey="id" scroll={{ y: 'calc(100vh - 350px)' }} pagination={TABLE_PAGINATION_CONFIG}>
           {props.tableColumnDisplaySettings &&
             props.tableColumnDisplaySettings.filter((columnDisplaySetting) => columnDisplaySetting.visible).map((columnDisplaySetting) => COLUMNS[columnDisplaySetting.columnKey])}
         </Table>

@@ -23,6 +23,7 @@ const FilterAndSort: React.FC<IFilterAndSortProps> = (props) => {
     <>
       <DatePicker.RangePicker
         format="DD/MM/YYYY"
+        inputReadOnly
         value={props.dateRange && [moment(props.dateRange[0]), moment(props.dateRange[1])]}
         allowEmpty={[true, true]}
         onChange={(values) => {

@@ -22,7 +22,7 @@ import { setLoading } from '@module/shared/reducers/app-reducers';
 // import { PDFDownloadLink } from "@react-pdf/renderer";
 // import PurchaseOrderTemplate from "@module/shared/components/PurchaseOrderTemplate/PurchaseOrderTemplate";
 
-interface IPurchaseOrderProps extends StateProps, DispatchProps {};
+interface IPurchaseOrderProps extends StateProps, DispatchProps {}
 
 const PurchaseOrderPage: React.FC<IPurchaseOrderProps> = (props: IPurchaseOrderProps) => {
   const [purchaseApprovalOrders, setPurchaseApprovalOrders] = useState<IPurchaseApprovalOrder[]>();
@@ -159,6 +159,7 @@ const PurchaseOrderPage: React.FC<IPurchaseOrderProps> = (props: IPurchaseOrderP
           <div className="d-inline-flex flex-row align-items-center" style={{ gap: '15px', width: 'max-content' }}>
             <label>Advance Sorting / Filtering</label>
             <DatePicker.RangePicker
+              inputReadOnly
               format="DD/MM/YYYY"
               allowEmpty={[true, true]}
               value={[startDateFilterCriteria === undefined ? null : moment(startDateFilterCriteria), endDateFilterCriteria === undefined ? null : moment(endDateFilterCriteria)]}

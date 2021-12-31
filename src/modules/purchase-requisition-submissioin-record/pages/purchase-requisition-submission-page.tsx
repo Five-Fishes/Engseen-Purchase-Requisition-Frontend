@@ -18,7 +18,7 @@ import { ApiResponseStatus } from '@constant/api-status.enum';
 import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
 import { setLoading } from '@module/shared/reducers/app-reducers';
 
-interface IPurchaseRequisitionSubmissionProps extends StateProps, DispatchProps {};
+interface IPurchaseRequisitionSubmissionProps extends StateProps, DispatchProps {}
 
 const PurchaseRequisitionSubmissionPage: React.FC<IPurchaseRequisitionSubmissionProps> = (props: IPurchaseRequisitionSubmissionProps) => {
   const [purchaseRequisitionSubmissios, setPurchaseRequisitionSubmissions] = useState<IPurchaseRequisitionRequest[]>();
@@ -147,6 +147,7 @@ const PurchaseRequisitionSubmissionPage: React.FC<IPurchaseRequisitionSubmission
             <label>Advance Sorting / Filtering</label>
             <DatePicker.RangePicker
               format="DD/MM/YYYY"
+              inputReadOnly
               allowEmpty={[true, true]}
               value={[startDateFilterCriteria === undefined ? null : moment(startDateFilterCriteria), endDateFilterCriteria === undefined ? null : moment(endDateFilterCriteria)]}
               onChange={(dateValues) => filterByDateRange(dateValues != null ? dateValues[0]?.toString() : undefined, dateValues != null ? dateValues[1]?.toString() : undefined)}

@@ -27,20 +27,26 @@ const PurchaseRequisitionRequestTableDisplaySettings: React.FC<IPurchaseRequisit
     } else {
       setTableColumnDisplaySettings(DEFAULT_PURCHASE_REQUISITION_REQUEST_TABLE_DISPLAY_SETTINGS);
 
-      /**
-       * Only save it in non local environment
-       */
-      if (process.env.NODE_ENV !== 'development') {
-        localStorage.setItem('purchaseRequisitionRequestTableDisplaySettings', JSON.stringify(DEFAULT_PURCHASE_REQUISITION_REQUEST_TABLE_DISPLAY_SETTINGS));
-      }
+      saveDisplaySettings(DEFAULT_PURCHASE_REQUISITION_REQUEST_TABLE_DISPLAY_SETTINGS);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('purchaseRequisitionRequestTableDisplaySettings', JSON.stringify(tableColumnDisplaySettings));
+    if (tableColumnDisplaySettings) {
+      saveDisplaySettings(tableColumnDisplaySettings);
+    }
   }, [tableColumnDisplaySettings]);
+
+  const saveDisplaySettings = (tableColumnDisplaySettings: ITableColumnDisplaySettings[]) => {
+    /**
+     * Only save it in non local environment
+     */
+    if (process.env.NODE_ENV !== 'development') {
+      localStorage.setItem('purchaseRequisitionRequestTableDisplaySettings', JSON.stringify(tableColumnDisplaySettings));
+    }
+  };
 
   const updateVisibility = (e: CheckboxChangeEvent, item: ITableColumnDisplaySettings) => {
     if (tableColumnDisplaySettings) {

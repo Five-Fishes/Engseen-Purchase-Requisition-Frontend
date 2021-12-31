@@ -27,7 +27,7 @@ const DEFAULT_PURCHASE_REQUISITION_REQUEST_TABLE_DISPLAY_SETTINGS: ITableColumnD
   },
   {
     columnKey: 'balance',
-    settingDisplayName: 'Balance',
+    settingDisplayName: 'Balance Quantity',
     visible: true,
     visibilityEditable: true,
   },
@@ -45,7 +45,7 @@ const DEFAULT_PURCHASE_REQUISITION_REQUEST_TABLE_DISPLAY_SETTINGS: ITableColumnD
   },
   {
     columnKey: 'quantity',
-    settingDisplayName: 'Balance Quantity',
+    settingDisplayName: 'Total Quantity',
     visible: true,
     visibilityEditable: true,
   },

@@ -81,17 +81,19 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
   };
 
   const removeApprovalItem: (record: IPurchaseRequisitionApprovalItem) => void = (record) => {
-    if(record.status !== PurchaseRequisitionApprovalStatus.TO_CONFIRM) {
+    if (record.status !== PurchaseRequisitionApprovalStatus.TO_CONFIRM) {
       const recordStatus = PurchaseRequisitionApprovalStatusDisplayText(record.status);
       popNotification(`Cannot delete item with status "${recordStatus}", please change to status "To be confirmed"`, NotificationType.error);
     } else {
-      if(props.selectedPurchaseRequisitionApproval) {
+      if (props.selectedPurchaseRequisitionApproval) {
         const updatedSelectedPurchaseRequisitionApproval = CLONING_LIB.deepClone(props.selectedPurchaseRequisitionApproval);
-        updatedSelectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems = updatedSelectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems.filter(item => item.id !== record.id);
+        updatedSelectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems = updatedSelectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems.filter(
+          (item) => item.id !== record.id
+        );
         updatePurchaseRequisitionApproval(updatedSelectedPurchaseRequisitionApproval);
       }
     }
-  }
+  };
 
   /**
    * Update the SelectedApprovalItem's field based on the provided key
@@ -207,7 +209,14 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
             <Input.Search placeholder="Search" onSearch={handleSearch} allowClear></Input.Search>
           </div>
         </div>
-        <Table dataSource={SELECTED_PURCHASE_REQUISITION_APPROVAL_ITEMS} rowKey="id" className="my-2" style={{ width: "1580px", maxWidth: "1700px" }} scroll={{ y: 'calc(100vh - 350px)' }} pagination={TABLE_PAGINATION_CONFIG}>
+        <Table
+          dataSource={SELECTED_PURCHASE_REQUISITION_APPROVAL_ITEMS}
+          rowKey="id"
+          className="my-2"
+          style={{ width: '1580px', maxWidth: '1700px' }}
+          scroll={{ y: 'calc(100vh - 350px)' }}
+          pagination={TABLE_PAGINATION_CONFIG}
+        >
           <Table.Column title="Component Name" width="330px" align="center" dataIndex="componentName" key="componentName" />
           <Table.Column
             title={
@@ -271,12 +280,13 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
               return <StatefulNumberInput state={record.status} value={value} onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, 'noOfPacks', index)} />;
             }}
           />
-          <Table.Column title="Total Quantity To Order (kgs)" width="128px" align="center" dataIndex="quantity" key="quantity"/>
+          <Table.Column title="Total Quantity To Order (kgs)" width="128px" align="center" dataIndex="quantity" key="quantity" />
           <Table.Column
             title={
               <Popover
                 content={
                   <DatePicker
+                    inputReadOnly
                     onChange={(moment) => {
                       updateAllDeliveryDate(moment);
                     }}
@@ -302,6 +312,7 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
               }
               return (
                 <DatePicker
+                  inputReadOnly
                   disabled={!(record.status === PurchaseRequisitionApprovalStatus.TO_CONFIRM)}
                   value={castedValue}
                   onChange={(moment) => dataChanged(ChangeEvent.DATE_TIME, moment, record, 'deliveryDate', index)}
@@ -315,7 +326,11 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
             width="88px"
             align="center"
             render={(value, record: IPurchaseRequisitionApprovalItem, index: number) => {
-              return <Popconfirm title="Are you sure you want to delete this item?" okText="OK" cancelText="Cancel" onConfirm={() => removeApprovalItem(record)}><Button icon={<DeleteOutlined />} /></Popconfirm>;
+              return (
+                <Popconfirm title="Are you sure you want to delete this item?" okText="OK" cancelText="Cancel" onConfirm={() => removeApprovalItem(record)}>
+                  <Button icon={<DeleteOutlined />} />
+                </Popconfirm>
+              );
             }}
           />
         </Table>

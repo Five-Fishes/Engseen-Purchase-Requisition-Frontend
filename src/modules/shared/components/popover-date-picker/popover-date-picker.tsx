@@ -6,7 +6,7 @@ interface IPopOverDatePickerProps {
 
 const PopOverDatePicker: React.FC<IPopOverDatePickerProps> = (props) => {
   return (
-    <Popover content={<DatePicker />} trigger="click">
+    <Popover content={<DatePicker inputReadOnly />} trigger="click">
       <Button icon={props.icon} />
     </Popover>
   );

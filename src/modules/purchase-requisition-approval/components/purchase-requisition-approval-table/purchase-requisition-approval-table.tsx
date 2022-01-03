@@ -60,15 +60,29 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
     }
   }, [props.selectedPurchaseRequisitionApproval, setLoading]);
 
-  const confirmAll: () => void = () => {
+  const updateAllStatus: () => void = () => {
     if (props.selectedPurchaseRequisitionApproval) {
       setLoading && setLoading(true);
-      const updatedSelectedPurchaseRequisitionApprovalItems = props.selectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems.map((item) => {
-        if (item.status !== PurchaseRequisitionApprovalStatus.ISSUED) {
-          item.status = PurchaseRequisitionApprovalStatus.CONFIRMED;
-        }
-        return item;
-      });
+
+      const isContainToConfirm: boolean = props.selectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems.some((item) => item.status === PurchaseRequisitionApprovalStatus.TO_CONFIRM);
+
+      let updatedSelectedPurchaseRequisitionApprovalItems: IPurchaseRequisitionApprovalItem[];
+      if (isContainToConfirm) {
+        updatedSelectedPurchaseRequisitionApprovalItems = props.selectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems.map((item) => {
+          if (item.status !== PurchaseRequisitionApprovalStatus.ISSUED) {
+            item.status = PurchaseRequisitionApprovalStatus.CONFIRMED;
+          }
+          return item;
+        });
+      } else {
+        updatedSelectedPurchaseRequisitionApprovalItems = props.selectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems.map((item) => {
+          if (item.status !== PurchaseRequisitionApprovalStatus.ISSUED) {
+            item.status = PurchaseRequisitionApprovalStatus.TO_CONFIRM;
+          }
+          return item;
+        });
+      }
+
       const updatedSelectedPurchaseRequisitionApproval = CLONING_LIB.deepClone(props.selectedPurchaseRequisitionApproval);
       updatedSelectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems = updatedSelectedPurchaseRequisitionApprovalItems;
       updatePurchaseRequisitionApproval(updatedSelectedPurchaseRequisitionApproval);
@@ -265,8 +279,10 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
           />
           <Table.Column
             title={
-              <Button onClick={confirmAll} size="small" type="primary">
-                Confirm All
+              <Button onClick={updateAllStatus} size="small" type="primary">
+                {props.selectedPurchaseRequisitionApproval?.purchaseRequisitionApprovalItems.some((item) => item.status === PurchaseRequisitionApprovalStatus.TO_CONFIRM)
+                  ? 'Confirm All'
+                  : 'Un-Confirm All'}
               </Button>
             }
             dataIndex="status"

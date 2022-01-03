@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { Input, Divider, Button } from 'antd';
+import { Input, Button, Drawer } from 'antd';
 import Title from 'antd/lib/typography/Title';
 
 import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
@@ -14,14 +14,34 @@ import PurchaseRequisitionRequestConstructor from '../components/request-constru
 import PurchaseRequisitionRequestTableDisplaySettings from '../components/table-column-display-settings/table-column-display-settings';
 import generateIndex from '../components/request-constructor/request-constructor-indexer';
 import { setLoading } from '@module/shared/reducers/app-reducers';
+import { SettingOutlined } from '@ant-design/icons';
+import { IWindowSize, useWindowResized } from '@hook/window-resized.hook';
+import { APP_HEADER_HEIGHT } from '@constant/display/header.constant';
+import DEFAULT_PURCHASE_REQUISITION_REQUEST_TABLE_DISPLAY_SETTINGS from '@constant/purchase-requisition-request/purchase-requisition-request-table-display-settings';
+import { APP_CONTENT_MARGIN } from '@constant/display/content.constant';
+import { PURCHASE_REQUISITION_BOTTOM_TOOLS_HEIGHT, PURCHASE_REQUISITION_TITLE_HEIGHT, PURCHASE_REQUISITION_TOP_TOOLS_HEIGHT } from '@constant/display/purchase-requisition-request.constant';
 
-interface IPurchaseRequisitionRequestPageProps  extends StateProps, DispatchProps {};
+interface IPurchaseRequisitionRequestPageProps extends StateProps, DispatchProps {}
 
 const PurchaseRequisitionRequestPage: React.FC<IPurchaseRequisitionRequestPageProps> = (props: IPurchaseRequisitionRequestPageProps) => {
   const [selectedTemplate, setSelectedTemplate] = useState<IPurchaseRequisitionTemplate>();
   const [tableColumnDisplaySettings, setTableColumnDisplaySettings] = useState<ITableColumnDisplaySettings[]>();
   const [searchResult, setSearchResult] = useState<IPurchaseRequisitionTemplateItem[]>();
+  const [showTableDisplaySettings, setShowTableDisplaySettings] = useState<boolean>(false);
   const searchEngine: SearchEngine<IPurchaseRequisitionTemplateItem> = new SearchEngine([], generateIndex);
+  const windowSize: IWindowSize = useWindowResized();
+  const PURCHASE_REQUISITION_CONSTRUCTOR_WRAPPER_HEIGHT_CONSTRAINT: number =
+    APP_HEADER_HEIGHT + APP_CONTENT_MARGIN + PURCHASE_REQUISITION_TITLE_HEIGHT + PURCHASE_REQUISITION_TOP_TOOLS_HEIGHT + PURCHASE_REQUISITION_BOTTOM_TOOLS_HEIGHT;
+
+  useEffect(() => {
+    const savedPurchaseRequisitionRequestTableDisplaySettings = localStorage.getItem('purchaseRequisitionRequestTableDisplaySettings');
+    if (savedPurchaseRequisitionRequestTableDisplaySettings) {
+      const parsedSavedPurchaseRequisitionRequestTableDisplaySettings: ITableColumnDisplaySettings[] = JSON.parse(savedPurchaseRequisitionRequestTableDisplaySettings);
+      setTableColumnDisplaySettings(parsedSavedPurchaseRequisitionRequestTableDisplaySettings);
+    } else {
+      setTableColumnDisplaySettings(DEFAULT_PURCHASE_REQUISITION_REQUEST_TABLE_DISPLAY_SETTINGS);
+    }
+  }, []);
 
   useEffect(() => {
     if (selectedTemplate) {
@@ -49,57 +69,65 @@ const PurchaseRequisitionRequestPage: React.FC<IPurchaseRequisitionRequestPagePr
       const searchOutput = searchEngine.updateEngine(selectedTemplate.templateItems).search(sanitisedSearchText);
       setSearchResult(searchOutput);
     }
-    setTimeout(function() {
+    setTimeout(function () {
       props.setLoading(false);
     }, 500);
     console.groupEnd();
   };
 
+  const openTableDisplaySettings = () => {
+    setShowTableDisplaySettings(!showTableDisplaySettings);
+  };
+
   return (
     <>
-      <div className=" d-flex flex-row">
-        <div className="container-fluid pb-2" style={{ width: 'max-content' }}>
-          <div className="row">
-            <div className="col d-flex flex-column justify-content-center">
-              <Title level={4}>Purchase Requisition</Title>
-            </div>
-            <div className="col-7">
-              <PurchaseRequisitionTemplateBrowser setSelectedTemplate={setSelectedTemplate} setLoading={props.setLoading} />
-            </div>
-            <div className="col d-flex flex-column justify-content-center">
-              <Input.Search placeholder="Search" onSearch={handleSearch} allowClear></Input.Search>
-            </div>
+      <div className="container-fluid">
+        <div className="row" style={{ height: `${PURCHASE_REQUISITION_TITLE_HEIGHT}px` }}>
+          <div className="col d-flex flex-column justify-content-center">
+            <Title level={4}>Purchase Requisition</Title>
           </div>
-          <div className="row">
-            <div className="col">
-              <PurchaseRequisitionRequestConstructor
-                searchResult={searchResult}
-                currentTemplate={selectedTemplate}
-                tableColumnDisplaySettings={tableColumnDisplaySettings}
-                updateTemplate={setSelectedTemplate}
-              />
-            </div>
+        </div>
+        <div className="row" style={{ height: `${PURCHASE_REQUISITION_TOP_TOOLS_HEIGHT}px` }}>
+          <div className="col-8">
+            <PurchaseRequisitionTemplateBrowser setSelectedTemplate={setSelectedTemplate} setLoading={props.setLoading} />
           </div>
-
-          <div className="mx-3 pb-1 bg-white d-flex d-flex-column justify-content-between" style={{ width: "700px" }}>
-            <div className="my-auto">
-              <Button type="primary" size="large">
-                Submit Request
-              </Button>
-            </div>
-            <div className="d-flex d-flex-column">
-              <span className="mx-2">Remarks</span>
-              <Input.TextArea className="remarks-textbox" value={selectedTemplate?.remarks} onChange={updateRemarks} rows={3} placeholder="Remarks here"></Input.TextArea>
-            </div>
+          <div className="col-4 d-flex">
+            <Input.Search placeholder="Search" onSearch={handleSearch} allowClear></Input.Search>
+            <Button onClick={openTableDisplaySettings} style={{ width: '50px' }} icon={<SettingOutlined />}></Button>
           </div>
         </div>
 
-        <Divider type="vertical" style={{ height: '100vh' }} />
+        <div
+          className="row"
+          style={{
+            height: `${windowSize.height - PURCHASE_REQUISITION_CONSTRUCTOR_WRAPPER_HEIGHT_CONSTRAINT}px`,
+          }}
+        >
+          <div className="col">
+            <PurchaseRequisitionRequestConstructor
+              searchResult={searchResult}
+              currentTemplate={selectedTemplate}
+              tableColumnDisplaySettings={tableColumnDisplaySettings}
+              updateTemplate={setSelectedTemplate}
+            />
+          </div>
+        </div>
 
-        <div className="mx-2">
-          <PurchaseRequisitionRequestTableDisplaySettings tableColumnDisplaySettings={tableColumnDisplaySettings} setTableColumnDisplaySettings={setTableColumnDisplaySettings} />
+        <div className="row" style={{ height: `${PURCHASE_REQUISITION_BOTTOM_TOOLS_HEIGHT}px` }}>
+          <div className="col">
+            <Input.TextArea className="remarks-textbox" value={selectedTemplate?.remarks} onChange={updateRemarks} rows={3} placeholder="Remarks here"></Input.TextArea>
+          </div>
+          <div className="col d-flex flex-column align-items-end">
+            <Button type="primary" size="large">
+              Submit Request
+            </Button>
+          </div>
         </div>
       </div>
+
+      <Drawer title="Column Settings" placement="right" onClose={openTableDisplaySettings} visible={showTableDisplaySettings}>
+        <PurchaseRequisitionRequestTableDisplaySettings tableColumnDisplaySettings={tableColumnDisplaySettings} setTableColumnDisplaySettings={setTableColumnDisplaySettings} />
+      </Drawer>
     </>
   );
 };

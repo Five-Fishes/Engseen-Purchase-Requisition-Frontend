@@ -33,7 +33,7 @@ const PurchaseRequisitionSubmissionBrowser: React.FC<IPurchaseRequisitionSubmiss
                 key={`submission-date-${index}`}
                 type={selectedIndex === index ? 'primary' : 'default'}
                 shape="round"
-                className="m-1 px-4"
+                className="m-1 px-1"
                 size="large"
                 onClick={() => {
                   props.setLoading && props.setLoading(true);
@@ -46,7 +46,7 @@ const PurchaseRequisitionSubmissionBrowser: React.FC<IPurchaseRequisitionSubmiss
                   }, 500);
                 }}
               >
-                {convertToLocalString(submission.createdDate)}
+                <span style={{ fontSize: '10px' }}>{convertToLocalString(submission.createdDate)}</span>
               </Button>
             );
           })}

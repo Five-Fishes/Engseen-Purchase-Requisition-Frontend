@@ -46,7 +46,7 @@ const PurchaseRequisitionSelector: React.FC<IPurchaseRequisitionSelectorProps> =
           {APPROVAL_LIST.map((purchaseRequisitionApproval, index) => (
             <Button
               type={purchaseRequisitionApproval.id === props.selectedPurchaseRequisitionApproval?.id ? 'primary' : 'default'}
-              className="m-1 px-4"
+              className="m-1 px-1"
               shape="round"
               size="large"
               key={index}
@@ -58,8 +58,10 @@ const PurchaseRequisitionSelector: React.FC<IPurchaseRequisitionSelectorProps> =
                 }, 500);
               }}
             >
-              {convertToLocalString(purchaseRequisitionApproval.createdDate)}{' '}
-              {isAllApprovalItemsIssued(purchaseRequisitionApproval.purchaseRequisitionApprovalItems) && <CheckCircleOutlined style={{ color: '#22A70C', transform: 'translateY(-3px)' }} />}
+              <span style={{ fontSize: '10px' }}>
+                {convertToLocalString(purchaseRequisitionApproval.createdDate)}{' '}
+                {isAllApprovalItemsIssued(purchaseRequisitionApproval.purchaseRequisitionApprovalItems) && <CheckCircleOutlined style={{ color: '#22A70C', transform: 'translateY(-3px)' }} />}
+              </span>
             </Button>
           ))}
         </div>

@@ -4,11 +4,11 @@ export const convertToLocalString: (dateTime?: any, dateOnly?: boolean) => strin
 
     if (dateTimeValue.toString() === 'Invalid Date') throw new Error('Invalid Date');
 
-    const localeDate = dateTimeValue.getDate() + '/' + Number(dateTimeValue.getMonth() + 1) + '/' + dateTimeValue.getFullYear();
+    const localeDate = convertToLocalDate(dateTimeValue);
     if (dateOnly) {
       return localeDate;
     }
-    const localeTime = dateTimeValue.toLocaleTimeString('en-US');
+    const localeTime = convertToLocalTime(dateTimeValue);
     return localeDate + ' ' + localeTime;
   } catch (error) {
     const e = error as Error;
@@ -20,4 +20,14 @@ export const convertToLocalString: (dateTime?: any, dateOnly?: boolean) => strin
     console.groupEnd();
     return '';
   }
+};
+
+export const convertToLocalDate: (date: Date) => string = (date: Date) => {
+  date = new Date(date);
+  return date.getDate() + '/' + Number(date.getMonth() + 1) + '/' + date.getFullYear();
+};
+
+export const convertToLocalTime: (date: Date) => string = (date: Date) => {
+  date = new Date(date);
+  return date.toLocaleTimeString('en-US');
 };

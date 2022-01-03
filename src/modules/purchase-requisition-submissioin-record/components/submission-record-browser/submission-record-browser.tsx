@@ -1,6 +1,6 @@
 import { IPurchaseRequisitionRequest } from '@dto/i-purchase-requisition-request.dto';
 import { useState } from 'react';
-import { Button, Input } from 'antd';
+import { Button } from 'antd';
 import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
 import { convertToLocalString } from '@utils/date-time/date-time-format';
 import { IPurchaseRequisitionRequestItem } from '@dto/i-purchase-requisition-request-item.dto';
@@ -14,11 +14,10 @@ interface IPurchaseRequisitionSubmissionProps {
 
 const PurchaseRequisitionSubmissionBrowser: React.FC<IPurchaseRequisitionSubmissionProps> = (props) => {
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
-  const [selectedRemarks, setSelectedRemarks] = useState<string>();
   const { purchaseRequisitionSubmissios } = props;
   return (
     <>
-      <div className="text-center d-flex flex-column py-2" style={{ overflowY: 'scroll', maxHeight: '60vh', width: 'max-content' }}>
+      <div className="scrollable-menu d-flex flex-column">
         {purchaseRequisitionSubmissios &&
           purchaseRequisitionSubmissios.map((submission, index) => {
             return (
@@ -31,7 +30,6 @@ const PurchaseRequisitionSubmissionBrowser: React.FC<IPurchaseRequisitionSubmiss
                 onClick={() => {
                   props.setLoading && props.setLoading(true);
                   setSelectedIndex(index);
-                  setSelectedRemarks(submission.remarks);
                   const deepCopy: IPurchaseRequisitionRequest = CLONING_LIB.deepClone(submission);
                   props.setSelectedSubmissionRecord(deepCopy);
                   props.setFilteredSubmissionsItems(deepCopy.purchaseRequisitionRequestItems);
@@ -44,9 +42,6 @@ const PurchaseRequisitionSubmissionBrowser: React.FC<IPurchaseRequisitionSubmiss
               </Button>
             );
           })}
-      </div>
-      <div className="pb-1">
-        <Input.TextArea readOnly style={{ width: "240px", height: "218px" }} value={selectedRemarks == null ? 'Remarks: ' : 'Remarks: \n' + selectedRemarks} />
       </div>
     </>
   );

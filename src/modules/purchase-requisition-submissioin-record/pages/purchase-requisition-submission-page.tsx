@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Input, Button, Select, DatePicker } from 'antd';
+import { Input, Button, Select, DatePicker, Divider } from 'antd';
 import Title from 'antd/lib/typography/Title';
 import { ArrowRightOutlined, ReloadOutlined } from '@ant-design/icons';
 import moment from 'moment';
 
 import { IPurchaseRequisitionRequest } from '@dto/i-purchase-requisition-request.dto';
 import PurchaseRequisitionSubmissionTable from '../components/submission-table';
-import PurchaseRequisitionSubmissionBrowser from '../components/submission-record-browser';
+import PurchaseRequisitionSubmissionBrowser from '../components/submission-record-browser/submission-record-browser';
 import { getSearchText, SearchEngine } from '@utils/search/native-search';
 import { genereateIndex } from '../components/submission-indexer';
 import { IPurchaseRequisitionRequestItem } from '@dto/i-purchase-requisition-request-item.dto';
@@ -17,6 +17,10 @@ import { getPurchaseRequisitionRequest } from '@api/purchase-requisition-request
 import { ApiResponseStatus } from '@constant/api-status.enum';
 import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
 import { setLoading } from '@module/shared/reducers/app-reducers';
+import { IWindowSize, useWindowResized } from '@hook/window-resized.hook';
+import { APP_HEADER_HEIGHT } from '@constant/display/header.constant';
+import { APP_CONTENT_MARGIN } from '@constant/display/content.constant';
+import { PURCHASE_REQUISITION_SUBMISSION_TOP_TOOLS_HEIGHT } from '@constant/display/purcahse-requisition-submission.constant';
 
 interface IPurchaseRequisitionSubmissionProps extends StateProps, DispatchProps {}
 
@@ -25,11 +29,12 @@ const PurchaseRequisitionSubmissionPage: React.FC<IPurchaseRequisitionSubmission
   const [filteredPurchaseRequisitionSubmissios, setFilteredPurchaseRequisitionSubmissions] = useState<IPurchaseRequisitionRequest[]>();
   const [selectedSubmissionRequest, setSelectedSubmissionRequest] = useState<IPurchaseRequisitionRequest>();
   const [filteredSubmissionItems, setFilteredSubmissionItems] = useState<IPurchaseRequisitionRequestItem[]>();
-  const [searchText, setSearchText] = useState<string>('');
   const searchEngine: SearchEngine<IPurchaseRequisitionRequestItem> = new SearchEngine([], genereateIndex);
   const [startDateFilterCriteria, setStartDateFilterCriteria] = useState<Date>();
   const [endDateFilterCriteria, setEndDateFilterCriteria] = useState<Date>();
   const [sortCriteria, setSortCriteria] = useState<Sort>(Sort.DES);
+  const windowSize: IWindowSize = useWindowResized();
+  const PURCHASE_REQUISITION_SUBMISSION_TABLE_WRAPPER_HEIGHT_CONSTRAINT: number = APP_HEADER_HEIGHT + APP_CONTENT_MARGIN + PURCHASE_REQUISITION_SUBMISSION_TOP_TOOLS_HEIGHT;
 
   useEffect(() => {
     const getSubmissions = async () => {
@@ -63,12 +68,16 @@ const PurchaseRequisitionSubmissionPage: React.FC<IPurchaseRequisitionSubmission
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortCriteria]);
 
-  const search = () => {
+  const search = (value: string, event: React.ChangeEvent<HTMLInputElement> | React.MouseEvent<HTMLElement, MouseEvent> | React.KeyboardEvent<HTMLInputElement> | undefined) => {
     if (selectedSubmissionRequest) {
       props.setLoading(true);
-      const sanitisedSearchText: string = getSearchText(searchText);
+      console.group('Search [PurchaseRequisitionSubmissionPage]');
+      console.log('value >>: ', value);
+      console.log('event >>: ', event);
+      const sanitisedSearchText: string = getSearchText(value);
       const filteredData = searchEngine.updateEngine(selectedSubmissionRequest.purchaseRequisitionRequestItems).search(sanitisedSearchText);
       setFilteredSubmissionItems(filteredData);
+      console.groupEnd();
       setTimeout(function () {
         props.setLoading(false);
       }, 500);
@@ -132,66 +141,67 @@ const PurchaseRequisitionSubmissionPage: React.FC<IPurchaseRequisitionSubmission
 
   return (
     <>
-      <div className="container-fluid h-100">
-        <div>
-          <div className="mb-2 w-100">
-            <Title className="d-inline-block" level={4}>
-              Purchase Requisition Submission Record
-            </Title>
-            <Button className="d-inline-flex align-items-center float-end back-button" role="link" href="/purchase-requisition-request">
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-8">
+            <Title level={4}>Purchase Requisition Submission Record</Title>
+          </div>
+          <div className="col-4 d-flex flex-column align-items-end">
+            <Button role="link" href="/purchase-requisition-request">
               <span>Purchase Requisition</span>
-              <ArrowRightOutlined />
+              <ArrowRightOutlined style={{ transform: 'translateY(-3px)' }} />
             </Button>
           </div>
-          <div className="d-inline-flex flex-row align-items-center" style={{ gap: '15px', width: 'max-content' }}>
-            <label>Advance Sorting / Filtering</label>
+        </div>
+
+        <div className="row">
+          <div className="col">
+            <label className="mx-1" style={{ fontSize: '13px' }}>
+              Advance Sorting / Filtering
+            </label>
             <DatePicker.RangePicker
+              className="mx-1"
               format="DD/MM/YYYY"
               inputReadOnly
               allowEmpty={[true, true]}
               value={[startDateFilterCriteria === undefined ? null : moment(startDateFilterCriteria), endDateFilterCriteria === undefined ? null : moment(endDateFilterCriteria)]}
               onChange={(dateValues) => filterByDateRange(dateValues != null ? dateValues[0]?.toString() : undefined, dateValues != null ? dateValues[1]?.toString() : undefined)}
             />
-            <Select key="sort-submission-request-select" value={sortCriteria} onChange={(value) => setSortCriteria(value)}>
+            <Select key="sort-submission-request-select" className="mx-1" value={sortCriteria} onChange={(value) => setSortCriteria(value)}>
               <Select.Option value={Sort.DES}>Created Date Desc</Select.Option>
               <Select.Option value={Sort.ASC}>Created Date Asc</Select.Option>
             </Select>
-            <Button className="d-inline-flex align-items-center" onClick={resetSortingAndFilter}>
-              <ReloadOutlined />
+            <Button className="mx-1" onClick={resetSortingAndFilter}>
+              <ReloadOutlined style={{ transform: 'translateY(-3px)' }} />
               Reset
             </Button>
           </div>
-          <div className="mx-2 d-inline-flex border-top mt-4 w-100">
-            <div className="my-1 mb-2" style={{ alignContent: 'start' }}>
-              <PurchaseRequisitionSubmissionBrowser
-                setSelectedSubmissionRecord={setSelectedSubmissionRequest}
-                purchaseRequisitionSubmissios={filteredPurchaseRequisitionSubmissios ?? []}
-                setFilteredSubmissionsItems={setFilteredSubmissionItems}
-                setLoading={props.setLoading}
-              />
-            </div>
-            <div className="m-2 position-relative">
-              <span>
+        </div>
+
+        <div className="row">
+          <div className="col">
+            <Divider />
+          </div>
+        </div>
+
+        <div className="row" style={{ height: `${windowSize.height - PURCHASE_REQUISITION_SUBMISSION_TABLE_WRAPPER_HEIGHT_CONSTRAINT}px` }}>
+          <div className="col-3">
+            <PurchaseRequisitionSubmissionBrowser
+              setSelectedSubmissionRecord={setSelectedSubmissionRequest}
+              purchaseRequisitionSubmissios={filteredPurchaseRequisitionSubmissios ?? []}
+              setFilteredSubmissionsItems={setFilteredSubmissionItems}
+              setLoading={props.setLoading}
+            />
+            <Input.TextArea className="my-2" readOnly value={selectedSubmissionRequest?.remarks || ''} placeholder="Remarks" />
+          </div>
+          <div className="col-9">
+            <div className="d-flex justify-content-between">
+              <span className="my-1">
                 Submission Date: <b color="primary">{selectedSubmissionRequest ? convertToLocalString(selectedSubmissionRequest.createdDate) : ''}</b>
               </span>
-              <div className="d-flex flex-column justify-content-center">
-                <Input.Search
-                  allowClear
-                  placeholder="Search"
-                  bordered={false}
-                  value={searchText}
-                  onChange={(e: any) => setSearchText(e.target.value)}
-                  onSearch={search}
-                  style={{
-                    width: '40%',
-                    borderBottom: '1px solid #d9d9d9',
-                    position: 'absolute',
-                    right: '5px',
-                  }}
-                />
-              </div>
-              <PurchaseRequisitionSubmissionTable currentSubmissionRecord={selectedSubmissionRequest} filteredItems={filteredSubmissionItems} />
+              <Input.Search style={{ width: '200px' }} allowClear placeholder="Search" onSearch={search} />
             </div>
+            <PurchaseRequisitionSubmissionTable currentSubmissionRecord={selectedSubmissionRequest} filteredItems={filteredSubmissionItems} />
           </div>
         </div>
       </div>

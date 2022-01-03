@@ -15,7 +15,7 @@ import { IWindowSize, useWindowResized } from '@hook/window-resized.hook';
 import { APP_HEADER_HEIGHT } from '@constant/display/header.constant';
 import { APP_CONTENT_MARGIN } from '@constant/display/content.constant';
 import { PURCHASE_REQUISITION_BOTTOM_TOOLS_HEIGHT, PURCHASE_REQUISITION_TITLE_HEIGHT, PURCHASE_REQUISITION_TOP_TOOLS_HEIGHT } from '@constant/display/purchase-requisition-request.constant';
-import { PAGINATION_TOOLS_HEIGHT, TABLE_HEADER_HEIGHT } from '@constant/display/table.constant';
+import { TABLE_PAGINATION_TOOLS_HEIGHT, TABLE_HEADER_HEIGHT } from '@constant/display/table.constant';
 
 interface IPurchaseRequisitionRequestConstructorProps {
   readonly currentTemplate?: IPurchaseRequisitionTemplate;
@@ -43,7 +43,7 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
     PURCHASE_REQUISITION_TOP_TOOLS_HEIGHT +
     PURCHASE_REQUISITION_BOTTOM_TOOLS_HEIGHT +
     TABLE_HEADER_HEIGHT +
-    PAGINATION_TOOLS_HEIGHT;
+    TABLE_PAGINATION_TOOLS_HEIGHT;
 
   const updateAllDeliveryDate: (value: any) => void = (value) => {
     if (props.currentTemplate) {

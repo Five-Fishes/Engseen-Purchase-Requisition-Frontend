@@ -16,8 +16,17 @@ import FilterAndSort from '../components/filter-and-sort/filter-and-sort';
 import ComponentSelector from '../components/component-selector/component-selector';
 import PurchaseRequisitionSelector from '../components/purchase-requisition-request-selector/purchase-requisition-request-selector';
 import PurchaseRequititionApprovalTable from '../components/purchase-requisition-approval-table/purchase-requisition-approval-table';
+import {
+  PURCHASE_REQUISITION_APPROVAL_BOTTOM_TOOLS_HEIGHT,
+  PURCHASE_REQUISITION_APPROVAL_TITLE_HEIGHT,
+  PURCHASE_REQUISITION_APPROVAL_TOP_TOOLS_HEIGHT,
+} from '@constant/display/purchase-requisition-approval.constant';
+import { IWindowSize, useWindowResized } from '@hook/window-resized.hook';
+import { APP_HEADER_HEIGHT } from '@constant/display/header.constant';
+import { APP_CONTENT_MARGIN } from '@constant/display/content.constant';
+import { DIVIDER_HEIGHT } from '@constant/display/divider.constant';
 
-interface IPurchaseRequisitionApprovalProps extends StateProps, DispatchProps {};
+interface IPurchaseRequisitionApprovalProps extends StateProps, DispatchProps {}
 
 const PurchaseRequisitionApprovalPage: React.FC<IPurchaseRequisitionApprovalProps> = (props: IPurchaseRequisitionApprovalProps) => {
   const [sort, setSort] = useState<Sort>();
@@ -25,6 +34,14 @@ const PurchaseRequisitionApprovalPage: React.FC<IPurchaseRequisitionApprovalProp
   const [purchaseRequisitionApprovalList, setPurchaseRequisitionApprovalList] = useState<IPurchaseRequisitionApproval[]>();
   const [filteredPurchaseRequisitionApprovalList, setFilteredPurchaseRequisitionApprovalList] = useState<IPurchaseRequisitionApproval[]>();
   const [selectedPurchaseRequisitionApproval, setSelectedPurchaseRequisitionApproval] = useState<IPurchaseRequisitionApproval>();
+  const windowSize: IWindowSize = useWindowResized();
+  const PURCHASE_REQUISITION_APPROVAL_TABLE_WRAPPER_HEIGHT_CONSTRAINT: number =
+    APP_HEADER_HEIGHT +
+    APP_CONTENT_MARGIN +
+    PURCHASE_REQUISITION_APPROVAL_TITLE_HEIGHT +
+    PURCHASE_REQUISITION_APPROVAL_TOP_TOOLS_HEIGHT +
+    DIVIDER_HEIGHT +
+    PURCHASE_REQUISITION_APPROVAL_BOTTOM_TOOLS_HEIGHT;
 
   const { setLoading } = props;
   /**
@@ -102,9 +119,9 @@ const PurchaseRequisitionApprovalPage: React.FC<IPurchaseRequisitionApprovalProp
     if (purchaseRequisitionApprovalList) {
       const updatedPurcahseRequisitionApprovalList = CLONING_LIB.deepClone(purchaseRequisitionApprovalList).map((approval) => {
         const updatedApproval = approval.id === value.id ? value : approval;
-        updatedApproval.purchaseRequisitionApprovalItems.forEach(item => {
+        updatedApproval.purchaseRequisitionApprovalItems.forEach((item) => {
           item.quantity = item.packagingSize * item.noOfPacks;
-        })
+        });
         return updatedApproval;
       });
       setPurchaseRequisitionApprovalList(updatedPurcahseRequisitionApprovalList);
@@ -141,12 +158,12 @@ const PurchaseRequisitionApprovalPage: React.FC<IPurchaseRequisitionApprovalProp
 
   return (
     <>
-      <div className="container-fluid h-100" style={{ overflowY: 'scroll' }}>
-        <div className="row">
+      <div className="container-fluid">
+        <div className="row" style={{ height: `${PURCHASE_REQUISITION_APPROVAL_TITLE_HEIGHT}px` }}>
           <Title level={4}>Purchase Approval</Title>
         </div>
 
-        <div className="row">
+        <div className="row" style={{ height: `${PURCHASE_REQUISITION_APPROVAL_TOP_TOOLS_HEIGHT}px` }}>
           <div className="col-6">
             <div className="my-2">Advance Sorting / Filtering</div>
             <FilterAndSort sortChangedHandler={handleSortChange} dateRangeChangedHandler={handleDateRangeChange} dateRange={dateRange} sort={sort}></FilterAndSort>
@@ -156,60 +173,49 @@ const PurchaseRequisitionApprovalPage: React.FC<IPurchaseRequisitionApprovalProp
           </div>
         </div>
 
-        <Divider />
+        <div className="row">
+          <div className="col">
+            <Divider />
+          </div>
+        </div>
 
-        <div className="mx-2 d-inline-flex">
-          <div className="mb-2">
+        <div className="row" style={{ height: `${windowSize.height - PURCHASE_REQUISITION_APPROVAL_TABLE_WRAPPER_HEIGHT_CONSTRAINT}px` }}>
+          <div className="col-3">
             <PurchaseRequisitionSelector
               purcahseRequisitionApprovalList={filteredPurchaseRequisitionApprovalList}
               setPurcahseRequisitionApprovalList={setFilteredPurchaseRequisitionApprovalList}
               selectedPurchaseRequisitionApproval={selectedPurchaseRequisitionApproval}
               setSelectedPurcahseRequisitionApproval={setSelectedPurchaseRequisitionApproval}
               setLoading={props.setLoading}
-            ></PurchaseRequisitionSelector>
-            <div className="mx-1 pb-1 d-flex d-flex-column pt-3">
-              <div style={{ width: "213px", height: "207px" }}>
-                <Input.TextArea
-                  className="h-100"
-                  placeholder="Remarks"
-                  rows={3}
-                  readOnly
-                  value={selectedPurchaseRequisitionApproval && selectedPurchaseRequisitionApproval.remarks}
-                  onChange={(e) => updateRemarks(e)}
-                ></Input.TextArea>
-              </div>
-              <div className=" mx-2">
-                <Button onClick={issuePurchaseOrder} type="primary" size="middle" className="issue-po-btn">
-                  Issue<br/>Confirmed<br/>PO &nbsp; <CheckSquareOutlined style={{ transform: 'translateY(-3px)' }} />
-                </Button>
-              </div>
-            </div>
+            />
           </div>
-          <div className="m-2 mx-3">
+          <div className="col-9">
             <PurchaseRequititionApprovalTable
               selectedPurchaseRequisitionApproval={selectedPurchaseRequisitionApproval}
               updatePurchaseRequisitionApproval={updatePurchaseRequisitionApproval}
               setLoading={props.setLoading}
-            ></PurchaseRequititionApprovalTable>
+            />
+          </div>
+        </div>
+
+        <div className="row" style={{ height: `${PURCHASE_REQUISITION_APPROVAL_BOTTOM_TOOLS_HEIGHT}px` }}>
+          <div className="col">
+            <Input.TextArea
+              className="my-1"
+              placeholder="Remarks"
+              rows={3}
+              readOnly
+              value={selectedPurchaseRequisitionApproval && selectedPurchaseRequisitionApproval.remarks}
+              onChange={(e) => updateRemarks(e)}
+            ></Input.TextArea>
+          </div>
+          <div className="col d-flex flex-column align-items-end">
+            <Button onClick={issuePurchaseOrder} type="primary" size="middle" className="issue-po-btn">
+              Issue Confirmed PO <CheckSquareOutlined style={{ transform: 'translateY(-3px)' }} />
+            </Button>
           </div>
         </div>
       </div>
-      {/* <div className="row fixed-bottom mx-3 pb-1 remark-wrapper">
-        <div className="col-3 pt-3 remarks-box">
-          <Input.TextArea
-            className="h-100"
-            placeholder="Remarks"
-            rows={3}
-            value={selectedPurchaseRequisitionApproval && selectedPurchaseRequisitionApproval.remarks}
-            onChange={(e) => updateRemarks(e)}
-          ></Input.TextArea>
-        </div>
-        <div className="col-9 d-flex justify-content-end align-items-center">
-          <Button onClick={issuePurchaseOrder} type="primary" size="large">
-            <CheckSquareOutlined style={{ transform: 'translateY(-3px)' }} /> Issue Confirmed PO
-          </Button>
-        </div>
-      </div> */}
     </>
   );
 };

@@ -4,6 +4,10 @@ import { Button } from 'antd';
 import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
 import { convertToLocalString } from '@utils/date-time/date-time-format';
 import { IPurchaseRequisitionRequestItem } from '@dto/i-purchase-requisition-request-item.dto';
+import { APP_HEADER_HEIGHT } from '@constant/display/header.constant';
+import { APP_CONTENT_MARGIN } from '@constant/display/content.constant';
+import { PURCHASE_REQUISITION_SUBMISSION_REMARKS_HEIGHT, PURCHASE_REQUISITION_SUBMISSION_TOP_TOOLS_HEIGHT } from '@constant/display/purcahse-requisition-submission.constant';
+import { IWindowSize, useWindowResized } from '@hook/window-resized.hook';
 
 interface IPurchaseRequisitionSubmissionProps {
   setSelectedSubmissionRecord: (submissionRecord: IPurchaseRequisitionRequest) => void;
@@ -15,9 +19,13 @@ interface IPurchaseRequisitionSubmissionProps {
 const PurchaseRequisitionSubmissionBrowser: React.FC<IPurchaseRequisitionSubmissionProps> = (props) => {
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
   const { purchaseRequisitionSubmissios } = props;
+  const PURCHASE_REQUISITION_SUBMISSION_BROWSER_HEIGHT_CONSTRAINT: number =
+    APP_HEADER_HEIGHT + APP_CONTENT_MARGIN + PURCHASE_REQUISITION_SUBMISSION_TOP_TOOLS_HEIGHT + PURCHASE_REQUISITION_SUBMISSION_REMARKS_HEIGHT;
+  const windowSize: IWindowSize = useWindowResized();
+
   return (
     <>
-      <div className="scrollable-menu d-flex flex-column">
+      <div className="scrollable-menu d-flex flex-column" style={{ height: `${windowSize.height - PURCHASE_REQUISITION_SUBMISSION_BROWSER_HEIGHT_CONSTRAINT}px` }}>
         {purchaseRequisitionSubmissios &&
           purchaseRequisitionSubmissios.map((submission, index) => {
             return (

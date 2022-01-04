@@ -11,6 +11,11 @@ import { IPurchaseRequisitionTemplateItem } from '@dto/i-purchase-requisition-te
 import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
 import { ChangeEvent } from '@constant/change-event.enum';
 import { ITableColumn, ITableColumnDisplaySettings } from '@dto/i-table-columns';
+import { IWindowSize, useWindowResized } from '@hook/window-resized.hook';
+import { APP_HEADER_HEIGHT } from '@constant/display/header.constant';
+import { APP_CONTENT_MARGIN } from '@constant/display/content.constant';
+import { PURCHASE_REQUISITION_BOTTOM_TOOLS_HEIGHT, PURCHASE_REQUISITION_TITLE_HEIGHT, PURCHASE_REQUISITION_TOP_TOOLS_HEIGHT } from '@constant/display/purchase-requisition-request.constant';
+import { TABLE_PAGINATION_TOOLS_HEIGHT, TABLE_HEADER_HEIGHT } from '@constant/display/table.constant';
 
 interface IPurchaseRequisitionRequestConstructorProps {
   readonly currentTemplate?: IPurchaseRequisitionTemplate;
@@ -30,6 +35,15 @@ interface IPurchaseRequisitionRequestConstructorProps {
  */
 const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionRequestConstructorProps> = (props) => {
   const updateTemplate = props.updateTemplate;
+  const windowSize: IWindowSize = useWindowResized();
+  const TABLE_BODY_MAX_HEIHGT_CONSTRAINT: number =
+    APP_HEADER_HEIGHT +
+    APP_CONTENT_MARGIN +
+    PURCHASE_REQUISITION_TITLE_HEIGHT +
+    PURCHASE_REQUISITION_TOP_TOOLS_HEIGHT +
+    PURCHASE_REQUISITION_BOTTOM_TOOLS_HEIGHT +
+    TABLE_HEADER_HEIGHT +
+    TABLE_PAGINATION_TOOLS_HEIGHT;
 
   const updateAllDeliveryDate: (value: any) => void = (value) => {
     if (props.currentTemplate) {
@@ -142,7 +156,7 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
    */
   const CURRENT_TIME: number = new Date().getTime();
   const COLUMNS: ITableColumn = {
-    sequence: <Table.Column title="Row" width="60px" render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <>{index + 1}</>} key={`sequence-${CURRENT_TIME}`} />,
+    sequence: <Table.Column title="Row" width="65px" render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <>{index + 1}</>} key={`sequence-${CURRENT_TIME}`} />,
     componentCode: <Table.Column title="Component ID" width="150px" dataIndex="componentCode" key={`componentCode-${CURRENT_TIME}`} />,
     componentName: <Table.Column title="Component Name" width="172px" dataIndex="componentName" key={`componentName-${CURRENT_TIME}`} />,
     vendor: <Table.Column title="Vendor" width="172px" dataIndex="vendorName" key={`vendorName-${CURRENT_TIME}`} />,
@@ -247,12 +261,10 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
 
   return (
     <>
-      {props.tableColumnDisplaySettings && (
-        <Table className="my-2" dataSource={props.searchResult} rowKey="id" scroll={{ y: 'calc(100vh - 350px)' }} pagination={TABLE_PAGINATION_CONFIG}>
-          {props.tableColumnDisplaySettings &&
-            props.tableColumnDisplaySettings.filter((columnDisplaySetting) => columnDisplaySetting.visible).map((columnDisplaySetting) => COLUMNS[columnDisplaySetting.columnKey])}
-        </Table>
-      )}
+      <Table dataSource={props.searchResult} rowKey="id" scroll={{ y: windowSize.height - TABLE_BODY_MAX_HEIHGT_CONSTRAINT }} pagination={TABLE_PAGINATION_CONFIG}>
+        {props.tableColumnDisplaySettings &&
+          props.tableColumnDisplaySettings.filter((columnDisplaySetting) => columnDisplaySetting.visible).map((columnDisplaySetting) => COLUMNS[columnDisplaySetting.columnKey])}
+      </Table>
     </>
   );
 };

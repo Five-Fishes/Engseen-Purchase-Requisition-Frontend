@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import List from 'antd/lib/list';
-import { DownOutlined, UpOutlined } from '@ant-design/icons';
+import { DownOutlined, UndoOutlined, UpOutlined } from '@ant-design/icons';
 import Checkbox, { CheckboxChangeEvent } from 'antd/lib/checkbox/Checkbox';
 
 import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
@@ -8,6 +8,7 @@ import { ITableColumnDisplaySettings } from '@dto/i-table-columns';
 import DEFAULT_PURCHASE_REQUISITION_REQUEST_TABLE_DISPLAY_SETTINGS from '@constant/purchase-requisition-request/purchase-requisition-request-table-display-settings';
 import { popNotification } from '@module/shared/components/notification';
 import { NotificationType } from '@constant/notification.enum';
+import { Button } from 'antd';
 
 interface IPurchaseRequisitionColumnFilterProps {
   tableColumnDisplaySettings?: ITableColumnDisplaySettings[];
@@ -26,7 +27,6 @@ const PurchaseRequisitionRequestTableDisplaySettings: React.FC<IPurchaseRequisit
       setTableColumnDisplaySettings(parsedSavedPurchaseRequisitionRequestTableDisplaySettings);
     } else {
       setTableColumnDisplaySettings(DEFAULT_PURCHASE_REQUISITION_REQUEST_TABLE_DISPLAY_SETTINGS);
-
       saveDisplaySettings(DEFAULT_PURCHASE_REQUISITION_REQUEST_TABLE_DISPLAY_SETTINGS);
     }
 
@@ -60,6 +60,12 @@ const PurchaseRequisitionRequestTableDisplaySettings: React.FC<IPurchaseRequisit
     }
   };
 
+  const resetTableDisplaySettings = () => {
+    localStorage.removeItem('purchaseRequisitionRequestTableDisplaySettings');
+    setTableColumnDisplaySettings(DEFAULT_PURCHASE_REQUISITION_REQUEST_TABLE_DISPLAY_SETTINGS);
+    saveDisplaySettings(DEFAULT_PURCHASE_REQUISITION_REQUEST_TABLE_DISPLAY_SETTINGS);
+  };
+
   const moveColumn = (item: ITableColumnDisplaySettings, moveIndex: number) => {
     if (tableColumnDisplaySettings) {
       /**
@@ -89,25 +95,32 @@ const PurchaseRequisitionRequestTableDisplaySettings: React.FC<IPurchaseRequisit
   };
 
   return (
-    <List
-      dataSource={tableColumnDisplaySettings}
-      itemLayout="vertical"
-      style={{ width: 200 }}
-      renderItem={(item, index) => {
-        return (
-          <List.Item key={item.columnKey}>
-            <div className="d-flex justify-content-between">
-              <Checkbox className="align-self-center" checked={item.visible} onChange={(e) => updateVisibility(e, item)} disabled={!item.visibilityEditable} />
-              <span className="align-self-center">{item.settingDisplayName}</span>
-              <div className="d-flex flex-column align-self-center mx-3">
-                <UpOutlined onClick={() => moveColumn(item, -1)} />
-                <DownOutlined onClick={() => moveColumn(item, 1)} />
-              </div>
-            </div>
-          </List.Item>
-        );
-      }}
-    />
+    <>
+      <div className="d-flex flex-column justify-content-between h-100">
+        <List
+          dataSource={tableColumnDisplaySettings}
+          itemLayout="vertical"
+          style={{ width: 200 }}
+          renderItem={(item, index) => {
+            return (
+              <List.Item key={item.columnKey}>
+                <div className="d-flex justify-content-between">
+                  <Checkbox className="align-self-center" checked={item.visible} onChange={(e) => updateVisibility(e, item)} disabled={!item.visibilityEditable} />
+                  <span className="align-self-center">{item.settingDisplayName}</span>
+                  <div className="d-flex flex-column align-self-center mx-3">
+                    <UpOutlined onClick={() => moveColumn(item, -1)} />
+                    <DownOutlined onClick={() => moveColumn(item, 1)} />
+                  </div>
+                </div>
+              </List.Item>
+            );
+          }}
+        />
+        <Button onClick={resetTableDisplaySettings} icon={<UndoOutlined style={{ transform: 'translateY(-3px)' }} />}>
+          Reset
+        </Button>
+      </div>
+    </>
   );
 };
 

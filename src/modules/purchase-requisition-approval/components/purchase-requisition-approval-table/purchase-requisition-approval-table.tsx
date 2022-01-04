@@ -17,6 +17,18 @@ import generateIndex from './purchase-requisition-approval-table-indexer';
 import { popNotification } from '@module/shared/components/notification';
 import { NotificationType } from '@constant/notification.enum';
 import { convertToLocalString } from '@utils/date-time/date-time-format';
+import { APP_HEADER_HEIGHT } from '@constant/display/header.constant';
+import { APP_CONTENT_MARGIN } from '@constant/display/content.constant';
+import { TABLE_PAGINATION_TOOLS_HEIGHT } from '@constant/display/table.constant';
+import {
+  PURCHASE_REQUISITION_APPROVAL_BOTTOM_TOOLS_HEIGHT,
+  PURCHASE_REQUISITION_APPROVAL_TABLE_HEADER_HEIGHT,
+  PURCHASE_REQUISITION_APPROVAL_TABLE_SEARCHBAR_HEIGHT,
+  PURCHASE_REQUISITION_APPROVAL_TITLE_HEIGHT,
+  PURCHASE_REQUISITION_APPROVAL_TOP_TOOLS_HEIGHT,
+} from '@constant/display/purchase-requisition-approval.constant';
+import { IWindowSize, useWindowResized } from '@hook/window-resized.hook';
+import { DIVIDER_HEIGHT } from '@constant/display/divider.constant';
 interface IPurchaseRequititionApprovalTableProps {
   selectedPurchaseRequisitionApproval?: IPurchaseRequisitionApproval;
   updatePurchaseRequisitionApproval: (purchaseRequisitionApproval: IPurchaseRequisitionApproval) => void;
@@ -27,6 +39,17 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
   const updatePurchaseRequisitionApproval = props.updatePurchaseRequisitionApproval;
   const [searchResult, setSearchResult] = useState<IPurchaseRequisitionApprovalItem[]>();
   const searchEngine: SearchEngine<IPurchaseRequisitionApprovalItem> = new SearchEngine([], generateIndex);
+  const PURCHASE_REQUISITION_APPROVAL_TABLE_HEIGHT_CONSTRAINT: number =
+    APP_HEADER_HEIGHT +
+    APP_CONTENT_MARGIN +
+    PURCHASE_REQUISITION_APPROVAL_TITLE_HEIGHT +
+    PURCHASE_REQUISITION_APPROVAL_TOP_TOOLS_HEIGHT +
+    DIVIDER_HEIGHT +
+    PURCHASE_REQUISITION_APPROVAL_TABLE_SEARCHBAR_HEIGHT +
+    PURCHASE_REQUISITION_APPROVAL_TABLE_HEADER_HEIGHT +
+    PURCHASE_REQUISITION_APPROVAL_BOTTOM_TOOLS_HEIGHT +
+    TABLE_PAGINATION_TOOLS_HEIGHT;
+  const windowSize: IWindowSize = useWindowResized();
 
   const { setLoading } = props;
 
@@ -37,15 +60,29 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
     }
   }, [props.selectedPurchaseRequisitionApproval, setLoading]);
 
-  const confirmAll: () => void = () => {
+  const updateAllStatus: () => void = () => {
     if (props.selectedPurchaseRequisitionApproval) {
       setLoading && setLoading(true);
-      const updatedSelectedPurchaseRequisitionApprovalItems = props.selectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems.map((item) => {
-        if (item.status !== PurchaseRequisitionApprovalStatus.ISSUED) {
-          item.status = PurchaseRequisitionApprovalStatus.CONFIRMED;
-        }
-        return item;
-      });
+
+      const isContainToConfirm: boolean = props.selectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems.some((item) => item.status === PurchaseRequisitionApprovalStatus.TO_CONFIRM);
+
+      let updatedSelectedPurchaseRequisitionApprovalItems: IPurchaseRequisitionApprovalItem[];
+      if (isContainToConfirm) {
+        updatedSelectedPurchaseRequisitionApprovalItems = props.selectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems.map((item) => {
+          if (item.status !== PurchaseRequisitionApprovalStatus.ISSUED) {
+            item.status = PurchaseRequisitionApprovalStatus.CONFIRMED;
+          }
+          return item;
+        });
+      } else {
+        updatedSelectedPurchaseRequisitionApprovalItems = props.selectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems.map((item) => {
+          if (item.status !== PurchaseRequisitionApprovalStatus.ISSUED) {
+            item.status = PurchaseRequisitionApprovalStatus.TO_CONFIRM;
+          }
+          return item;
+        });
+      }
+
       const updatedSelectedPurchaseRequisitionApproval = CLONING_LIB.deepClone(props.selectedPurchaseRequisitionApproval);
       updatedSelectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems = updatedSelectedPurchaseRequisitionApprovalItems;
       updatePurchaseRequisitionApproval(updatedSelectedPurchaseRequisitionApproval);
@@ -206,15 +243,13 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
             <strong>Submission Date</strong>: {props.selectedPurchaseRequisitionApproval && convertToLocalString(props.selectedPurchaseRequisitionApproval.createdDate)}
           </div>
           <div>
-            <Input.Search placeholder="Search" onSearch={handleSearch} allowClear></Input.Search>
+            <Input.Search placeholder="Search" style={{ width: '200px' }} onSearch={handleSearch} allowClear></Input.Search>
           </div>
         </div>
         <Table
           dataSource={SELECTED_PURCHASE_REQUISITION_APPROVAL_ITEMS}
           rowKey="id"
-          className="my-2"
-          style={{ width: '1580px', maxWidth: '1700px' }}
-          scroll={{ y: 'calc(100vh - 350px)' }}
+          scroll={{ y: windowSize.height - PURCHASE_REQUISITION_APPROVAL_TABLE_HEIGHT_CONSTRAINT }}
           pagination={TABLE_PAGINATION_CONFIG}
         >
           <Table.Column title="Component Name" width="330px" align="center" dataIndex="componentName" key="componentName" />
@@ -244,8 +279,10 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
           />
           <Table.Column
             title={
-              <Button onClick={confirmAll} size="small" type="primary">
-                Confirm All
+              <Button onClick={updateAllStatus} size="small" type="primary">
+                {props.selectedPurchaseRequisitionApproval?.purchaseRequisitionApprovalItems.some((item) => item.status === PurchaseRequisitionApprovalStatus.TO_CONFIRM)
+                  ? 'Confirm All'
+                  : 'Un-Confirm All'}
               </Button>
             }
             dataIndex="status"

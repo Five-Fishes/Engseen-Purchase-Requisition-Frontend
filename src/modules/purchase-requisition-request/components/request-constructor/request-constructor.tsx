@@ -22,6 +22,7 @@ interface IPurchaseRequisitionRequestConstructorProps {
   readonly searchResult?: IPurchaseRequisitionTemplateItem[];
   updateTemplate: (template: IPurchaseRequisitionTemplate) => void;
   tableColumnDisplaySettings?: ITableColumnDisplaySettings[];
+  tableColumnDisplaySettingsUpdateTime: Date;
 }
 
 /**
@@ -152,9 +153,11 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
   };
 
   /**
-   * Add current time stamp to the tail of column keys to ensure columns are always refreshed
+   * Add column display settings updated time stamp to the tail of column keys to ensure columns are always refreshed after settings updated
+   * - If key remains the same, react does not refresh component, hence adding timestamp in key to force refresh
+   * - However, if refresh on every render, user will be unable to edit the data in table, hence only refresh if the time stamp got updated
    */
-  const CURRENT_TIME: number = new Date().getTime();
+  const CURRENT_TIME: number = props.tableColumnDisplaySettingsUpdateTime.getTime();
   const COLUMNS: ITableColumn = {
     sequence: <Table.Column title="Row" width="65px" render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <>{index + 1}</>} key={`sequence-${CURRENT_TIME}`} />,
     componentCode: <Table.Column title="Component ID" width="150px" dataIndex="componentCode" key={`componentCode-${CURRENT_TIME}`} />,

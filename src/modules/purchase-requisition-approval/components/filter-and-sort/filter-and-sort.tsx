@@ -21,26 +21,28 @@ const FilterAndSort: React.FC<IFilterAndSortProps> = (props) => {
 
   return (
     <>
-      <DatePicker.RangePicker
-        format="DD/MM/YYYY"
-        inputReadOnly
-        value={props.dateRange && [moment(props.dateRange[0]), moment(props.dateRange[1])]}
-        allowEmpty={[true, true]}
-        onChange={(values) => {
-          if (values && values[0] != null && values[1] != null) {
-            const dateRange: [Date, Date] = [values[0].toDate(), values[1].toDate()];
-            dateRangeChangedHandler(dateRange);
-          }
-        }}
-      ></DatePicker.RangePicker>
-      <Select placeholder="Sort By" value={props.sort} onChange={sortChangedHandler} style={{ width: 150 }} className="mx-1">
-        <Select.Option value={Sort.ASC}>Ascending Date</Select.Option>
-        <Select.Option value={Sort.DES}>Descending Date</Select.Option>
-      </Select>
-      <Button className="d-inline-flex align-items-center" onClick={reset}>
-        <ReloadOutlined />
-        Reset
-      </Button>
+      <div className="d-flex align-items-center">
+        <DatePicker.RangePicker
+          format="DD/MM/YYYY"
+          inputReadOnly
+          value={props.dateRange && [moment(props.dateRange[0]), moment(props.dateRange[1])]}
+          allowEmpty={[true, true]}
+          onChange={(values) => {
+            if (values && values[0] != null && values[1] != null) {
+              const dateRange: [Date, Date] = [values[0].toDate(), values[1].toDate()];
+              dateRangeChangedHandler(dateRange);
+            }
+          }}
+        ></DatePicker.RangePicker>
+        <Select placeholder="Sort By" value={props.sort} onChange={sortChangedHandler} style={{ width: 150 }} className="mx-1">
+          <Select.Option value={Sort.ASC}>Ascending Date</Select.Option>
+          <Select.Option value={Sort.DES}>Descending Date</Select.Option>
+        </Select>
+        <Button className="d-inline-flex align-items-center" onClick={reset}>
+          <ReloadOutlined />
+          Reset
+        </Button>
+      </div>
     </>
   );
 };

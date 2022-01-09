@@ -26,6 +26,7 @@ interface IPurchaseRequisitionRequestPageProps extends StateProps, DispatchProps
 const PurchaseRequisitionRequestPage: React.FC<IPurchaseRequisitionRequestPageProps> = (props: IPurchaseRequisitionRequestPageProps) => {
   const [selectedTemplate, setSelectedTemplate] = useState<IPurchaseRequisitionTemplate>();
   const [tableColumnDisplaySettings, setTableColumnDisplaySettings] = useState<ITableColumnDisplaySettings[]>();
+  const [tableColumnDisplaySettingsUpdateTime, setTableColumnDisplaySettingsUpdateTime] = useState<Date>(new Date());
   const [searchResult, setSearchResult] = useState<IPurchaseRequisitionTemplateItem[]>();
   const [showTableDisplaySettings, setShowTableDisplaySettings] = useState<boolean>(false);
   const searchEngine: SearchEngine<IPurchaseRequisitionTemplateItem> = new SearchEngine([], generateIndex);
@@ -42,6 +43,13 @@ const PurchaseRequisitionRequestPage: React.FC<IPurchaseRequisitionRequestPagePr
       setTableColumnDisplaySettings(DEFAULT_PURCHASE_REQUISITION_REQUEST_TABLE_DISPLAY_SETTINGS);
     }
   }, []);
+
+  /**
+   * Update the tableColumnDisplaySettingsUpdateTime to latest date if it is being modified
+   */
+  useEffect(() => {
+    setTableColumnDisplaySettingsUpdateTime(new Date());
+  }, [tableColumnDisplaySettings]);
 
   useEffect(() => {
     if (selectedTemplate) {
@@ -108,6 +116,7 @@ const PurchaseRequisitionRequestPage: React.FC<IPurchaseRequisitionRequestPagePr
               searchResult={searchResult}
               currentTemplate={selectedTemplate}
               tableColumnDisplaySettings={tableColumnDisplaySettings}
+              tableColumnDisplaySettingsUpdateTime={tableColumnDisplaySettingsUpdateTime}
               updateTemplate={setSelectedTemplate}
             />
           </div>

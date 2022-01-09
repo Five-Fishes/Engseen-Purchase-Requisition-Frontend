@@ -6,8 +6,8 @@ const ComponentSelector: React.FC = () => {
   return (
     <>
       <div className="row">
-        <div className="col-8">
-          <div className="col w-100">
+        <div className="row col-10">
+          <div className="col">
             <Select style={{ width: '100%' }} placeholder="Please select a component">
               {DUMMY_COMPONENT &&
                 DUMMY_COMPONENT.map((component, index) => (
@@ -17,16 +17,15 @@ const ComponentSelector: React.FC = () => {
                 ))}
             </Select>
           </div>
-          <div className="row mt-1">
-            <div className="col">
-              <InputNumber type="number" className="w-100" placeholder="No of Pack to Order" />
-            </div>
-            <div className="col">
-              <DatePicker inputReadOnly className="w-100"></DatePicker>
-            </div>
+          <div className="w-100 my-1"></div>
+          <div className="col">
+            <InputNumber type="number" className="w-100" placeholder="No of Pack to Order" />
+          </div>
+          <div className="col">
+            <DatePicker inputReadOnly className="w-100"></DatePicker>
           </div>
         </div>
-        <div className="col-4">
+        <div className="col-2">
           <Button type="primary">Add Component</Button>
         </div>
       </div>

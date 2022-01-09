@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import Title from 'antd/lib/typography/Title';
-import { Button, Divider, Input } from 'antd';
-import { CheckSquareOutlined } from '@ant-design/icons';
+import { Button, Divider } from 'antd';
 
 import { Sort } from '@constant/sort.enum';
 import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
@@ -16,15 +15,12 @@ import FilterAndSort from '../components/filter-and-sort/filter-and-sort';
 import ComponentSelector from '../components/component-selector/component-selector';
 import PurchaseRequisitionSelector from '../components/purchase-requisition-request-selector/purchase-requisition-request-selector';
 import PurchaseRequititionApprovalTable from '../components/purchase-requisition-approval-table/purchase-requisition-approval-table';
-import {
-  PURCHASE_REQUISITION_APPROVAL_BOTTOM_TOOLS_HEIGHT,
-  PURCHASE_REQUISITION_APPROVAL_TITLE_HEIGHT,
-  PURCHASE_REQUISITION_APPROVAL_TOP_TOOLS_HEIGHT,
-} from '@constant/display/purchase-requisition-approval.constant';
+import { PURCHASE_REQUISITION_APPROVAL_TITLE_HEIGHT, PURCHASE_REQUISITION_APPROVAL_TOP_TOOLS_HEIGHT } from '@constant/display/purchase-requisition-approval.constant';
 import { IWindowSize, useWindowResized } from '@hook/window-resized.hook';
 import { APP_HEADER_HEIGHT } from '@constant/display/header.constant';
 import { APP_CONTENT_MARGIN } from '@constant/display/content.constant';
 import { DIVIDER_HEIGHT } from '@constant/display/divider.constant';
+import Paragraph from 'antd/lib/typography/Paragraph';
 
 interface IPurchaseRequisitionApprovalProps extends StateProps, DispatchProps {}
 
@@ -36,12 +32,7 @@ const PurchaseRequisitionApprovalPage: React.FC<IPurchaseRequisitionApprovalProp
   const [selectedPurchaseRequisitionApproval, setSelectedPurchaseRequisitionApproval] = useState<IPurchaseRequisitionApproval>();
   const windowSize: IWindowSize = useWindowResized();
   const PURCHASE_REQUISITION_APPROVAL_TABLE_WRAPPER_HEIGHT_CONSTRAINT: number =
-    APP_HEADER_HEIGHT +
-    APP_CONTENT_MARGIN +
-    PURCHASE_REQUISITION_APPROVAL_TITLE_HEIGHT +
-    PURCHASE_REQUISITION_APPROVAL_TOP_TOOLS_HEIGHT +
-    DIVIDER_HEIGHT +
-    PURCHASE_REQUISITION_APPROVAL_BOTTOM_TOOLS_HEIGHT;
+    APP_HEADER_HEIGHT + APP_CONTENT_MARGIN + PURCHASE_REQUISITION_APPROVAL_TITLE_HEIGHT + PURCHASE_REQUISITION_APPROVAL_TOP_TOOLS_HEIGHT + DIVIDER_HEIGHT;
 
   const { setLoading } = props;
   /**
@@ -51,6 +42,7 @@ const PurchaseRequisitionApprovalPage: React.FC<IPurchaseRequisitionApprovalProp
     const getApprovals = async () => {
       const approvals = await getPurchaseRequisitionApproval();
       if (approvals && approvals.status === ApiResponseStatus.SUCCESS) {
+        console.log(approvals);
         setPurchaseRequisitionApprovalList(approvals.data);
         setFilteredPurchaseRequisitionApprovalList(approvals.data);
       }
@@ -128,19 +120,6 @@ const PurchaseRequisitionApprovalPage: React.FC<IPurchaseRequisitionApprovalProp
     }
   };
 
-  const updateRemarks = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (selectedPurchaseRequisitionApproval && purchaseRequisitionApprovalList) {
-      const newRemarks = e.target.value;
-      const updatedPurchaseRequisitionApprovalList = CLONING_LIB.deepClone(purchaseRequisitionApprovalList).map((approval) => {
-        if (approval.id === selectedPurchaseRequisitionApproval.id) {
-          approval.remarks = newRemarks;
-        }
-        return approval;
-      });
-      setPurchaseRequisitionApprovalList(updatedPurchaseRequisitionApprovalList);
-    }
-  };
-
   const issuePurchaseOrder = () => {
     if (selectedPurchaseRequisitionApproval) {
       const clonedSelectedPurchaseRequisitionApproval = CLONING_LIB.deepClone(selectedPurchaseRequisitionApproval);
@@ -180,7 +159,7 @@ const PurchaseRequisitionApprovalPage: React.FC<IPurchaseRequisitionApprovalProp
         </div>
 
         <div className="row" style={{ height: `${windowSize.height - PURCHASE_REQUISITION_APPROVAL_TABLE_WRAPPER_HEIGHT_CONSTRAINT}px` }}>
-          <div className="col-3">
+          <div className="col-2">
             <PurchaseRequisitionSelector
               purcahseRequisitionApprovalList={filteredPurchaseRequisitionApprovalList}
               setPurcahseRequisitionApprovalList={setFilteredPurchaseRequisitionApprovalList}
@@ -188,31 +167,19 @@ const PurchaseRequisitionApprovalPage: React.FC<IPurchaseRequisitionApprovalProp
               setSelectedPurcahseRequisitionApproval={setSelectedPurchaseRequisitionApproval}
               setLoading={props.setLoading}
             />
+            <Paragraph ellipsis={{ rows: 2, tooltip: true }} className="my-2" style={{ cursor: 'pointer' }}>
+              Remarks: {selectedPurchaseRequisitionApproval && selectedPurchaseRequisitionApproval.remarks}
+            </Paragraph>
+            <Button onClick={issuePurchaseOrder} type="primary" size="middle" className="issue-po-btn">
+              Issue Confirmed PO
+            </Button>
           </div>
-          <div className="col-9">
+          <div className="col-10">
             <PurchaseRequititionApprovalTable
               selectedPurchaseRequisitionApproval={selectedPurchaseRequisitionApproval}
               updatePurchaseRequisitionApproval={updatePurchaseRequisitionApproval}
               setLoading={props.setLoading}
             />
-          </div>
-        </div>
-
-        <div className="row" style={{ height: `${PURCHASE_REQUISITION_APPROVAL_BOTTOM_TOOLS_HEIGHT}px` }}>
-          <div className="col">
-            <Input.TextArea
-              className="my-1"
-              placeholder="Remarks"
-              rows={3}
-              readOnly
-              value={selectedPurchaseRequisitionApproval && selectedPurchaseRequisitionApproval.remarks}
-              onChange={(e) => updateRemarks(e)}
-            ></Input.TextArea>
-          </div>
-          <div className="col d-flex flex-column align-items-end">
-            <Button onClick={issuePurchaseOrder} type="primary" size="middle" className="issue-po-btn">
-              Issue Confirmed PO <CheckSquareOutlined style={{ transform: 'translateY(-3px)' }} />
-            </Button>
           </div>
         </div>
       </div>

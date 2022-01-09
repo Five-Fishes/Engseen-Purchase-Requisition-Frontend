@@ -62,9 +62,9 @@ mock.onGet(PURCHASE_REQUISITION_REQUEST_REGEX).reply<IPurchaseRequisitionRequest
         vendorId: 'K101',
         vendorName: 'KONG LONG HUAT CHEMICAL SDN. BHD.',
         stockBalance: 100,
-        packagingSize: 1000.00,
+        packagingSize: 1000.0,
         noOfPacks: 1000,
-        quantity: 1000000.00,
+        quantity: 1000000.0,
         deliveryDate: new Date(),
       },
       {
@@ -400,7 +400,7 @@ mock.onPost(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate>(2
       packagingSize: 100,
     },
   ],
-  remarks: ''
+  remarks: '',
 });
 
 mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(200, [
@@ -499,7 +499,7 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
         packagingSize: 100,
       },
     ],
-    remarks: ''
+    remarks: '',
   },
   {
     id: 1,
@@ -542,7 +542,7 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
         packagingSize: 100,
       },
     ],
-    remarks: ''
+    remarks: '',
   },
   {
     id: 1,
@@ -585,7 +585,7 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
         packagingSize: 100,
       },
     ],
-    remarks: ''
+    remarks: '',
   },
   {
     id: 1,
@@ -628,7 +628,7 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
         packagingSize: 100,
       },
     ],
-    remarks: ''
+    remarks: '',
   },
   {
     id: 1,
@@ -671,7 +671,7 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
         packagingSize: 100,
       },
     ],
-    remarks: ''
+    remarks: '',
   },
   {
     id: 1,
@@ -714,7 +714,7 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
         packagingSize: 100,
       },
     ],
-    remarks: ''
+    remarks: '',
   },
   {
     id: 1,
@@ -757,7 +757,7 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
         packagingSize: 100,
       },
     ],
-    remarks: ''
+    remarks: '',
   },
   {
     id: 1,
@@ -800,7 +800,7 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
         packagingSize: 100,
       },
     ],
-    remarks: ''
+    remarks: '',
   },
   {
     id: 1,
@@ -843,7 +843,7 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
         packagingSize: 100,
       },
     ],
-    remarks: ''
+    remarks: '',
   },
   {
     id: 1,
@@ -886,7 +886,7 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
         packagingSize: 100,
       },
     ],
-    remarks: ''
+    remarks: '',
   },
 ]);
 
@@ -1551,7 +1551,8 @@ mock.onGet(PURCHASE_REQUISITION_APPROVAL).reply<IPurchaseRequisitionApproval[]>(
         balance: 999999,
       },
     ],
-    remarks: '',
+    remarks:
+      'aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa aaaaa ',
   },
   {
     id: 1,

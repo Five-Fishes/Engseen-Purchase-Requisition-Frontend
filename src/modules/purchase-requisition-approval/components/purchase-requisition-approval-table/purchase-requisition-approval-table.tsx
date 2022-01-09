@@ -21,7 +21,6 @@ import { APP_HEADER_HEIGHT } from '@constant/display/header.constant';
 import { APP_CONTENT_MARGIN } from '@constant/display/content.constant';
 import { TABLE_PAGINATION_TOOLS_HEIGHT } from '@constant/display/table.constant';
 import {
-  PURCHASE_REQUISITION_APPROVAL_BOTTOM_TOOLS_HEIGHT,
   PURCHASE_REQUISITION_APPROVAL_TABLE_HEADER_HEIGHT,
   PURCHASE_REQUISITION_APPROVAL_TABLE_SEARCHBAR_HEIGHT,
   PURCHASE_REQUISITION_APPROVAL_TITLE_HEIGHT,
@@ -47,7 +46,6 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
     DIVIDER_HEIGHT +
     PURCHASE_REQUISITION_APPROVAL_TABLE_SEARCHBAR_HEIGHT +
     PURCHASE_REQUISITION_APPROVAL_TABLE_HEADER_HEIGHT +
-    PURCHASE_REQUISITION_APPROVAL_BOTTOM_TOOLS_HEIGHT +
     TABLE_PAGINATION_TOOLS_HEIGHT;
   const windowSize: IWindowSize = useWindowResized();
 
@@ -309,7 +307,7 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
           />
           <Table.Column
             title="No. of Packs to Order"
-            width="109px"
+            width="150px"
             align="center"
             dataIndex="noOfPacks"
             key="noOfPacks"
@@ -338,7 +336,7 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
                 </div>
               </Popover>
             }
-            width="119px"
+            width="200px"
             align="center"
             dataIndex="deliveryDate"
             key="deliveryDate"

@@ -8,6 +8,7 @@ import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
 import { ApiResponseStatus } from '@constant/api-status.enum';
 import { PurchaseRequisitionApprovalStatus } from '@constant/purchase-requisition-approval-status.enum';
 import { getPurchaseRequisitionApproval } from '@api/purchase-requisition-approval.api';
+import { issuePO } from '@api/purchase-order.api';
 import { IPurchaseRequisitionApproval } from '@dto/i-purchase-requisition-approval.dto';
 import { setLoading } from '@module/shared/reducers/app-reducers';
 
@@ -21,6 +22,8 @@ import { APP_HEADER_HEIGHT } from '@constant/display/header.constant';
 import { APP_CONTENT_MARGIN } from '@constant/display/content.constant';
 import { DIVIDER_HEIGHT } from '@constant/display/divider.constant';
 import Paragraph from 'antd/lib/typography/Paragraph';
+import { popNotification } from '@module/shared/components/notification';
+import { NotificationType } from '@constant/notification.enum';
 
 interface IPurchaseRequisitionApprovalProps extends StateProps, DispatchProps {}
 
@@ -41,6 +44,7 @@ const PurchaseRequisitionApprovalPage: React.FC<IPurchaseRequisitionApprovalProp
   useEffect(() => {
     const getApprovals = async () => {
       const approvals = await getPurchaseRequisitionApproval();
+      console.log(approvals);
       if (approvals && approvals.status === ApiResponseStatus.SUCCESS) {
         console.log(approvals);
         setPurchaseRequisitionApprovalList(approvals.data);
@@ -122,16 +126,30 @@ const PurchaseRequisitionApprovalPage: React.FC<IPurchaseRequisitionApprovalProp
 
   const issuePurchaseOrder = () => {
     if (selectedPurchaseRequisitionApproval) {
-      const clonedSelectedPurchaseRequisitionApproval = CLONING_LIB.deepClone(selectedPurchaseRequisitionApproval);
-      const updatedApprovalItems = clonedSelectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems.map((item) => {
-        if (item.status === PurchaseRequisitionApprovalStatus.CONFIRMED) {
-          item.status = PurchaseRequisitionApprovalStatus.ISSUED;
-        }
-        return item;
-      });
-      clonedSelectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems = updatedApprovalItems;
-      setSelectedPurchaseRequisitionApproval(clonedSelectedPurchaseRequisitionApproval);
-      updatePurchaseRequisitionApproval(clonedSelectedPurchaseRequisitionApproval);
+      issuePO(selectedPurchaseRequisitionApproval.id)
+        .then(res => {
+          console.log(res.status)
+          if (res.status === 200) {
+            console.log(res.data);
+            const clonedSelectedPurchaseRequisitionApproval = CLONING_LIB.deepClone(selectedPurchaseRequisitionApproval);
+            const updatedApprovalItems = clonedSelectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems.map((item) => {
+              if (item.status === PurchaseRequisitionApprovalStatus.CONFIRMED) {
+                item.status = PurchaseRequisitionApprovalStatus.ISSUED;
+              }
+              return item;
+            });
+            clonedSelectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems = updatedApprovalItems;
+            setSelectedPurchaseRequisitionApproval(clonedSelectedPurchaseRequisitionApproval);
+            updatePurchaseRequisitionApproval(clonedSelectedPurchaseRequisitionApproval);
+            popNotification('Success Issued Confirmed PO', NotificationType.success);
+          }
+        })
+        .catch(error => {
+          console.log(error.response);
+          const errResponse = error.response;
+          const errorMessage = errResponse.data ?? 'Request Failed';
+          popNotification(errorMessage, NotificationType.error);
+        })
     }
   };
 

@@ -10,7 +10,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import './App.less';
 import Header from '@module/layout/component/header/header';
 import AppSider from '@module/layout/component/sider/sider';
-import getMock from '@api/api-mocks.api';
+// import getMock from '@api/api-mocks.api';
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
@@ -37,7 +37,7 @@ if (process.env.NODE_ENV === 'production') {
   getAnalytics(app);
 }
 if (process.env.NODE_ENV === 'development') {
-  getMock();
+  // getMock();
 }
 
 export interface IAppProps extends StateProps, DispatchProps {}

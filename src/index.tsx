@@ -6,6 +6,11 @@ import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Provider } from 'react-redux';
 import store from '@module/config/store';
+import axios from 'axios';
+
+const TIMEOUT = 1 * 60 * 1000;
+axios.defaults.timeout = TIMEOUT;
+axios.defaults.baseURL = process.env.SERVER_BASE_URL;
 
 ReactDOM.render(
   <React.StrictMode>

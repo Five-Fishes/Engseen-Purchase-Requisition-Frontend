@@ -99,7 +99,7 @@ const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
       .catch(error => {
         console.log(error.response);
         const errResponse = error.response;
-        const errorMessage = errResponse.data ?? 'Request Failed';
+        const errorMessage = errResponse.data ? errResponse.data : 'Request Failed';
         popNotification(errorMessage, NotificationType.error);
       })
   };

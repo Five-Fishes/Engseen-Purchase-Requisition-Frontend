@@ -362,7 +362,7 @@ mock.onGet(GET_COMPONENT_BY_SEARCH).reply<IPurchaseRequisitionTemplateItem[]>(20
 mock.onPost(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate>(200, {
   id: 1,
   templateName: 'template 1',
-  templateItems: [
+  purchaseRequisitionTemplateItemList: [
     {
       id: 1,
       sequence: 1,
@@ -407,7 +407,7 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
   {
     id: 1,
     templateName: 'Kong Long HUAT CHEMICAL',
-    templateItems: [
+    purchaseRequisitionTemplateItemList: [
       {
         id: 1,
         sequence: 1,
@@ -504,7 +504,7 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
   {
     id: 1,
     templateName: 'template 1',
-    templateItems: [
+    purchaseRequisitionTemplateItemList: [
       {
         id: 1,
         sequence: 1,
@@ -547,7 +547,7 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
   {
     id: 1,
     templateName: 'template 1',
-    templateItems: [
+    purchaseRequisitionTemplateItemList: [
       {
         id: 1,
         sequence: 1,
@@ -590,7 +590,7 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
   {
     id: 1,
     templateName: 'template 1',
-    templateItems: [
+    purchaseRequisitionTemplateItemList: [
       {
         id: 1,
         sequence: 1,
@@ -633,7 +633,7 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
   {
     id: 1,
     templateName: 'template 1',
-    templateItems: [
+    purchaseRequisitionTemplateItemList: [
       {
         id: 1,
         sequence: 1,
@@ -676,7 +676,7 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
   {
     id: 1,
     templateName: 'template 1',
-    templateItems: [
+    purchaseRequisitionTemplateItemList: [
       {
         id: 1,
         sequence: 1,
@@ -719,7 +719,7 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
   {
     id: 1,
     templateName: 'template 1',
-    templateItems: [
+    purchaseRequisitionTemplateItemList: [
       {
         id: 1,
         sequence: 1,
@@ -762,7 +762,7 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
   {
     id: 1,
     templateName: 'template 1',
-    templateItems: [
+    purchaseRequisitionTemplateItemList: [
       {
         id: 1,
         sequence: 1,
@@ -805,7 +805,7 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
   {
     id: 1,
     templateName: 'template 1',
-    templateItems: [
+    purchaseRequisitionTemplateItemList: [
       {
         id: 1,
         sequence: 1,
@@ -848,7 +848,7 @@ mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(
   {
     id: 1,
     templateName: 'template 1',
-    templateItems: [
+    purchaseRequisitionTemplateItemList: [
       {
         id: 1,
         sequence: 1,

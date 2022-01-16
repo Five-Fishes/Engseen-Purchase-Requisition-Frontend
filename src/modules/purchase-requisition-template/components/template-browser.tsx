@@ -1,4 +1,4 @@
-import { getPurchaseRequisitionTemplate } from '@api/purchase-requisition-template.api';
+import { deletePurchaseRequisitionTemplate, getPurchaseRequisitionTemplate } from '@api/purchase-requisition-template.api';
 import { ApiResponseStatus } from '@constant/api-status.enum';
 import { IPurchaseRequisitionTemplate } from '@dto/i-purchase-requisition-template.dto';
 import { useEffect, useState } from 'react';
@@ -12,23 +12,15 @@ import { NotificationType } from '@constant/notification.enum';
 interface IPurchaseRequisitionTemplateProps {
   setSelectedTemplate: (template: IPurchaseRequisitionTemplate) => void;
   setLoading?: (loading: boolean) => void;
+  purchaseRequisitionTemplates: IPurchaseRequisitionTemplate[];
+  setPurchaseRequisitionTemplates: (templates: IPurchaseRequisitionTemplate[]) => void;
 }
 
 const PurchaseRequisitionTemplateBrowser: React.FC<IPurchaseRequisitionTemplateProps> = (props) => {
-  const [purchaseRequisitionTemplates, setPurchaseRequisitionTemplates] = useState<IPurchaseRequisitionTemplate[]>();
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [newTemplateText, setNewTemplateText] = useState('');
 
-  useEffect(() => {
-    const getTemplates = async () => {
-      const apiResponse = await getPurchaseRequisitionTemplate();
-
-      if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
-        setPurchaseRequisitionTemplates(apiResponse.data);
-      }
-    };
-    getTemplates();
-  }, []);
+  const { purchaseRequisitionTemplates, setPurchaseRequisitionTemplates } = props;
 
   const showConfirmDeleteTemplate = (): void => {
     if (purchaseRequisitionTemplates === undefined || selectedIndex === -1) {
@@ -52,7 +44,7 @@ const PurchaseRequisitionTemplateBrowser: React.FC<IPurchaseRequisitionTemplateP
       const newTemplate: IPurchaseRequisitionTemplate = {
         id: 0,
         templateName: newTemplateText,
-        templateItems: [],
+        purchaseRequisitionTemplateItemList: [],
         remarks: ""
       };
       if (purchaseRequisitionTemplates === undefined || purchaseRequisitionTemplates.length === 0) {
@@ -73,15 +65,32 @@ const PurchaseRequisitionTemplateBrowser: React.FC<IPurchaseRequisitionTemplateP
     }
     const selectedPurchaseRequisitionTemplate = purchaseRequisitionTemplates[selectedIndex];
     if (selectedPurchaseRequisitionTemplate.id > 0) {
-      // API request to Delete Template
+      deletePurchaseRequisitionTemplate(selectedPurchaseRequisitionTemplate.id)
+        .then(() => {
+          getPurchaseRequisitionTemplate()
+            .then(apiResponse => {
+              if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
+                setPurchaseRequisitionTemplates(apiResponse.data);
+              }
+            })
+          setSelectedIndex(-1);
+          props.setSelectedTemplate({} as IPurchaseRequisitionTemplate);
+          popNotification('Success Delete Template', NotificationType.success);
+        })
+        .catch(error => {
+          const errResponse = error.response;
+          const errorMessage = errResponse.data ? errResponse.data : 'Request Failed';
+          popNotification(errorMessage, NotificationType.error);
+        });
     } else {
       purchaseRequisitionTemplates.splice(selectedIndex, 1);
       const deepCopy: IPurchaseRequisitionTemplate[] = CLONING_LIB.deepClone(purchaseRequisitionTemplates);
       setPurchaseRequisitionTemplates(deepCopy);
+      
+      setSelectedIndex(-1);
+      props.setSelectedTemplate({} as IPurchaseRequisitionTemplate);
+      popNotification('Success Delete Template', NotificationType.success);
     }
-    setSelectedIndex(-1);
-    props.setSelectedTemplate({} as IPurchaseRequisitionTemplate);
-    popNotification('Success Delete Template', NotificationType.success);
   };
 
   return (

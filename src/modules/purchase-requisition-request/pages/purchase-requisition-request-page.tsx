@@ -53,7 +53,7 @@ const PurchaseRequisitionRequestPage: React.FC<IPurchaseRequisitionRequestPagePr
 
   useEffect(() => {
     if (selectedTemplate) {
-      const initSearchResult = CLONING_LIB.deepClone(selectedTemplate.templateItems);
+      const initSearchResult = CLONING_LIB.deepClone(selectedTemplate.purchaseRequisitionTemplateItemList);
       setSearchResult(initSearchResult);
     }
   }, [selectedTemplate]);
@@ -74,7 +74,7 @@ const PurchaseRequisitionRequestPage: React.FC<IPurchaseRequisitionRequestPagePr
     if (selectedTemplate) {
       console.log('selectedPurchaseRequisitionApproval >>: ', selectedTemplate);
       const sanitisedSearchText: string = getSearchText(value);
-      const searchOutput = searchEngine.updateEngine(selectedTemplate.templateItems).search(sanitisedSearchText);
+      const searchOutput = searchEngine.updateEngine(selectedTemplate.purchaseRequisitionTemplateItemList).search(sanitisedSearchText);
       setSearchResult(searchOutput);
     }
     setTimeout(function () {

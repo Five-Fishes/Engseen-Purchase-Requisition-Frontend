@@ -1,7 +1,7 @@
 import { deletePurchaseRequisitionTemplate, getPurchaseRequisitionTemplate } from '@api/purchase-requisition-template.api';
 import { ApiResponseStatus } from '@constant/api-status.enum';
 import { IPurchaseRequisitionTemplate } from '@dto/i-purchase-requisition-template.dto';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Button, Input, Row, Col, Modal } from 'antd';
 import Text from 'antd/lib/typography/Text';
 import { DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';

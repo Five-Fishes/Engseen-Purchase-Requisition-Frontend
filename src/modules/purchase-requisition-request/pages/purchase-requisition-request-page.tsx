@@ -20,6 +20,10 @@ import { APP_HEADER_HEIGHT } from '@constant/display/header.constant';
 import DEFAULT_PURCHASE_REQUISITION_REQUEST_TABLE_DISPLAY_SETTINGS from '@constant/purchase-requisition-request/purchase-requisition-request-table-display-settings';
 import { APP_CONTENT_MARGIN } from '@constant/display/content.constant';
 import { PURCHASE_REQUISITION_BOTTOM_TOOLS_HEIGHT, PURCHASE_REQUISITION_TITLE_HEIGHT, PURCHASE_REQUISITION_TOP_TOOLS_HEIGHT } from '@constant/display/purchase-requisition-request.constant';
+import { IPurchaseRequisitionRequest } from '@dto/i-purchase-requisition-request.dto';
+import { createPurchaseRequisitionRequest } from '@api/purchase-requisition-request.api';
+import { popNotification } from '@module/shared/components/notification';
+import { NotificationType } from '@constant/notification.enum';
 
 interface IPurchaseRequisitionRequestPageProps extends StateProps, DispatchProps {}
 
@@ -87,6 +91,28 @@ const PurchaseRequisitionRequestPage: React.FC<IPurchaseRequisitionRequestPagePr
     setShowTableDisplaySettings(!showTableDisplaySettings);
   };
 
+  const submitPurchaseRequest = () => {
+    const purchaseRequest: IPurchaseRequisitionRequest = {
+      remarks: selectedTemplate?.remarks ?? '',
+      templateId: selectedTemplate?.id ?? 0,
+      purchaseRequisitionRequestItems: [],
+      createdDate: new Date(),
+      id: 0
+    }
+    // TODO: Items List
+    // purchaseRequisitionRequestItems: selectedTemplate?.purchaseRequisitionTemplateItemList
+    createPurchaseRequisitionRequest(purchaseRequest)
+      .then(() => {
+        popNotification('Success Update Template', NotificationType.success);
+        setSelectedTemplate(undefined);
+      })
+      .catch(error => {
+        const errResponse = error.response;
+        const errorMessage = errResponse.data ? errResponse.data : 'Request Failed';
+        popNotification(errorMessage, NotificationType.error);
+      });
+  }
+
   return (
     <>
       <div className="container-fluid">
@@ -127,7 +153,7 @@ const PurchaseRequisitionRequestPage: React.FC<IPurchaseRequisitionRequestPagePr
             <Input.TextArea className="remarks-textbox" value={selectedTemplate?.remarks} onChange={updateRemarks} rows={3} placeholder="Remarks here"></Input.TextArea>
           </div>
           <div className="col d-flex flex-column align-items-end">
-            <Button type="primary" size="large">
+            <Button type="primary" size="large" onClick={submitPurchaseRequest}>
               Submit Request
             </Button>
           </div>

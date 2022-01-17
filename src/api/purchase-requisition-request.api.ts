@@ -9,7 +9,15 @@ export async function createPurchaseRequisitionRequest(purchaseRequisitionReques
 }
 
 export async function getPurchaseRequisitionRequest(startDate: Date, endDate: Date, sortBy: Sort) {
-  const wrappedParams = { startDate, endDate, sortBy };
-  const url: string = QueryParamsBuilder.withUrl(PURCHASE_REQUISITION_REQUEST).addParams(wrappedParams).build();
+  // TODO: Temporary remove filter date parameter
+  // const wrappedParams = { startDate, endDate, sortBy };
+  let sort = 'createdDate';
+  if (sortBy === Sort.DES) {
+    sort += ',desc';
+  } else if (sortBy === Sort.ASC) {
+    sort += ',asc';
+  }
+  const wrappedParams = { sort };
+  const url: string = QueryParamsBuilder.withUrl(`${PURCHASE_REQUISITION_REQUEST}/submission`).addParams(wrappedParams).build();
   return await axios.get<IPurchaseRequisitionRequest[]>(url);
 }

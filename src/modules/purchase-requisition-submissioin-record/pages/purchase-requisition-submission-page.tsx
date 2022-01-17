@@ -38,7 +38,7 @@ const PurchaseRequisitionSubmissionPage: React.FC<IPurchaseRequisitionSubmission
 
   useEffect(() => {
     const getSubmissions = async () => {
-      const apiResponse = await getPurchaseRequisitionRequest(new Date(), new Date(), Sort.ASC);
+      const apiResponse = await getPurchaseRequisitionRequest(new Date('2021-12-17T03:24:00'), new Date(), Sort.DES);
 
       if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
         setPurchaseRequisitionSubmissions(apiResponse.data);

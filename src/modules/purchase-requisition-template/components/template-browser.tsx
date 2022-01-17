@@ -52,7 +52,7 @@ const PurchaseRequisitionTemplateBrowser: React.FC<IPurchaseRequisitionTemplateP
       const newTemplate: IPurchaseRequisitionTemplate = {
         id: 0,
         templateName: newTemplateText,
-        templateItems: [],
+        purchaseRequisitionTemplateItemList: [],
         remarks: ""
       };
       if (purchaseRequisitionTemplates === undefined || purchaseRequisitionTemplates.length === 0) {

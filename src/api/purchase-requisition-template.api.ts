@@ -4,7 +4,7 @@ import { IPurchaseRequisitionTemplate } from '@dto/i-purchase-requisition-templa
 import { COMPONENT, PURCHASE_REQUISITION_TEMPLATE } from '@constant/api-endpoints';
 import { IPurchaseRequisitionTemplateItem } from '@dto/i-purchase-requisition-template-item.dto';
 
-export async function createPurchaseReqiosition(purchaseRequisitionRequest: IPurchaseRequisitionRequest) {
+export async function createPurchaseRequisitionTemplate(purchaseRequisitionRequest: IPurchaseRequisitionRequest) {
   return await axios.post<IPurchaseRequisitionTemplate>(PURCHASE_REQUISITION_TEMPLATE, purchaseRequisitionRequest);
 }
 

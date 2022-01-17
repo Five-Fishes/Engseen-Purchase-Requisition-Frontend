@@ -9,3 +9,7 @@ export async function getPurchaseRequisitionApproval() {
   const url: string = QueryParamsBuilder.withUrl(`${PURCHASE_REQUISITION_APPROVAL}`).addParams(wrappedParams).build();
   return await axios.get<IPurchaseRequisitionApproval[]>(url);
 }
+
+export async function putPurchaseRequisitionApproval(purchaseRequisitionApproval: IPurchaseRequisitionApproval) {
+  return await axios.put<IPurchaseRequisitionApproval[]>((`${PURCHASE_REQUISITION_APPROVAL}/${purchaseRequisitionApproval.id}`), purchaseRequisitionApproval);
+}

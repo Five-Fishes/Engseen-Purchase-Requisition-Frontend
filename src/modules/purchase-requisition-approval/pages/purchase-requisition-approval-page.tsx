@@ -7,7 +7,7 @@ import { Sort } from '@constant/sort.enum';
 import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
 import { ApiResponseStatus } from '@constant/api-status.enum';
 import { PurchaseRequisitionApprovalStatus } from '@constant/purchase-requisition-approval-status.enum';
-import { getPurchaseRequisitionApproval } from '@api/purchase-requisition-approval.api';
+import { getPurchaseRequisitionApproval, putPurchaseRequisitionApproval } from '@api/purchase-requisition-approval.api';
 import { issuePO } from '@api/purchase-order.api';
 import { IPurchaseRequisitionApproval } from '@dto/i-purchase-requisition-approval.dto';
 import { setLoading } from '@module/shared/reducers/app-reducers';
@@ -28,6 +28,7 @@ import { NotificationType } from '@constant/notification.enum';
 interface IPurchaseRequisitionApprovalProps extends StateProps, DispatchProps {}
 
 const PurchaseRequisitionApprovalPage: React.FC<IPurchaseRequisitionApprovalProps> = (props: IPurchaseRequisitionApprovalProps) => {
+  const [approvalUpdated, setApprovalUpdated] = useState<boolean>(false);
   const [sort, setSort] = useState<Sort>();
   const [dateRange, setDateRange] = useState<[Date, Date]>();
   const [purchaseRequisitionApprovalList, setPurchaseRequisitionApprovalList] = useState<IPurchaseRequisitionApproval[]>();
@@ -121,15 +122,16 @@ const PurchaseRequisitionApprovalPage: React.FC<IPurchaseRequisitionApprovalProp
         return updatedApproval;
       });
       setPurchaseRequisitionApprovalList(updatedPurcahseRequisitionApprovalList);
+      setApprovalUpdated(true);
     }
   };
 
   const issuePurchaseOrder = () => {
     if (selectedPurchaseRequisitionApproval) {
       issuePO(selectedPurchaseRequisitionApproval.id)
-        .then(res => {
-          console.log(res.status)
-          if (res.status === 200) {
+        .then((res) => {
+          console.log(res.status);
+          if (res.status === ApiResponseStatus.SUCCESS) {
             console.log(res.data);
             const clonedSelectedPurchaseRequisitionApproval = CLONING_LIB.deepClone(selectedPurchaseRequisitionApproval);
             const updatedApprovalItems = clonedSelectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems.map((item) => {
@@ -141,15 +143,34 @@ const PurchaseRequisitionApprovalPage: React.FC<IPurchaseRequisitionApprovalProp
             clonedSelectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems = updatedApprovalItems;
             setSelectedPurchaseRequisitionApproval(clonedSelectedPurchaseRequisitionApproval);
             updatePurchaseRequisitionApproval(clonedSelectedPurchaseRequisitionApproval);
-            popNotification('Success Issued Confirmed PO', NotificationType.success);
+            popNotification('Successfully Issued Confirmed PO', NotificationType.success);
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error.response);
           const errResponse = error.response;
           const errorMessage = errResponse.data ? errResponse.data : 'Request Failed';
           popNotification(errorMessage, NotificationType.error);
+        });
+    }
+  };
+
+  const submitApprovalUpdates = () => {
+    if (selectedPurchaseRequisitionApproval) {
+      putPurchaseRequisitionApproval(selectedPurchaseRequisitionApproval)
+        .then((res) => {
+          console.log(res.status);
+          if (res.status === ApiResponseStatus.SUCCESS) {
+            setApprovalUpdated(false);
+            popNotification('Successfully Updated Approval', NotificationType.success);
+          }
         })
+        .catch((error) => {
+          console.log(error.response);
+          const errResponse = error.response;
+          const errorMessage = errResponse.data ? errResponse.data : 'Request Failed';
+          popNotification(errorMessage, NotificationType.error);
+        });
     }
   };
 
@@ -188,9 +209,15 @@ const PurchaseRequisitionApprovalPage: React.FC<IPurchaseRequisitionApprovalProp
             <Paragraph ellipsis={{ rows: 2, tooltip: true }} className="my-2" style={{ cursor: 'pointer' }}>
               Remarks: {selectedPurchaseRequisitionApproval && selectedPurchaseRequisitionApproval.remarks}
             </Paragraph>
-            <Button onClick={issuePurchaseOrder} type="primary" size="middle" className="issue-po-btn">
-              Issue Confirmed PO
-            </Button>
+            {approvalUpdated ? (
+              <Button onClick={submitApprovalUpdates} type="primary" size="middle" className="issue-po-btn">
+                Update Approval
+              </Button>
+            ) : (
+              <Button onClick={issuePurchaseOrder} type="primary" size="middle" className="issue-po-btn">
+                Issue Confirmed PO
+              </Button>
+            )}
           </div>
           <div className="col-10">
             <PurchaseRequititionApprovalTable

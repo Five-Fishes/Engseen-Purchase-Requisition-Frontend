@@ -2,7 +2,7 @@ import { IPurchaseRequisitionRequestItem } from '@dto/i-purchase-requisition-req
 
 export const genereateIndex = (purchaseRequisitionSubmissionItem: IPurchaseRequisitionRequestItem) => {
   const searchIndex =
-    (purchaseRequisitionSubmissionItem.componentName.trim() || '') +
+    (purchaseRequisitionSubmissionItem.componentCode.trim() || '') +
     (purchaseRequisitionSubmissionItem.componentName.trim() || '') +
     (purchaseRequisitionSubmissionItem.vendorName.trim() || '') +
     (purchaseRequisitionSubmissionItem.deliveryDate || '');

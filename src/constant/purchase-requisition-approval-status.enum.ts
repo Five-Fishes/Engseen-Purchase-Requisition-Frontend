@@ -1,7 +1,7 @@
 export enum PurchaseRequisitionApprovalStatus {
-  TO_CONFIRM,
-  CONFIRMED,
-  ISSUED,
+  TO_CONFIRM = 'TO_CONFIRM',
+  CONFIRMED = 'CONFIRMED',
+  ISSUED = 'ISSUED',
 }
 
 const DISPLAY_TEXT_MAP = new Map<string, string>();

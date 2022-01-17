@@ -40,7 +40,7 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
   const search = () => {
     props.setLoading(true);
     const sanitisedSearchText: string = getSearchText(searchText);
-    const filteredData = searchEngine.updateEngine(selectedPurchaseRequisitionTemplate.templateItems).search(sanitisedSearchText);
+    const filteredData = searchEngine.updateEngine(selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList).search(sanitisedSearchText);
     setFilteredTemplateItems(filteredData);
     setTimeout(function () {
       props.setLoading(false);
@@ -68,9 +68,9 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
   };
 
   const deleteTemplateItem = (itemIndex: number) => {
-    selectedPurchaseRequisitionTemplate.templateItems.splice(itemIndex, 1);
-    const sortedResult = updateTemplateItemsSequence(selectedPurchaseRequisitionTemplate.templateItems);
-    selectedPurchaseRequisitionTemplate.templateItems = sortedResult;
+    selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList.splice(itemIndex, 1);
+    const sortedResult = updateTemplateItemsSequence(selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList);
+    selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList = sortedResult;
     const deepCopy: IPurchaseRequisitionTemplate = CLONING_LIB.deepClone(selectedPurchaseRequisitionTemplate);
     setSelectedPurchaseRequisitionTemplate(deepCopy);
     popNotification('Success Delete Component', NotificationType.success);
@@ -123,10 +123,10 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
       sequence: values.itemSequence,
     };
     const insertIndex: number =
-      values.itemSequence === 0 || values.itemSequence > selectedPurchaseRequisitionTemplate.templateItems.length ? selectedPurchaseRequisitionTemplate.templateItems.length : values.itemSequence - 1;
-    selectedPurchaseRequisitionTemplate.templateItems.splice(insertIndex, 0, itemToInsert);
-    const sortedResult = updateTemplateItemsSequence(selectedPurchaseRequisitionTemplate.templateItems);
-    selectedPurchaseRequisitionTemplate.templateItems = sortedResult;
+      values.itemSequence === 0 || values.itemSequence > selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList.length ? selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList.length : values.itemSequence - 1;
+    selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList.splice(insertIndex, 0, itemToInsert);
+    const sortedResult = updateTemplateItemsSequence(selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList);
+    selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList = sortedResult;
     const deepCopy: IPurchaseRequisitionTemplate = CLONING_LIB.deepClone(selectedPurchaseRequisitionTemplate);
     setSelectedPurchaseRequisitionTemplate(deepCopy);
     setTemplateInsertItemSelect(false);

@@ -3,6 +3,6 @@ import { IPurchaseRequisitionTemplateItem } from './i-purchase-requisition-templ
 export interface IPurchaseRequisitionTemplate {
   id: number;
   templateName: string;
-  templateItems: IPurchaseRequisitionTemplateItem[];
+  purchaseRequisitionTemplateItemList: IPurchaseRequisitionTemplateItem[];
   remarks: string;
 }

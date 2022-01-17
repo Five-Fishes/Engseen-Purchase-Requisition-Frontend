@@ -91,13 +91,11 @@ const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
     console.groupEnd();
     emailPurchaseOrder(purchaseOrder.id)
       .then(res => {
-        console.log(res.status)
         if (res.status === 200) {
           popNotification('Success Email PO to vendor', NotificationType.success);
         }
       })
       .catch(error => {
-        console.log(error.response);
         const errResponse = error.response;
         const errorMessage = errResponse.data ? errResponse.data : 'Request Failed';
         popNotification(errorMessage, NotificationType.error);

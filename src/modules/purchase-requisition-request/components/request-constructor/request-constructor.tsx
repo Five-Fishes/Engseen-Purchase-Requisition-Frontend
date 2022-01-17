@@ -50,7 +50,7 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
     if (props.currentTemplate) {
       const updatedPurchaseRequisitionTemplate = CLONING_LIB.deepClone(props.currentTemplate);
       if (value) {
-        updatedPurchaseRequisitionTemplate.templateItems.forEach((item) => {
+        updatedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList.forEach((item) => {
           item.deliveryDate = (value as Moment).toDate();
         });
         updateTemplate(updatedPurchaseRequisitionTemplate);
@@ -61,7 +61,7 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
   const clearAllInput: () => void = () => {
     if (props.currentTemplate) {
       const updatedPurchaseRequisitionTemplate = CLONING_LIB.deepClone(props.currentTemplate);
-      updatedPurchaseRequisitionTemplate.templateItems.forEach((item) => {
+      updatedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList.forEach((item) => {
         item.quantity = 0;
         item.packagingSize = 0;
         item.deliveryDate = undefined;
@@ -77,21 +77,21 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
     key
   ) => {
     const idToUpdate = record.id;
-    const updatedSelectedPurchaseRequisitionApprovalItems = selectedPurchaseRequisitionApproval.templateItems.map((item) => {
+    const updatedSelectedPurchaseRequisitionApprovalItems = selectedPurchaseRequisitionApproval.purchaseRequisitionTemplateItemList.map((item) => {
       if (item.id === idToUpdate) {
         (item as any)[key] = value;
       }
       return item;
     });
     const updatedSelectedPurchaseRequisitionApproval = CLONING_LIB.deepClone(selectedPurchaseRequisitionApproval);
-    updatedSelectedPurchaseRequisitionApproval.templateItems = updatedSelectedPurchaseRequisitionApprovalItems;
+    updatedSelectedPurchaseRequisitionApproval.purchaseRequisitionTemplateItemList = updatedSelectedPurchaseRequisitionApprovalItems;
     return updatedSelectedPurchaseRequisitionApproval;
   };
 
   const clearInputByItemId: (record: IPurchaseRequisitionTemplateItem) => void = (record) => {
     if (props.currentTemplate) {
       const updatedPurchaseRequisitionTemplate = CLONING_LIB.deepClone(props.currentTemplate);
-      const updatedPurchaseRequisitionTemplateItems: IPurchaseRequisitionTemplateItem[] = updatedPurchaseRequisitionTemplate.templateItems.map((item) => {
+      const updatedPurchaseRequisitionTemplateItems: IPurchaseRequisitionTemplateItem[] = updatedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList.map((item) => {
         if (item.id === record.id) {
           return {
             ...item,
@@ -103,7 +103,7 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
           return item;
         }
       });
-      updatedPurchaseRequisitionTemplate.templateItems = updatedPurchaseRequisitionTemplateItems;
+      updatedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList = updatedPurchaseRequisitionTemplateItems;
       updateTemplate(updatedPurchaseRequisitionTemplate);
     }
   };

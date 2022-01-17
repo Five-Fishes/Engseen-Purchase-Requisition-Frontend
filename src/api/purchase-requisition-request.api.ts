@@ -5,7 +5,7 @@ import { QueryParamsBuilder } from '@utils/api/query-params-builder';
 import { PURCHASE_REQUISITION_REQUEST } from '@constant/api-endpoints';
 
 export async function createPurchaseRequisitionRequest(purchaseRequisitionRequest: IPurchaseRequisitionRequest) {
-  return await axios.post<IPurchaseRequisitionRequest>(PURCHASE_REQUISITION_REQUEST, purchaseRequisitionRequest);
+  return await axios.post<IPurchaseRequisitionRequest>(`${PURCHASE_REQUISITION_REQUEST}/request`, purchaseRequisitionRequest);
 }
 
 export async function getPurchaseRequisitionRequest(startDate: Date, endDate: Date, sortBy: Sort) {

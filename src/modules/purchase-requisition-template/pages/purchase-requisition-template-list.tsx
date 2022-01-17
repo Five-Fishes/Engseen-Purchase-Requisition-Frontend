@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Col, Form, Input, Row, Button, InputNumber, Modal, Space, Divider, Radio } from 'antd';
 import Title from 'antd/lib/typography/Title';
@@ -14,13 +14,14 @@ import { IPurchaseRequisitionTemplateItem } from '@dto/i-purchase-requisition-te
 import { EditOutlined } from '@ant-design/icons';
 import { popNotification } from '@module/shared/components/notification';
 import { ApiResponseStatus } from '@constant/api-status.enum';
-import { getItemBySearch } from '@api/purchase-requisition-template.api';
+import { createPurchaseRequisitionTemplate, getItemBySearch, getPurchaseRequisitionTemplate, updatePurchaseRequisitionTemplate } from '@api/purchase-requisition-template.api';
 import { NotificationType } from '@constant/notification.enum';
 import { setLoading } from '@module/shared/reducers/app-reducers';
 
 interface IPurchaseRequisitionTemplateProps  extends StateProps, DispatchProps {};
 
 const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProps> = (props: IPurchaseRequisitionTemplateProps) => {
+  const [purchaseRequisitionTemplates, setPurchaseRequisitionTemplates] = useState<IPurchaseRequisitionTemplate[]>();
   const [selectedPurchaseRequisitionTemplate, setSelectedPurchaseRequisitionTemplate] = useState<IPurchaseRequisitionTemplate>({} as IPurchaseRequisitionTemplate);
   const [filteredTemplateItems, setFilteredTemplateItems] = useState<IPurchaseRequisitionTemplateItem[]>();
 
@@ -36,6 +37,17 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
   const [templateInsertItemSelect, setTemplateInsertItemSelect] = useState<boolean>(false);
   const [insertItemOptions, setInsertItemOptions] = useState<IPurchaseRequisitionTemplateItem[]>();
   const [insertItemsForm] = Form.useForm();
+
+  useEffect(() => {
+    const getTemplates = async () => {
+      const apiResponse = await getPurchaseRequisitionTemplate();
+
+      if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
+        setPurchaseRequisitionTemplates(apiResponse.data);
+      }
+    };
+    getTemplates();
+  }, []);
 
   const search = () => {
     props.setLoading(true);
@@ -142,6 +154,44 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
     return sortedResult;
   };
 
+  const saveTemplate = () => {
+    if (selectedPurchaseRequisitionTemplate.id) {
+      updatePurchaseRequisitionTemplate(selectedPurchaseRequisitionTemplate)
+        .then(res => {
+          setSelectedPurchaseRequisitionTemplate(res.data);
+          popNotification('Success Update Template', NotificationType.success);
+          getPurchaseRequisitionTemplate()
+            .then(apiResponse => {
+              if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
+                setPurchaseRequisitionTemplates(apiResponse.data);
+              }
+            });
+        })
+        .catch(error => {
+          const errResponse = error.response;
+          const errorMessage = errResponse.data ? errResponse.data : 'Request Failed';
+          popNotification(errorMessage, NotificationType.error);
+        });
+    } else {
+      createPurchaseRequisitionTemplate(selectedPurchaseRequisitionTemplate)
+        .then(res => {
+          setSelectedPurchaseRequisitionTemplate(res.data);
+          popNotification('Success Create Template', NotificationType.success);
+          getPurchaseRequisitionTemplate()
+            .then(apiResponse => {
+              if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
+                setPurchaseRequisitionTemplates(apiResponse.data);
+              }
+            });
+        })
+        .catch(error => {
+          const errResponse = error.response;
+          const errorMessage = errResponse.data ? errResponse.data : 'Request Failed';
+          popNotification(errorMessage, NotificationType.error);
+        });
+    }
+  };
+
   return (
     <>
       <div className="d-flex flex-row">
@@ -179,7 +229,11 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
         <Divider type="vertical" style={{ height: '100vh' }} className="mx-4" />
 
         <div className="px-2" style={{ minWidth: "680px" }}>
-          <PurchaseRequisitionTemplateBrowser setSelectedTemplate={setSelectedPurchaseRequisitionTemplate} setLoading={props.setLoading} />
+          <PurchaseRequisitionTemplateBrowser 
+            setSelectedTemplate={setSelectedPurchaseRequisitionTemplate} 
+            setLoading={props.setLoading}
+            purchaseRequisitionTemplates={purchaseRequisitionTemplates ?? []}
+            setPurchaseRequisitionTemplates={setPurchaseRequisitionTemplates} />
           <Divider />
           {/* Excel Upload */}
           <Row>
@@ -232,42 +286,6 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
                 </Col>
               </Row>
             </Form>
-            </div>
-          {/* Add Component */}
-          <div className="mt-5">
-            <Form onFinish={addNewComponentAsTemplateItem} onFinishFailed={formValidationFailed}>
-              <Row>
-                <Col span={16}>
-                  <Form.Item className="input-group" name="componentCode" rules={[{ required: true, message: 'Enter component code' }]}>
-                    <Input key="component-input" type="text" placeholder="Component" />
-                  </Form.Item>
-                  <Form.Item className="input-group" name="vendorId" rules={[{ required: true, message: 'Enter vendor ID' }]}>
-                    <Input key="vendor-input" type="text" placeholder="Vendor" />
-                  </Form.Item>
-                  <Form.Item
-                    className="input-group"
-                    name="packagingSize"
-                    rules={[
-                      { required: true, message: 'Enter packing size' },
-                      {
-                        type: 'number',
-                        min: 1,
-                        message: 'Packing Size must be positive',
-                      },
-                    ]}
-                  >
-                    <InputNumber type="number" className="w-100" key="packing-size-input" placeholder="Packing Size" />
-                  </Form.Item>
-                </Col>
-                <Col span={6} offset={2}>
-                  <Form.Item>
-                    <Button className="input-group-btn float-end" key="load-database-button" type="primary" htmlType="submit">
-                      Add Component
-                    </Button>
-                  </Form.Item>
-                </Col>
-              </Row>
-            </Form>
           </div>
           <Divider />
           <Button
@@ -275,9 +293,7 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
             type="primary"
             size="large"
             className="float-end mb-2"
-            onClick={() => {
-              console.log('Save Template');
-            }}
+            onClick={saveTemplate}
           >
             Save Template
           </Button>

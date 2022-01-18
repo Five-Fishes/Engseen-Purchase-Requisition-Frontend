@@ -7,6 +7,7 @@ import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
 import { ITableColumnDisplaySettings } from '@dto/i-table-columns';
 import { getSearchText, SearchEngine } from '@utils/search/native-search';
 import { IPurchaseRequisitionTemplate } from '@dto/i-purchase-requisition-template.dto';
+import { IPurchaseRequisitionRequest } from '@dto/i-purchase-requisition-request.dto';
 import { IPurchaseRequisitionTemplateItem } from '@dto/i-purchase-requisition-template-item.dto';
 
 import PurchaseRequisitionTemplateBrowser from '../components/template-browser/template-browser';
@@ -20,14 +21,16 @@ import { APP_HEADER_HEIGHT } from '@constant/display/header.constant';
 import DEFAULT_PURCHASE_REQUISITION_REQUEST_TABLE_DISPLAY_SETTINGS from '@constant/purchase-requisition-request/purchase-requisition-request-table-display-settings';
 import { APP_CONTENT_MARGIN } from '@constant/display/content.constant';
 import { PURCHASE_REQUISITION_BOTTOM_TOOLS_HEIGHT, PURCHASE_REQUISITION_TITLE_HEIGHT, PURCHASE_REQUISITION_TOP_TOOLS_HEIGHT } from '@constant/display/purchase-requisition-request.constant';
-import { IPurchaseRequisitionRequest } from '@dto/i-purchase-requisition-request.dto';
 import { createPurchaseRequisitionRequest } from '@api/purchase-requisition-request.api';
+import { IPurchaseRequisitionRequestItem } from '@dto/i-purchase-requisition-request-item.dto';
+import { ApiResponseStatus } from '@constant/api-status.enum';
 import { popNotification } from '@module/shared/components/notification';
 import { NotificationType } from '@constant/notification.enum';
 
 interface IPurchaseRequisitionRequestPageProps extends StateProps, DispatchProps {}
 
 const PurchaseRequisitionRequestPage: React.FC<IPurchaseRequisitionRequestPageProps> = (props: IPurchaseRequisitionRequestPageProps) => {
+  const [submissionInProgress, setSubmissionInProgress] = useState<boolean>(false);
   const [selectedTemplate, setSelectedTemplate] = useState<IPurchaseRequisitionTemplate>();
   const [tableColumnDisplaySettings, setTableColumnDisplaySettings] = useState<ITableColumnDisplaySettings[]>();
   const [tableColumnDisplaySettingsUpdateTime, setTableColumnDisplaySettingsUpdateTime] = useState<Date>(new Date());
@@ -91,27 +94,38 @@ const PurchaseRequisitionRequestPage: React.FC<IPurchaseRequisitionRequestPagePr
     setShowTableDisplaySettings(!showTableDisplaySettings);
   };
 
-  const submitPurchaseRequest = () => {
-    const purchaseRequest: IPurchaseRequisitionRequest = {
-      remarks: selectedTemplate?.remarks ?? '',
-      templateId: selectedTemplate?.id ?? 0,
-      purchaseRequisitionRequestItems: [],
-      createdDate: new Date(),
-      id: 0
-    }
-    // TODO: Items List
-    // purchaseRequisitionRequestItems: selectedTemplate?.purchaseRequisitionTemplateItemList
-    createPurchaseRequisitionRequest(purchaseRequest)
-      .then(() => {
-        popNotification('Success Update Template', NotificationType.success);
-        setSelectedTemplate(undefined);
-      })
-      .catch(error => {
-        const errResponse = error.response;
-        const errorMessage = errResponse.data ? errResponse.data : 'Request Failed';
-        popNotification(errorMessage, NotificationType.error);
+  const submitPurchaseRequisitionRequest = async () => {
+    setSubmissionInProgress(true);
+    if (selectedTemplate) {
+      const purchaseRequisitionRequestItems: IPurchaseRequisitionRequestItem[] = selectedTemplate.purchaseRequisitionTemplateItemList.map((purchaseRequisitionTemplateItem) => {
+        return {
+          componentCode: purchaseRequisitionTemplateItem.componentCode,
+          componentName: purchaseRequisitionTemplateItem.componentName,
+          vendorId: purchaseRequisitionTemplateItem.vendorId,
+          vendorName: purchaseRequisitionTemplateItem.vendorName,
+          stockBalance: 0, // undefined problem
+          packagingSize: purchaseRequisitionTemplateItem.packagingSize,
+          noOfPacks: purchaseRequisitionTemplateItem.quantity || 0, // because initially template quantity is 0
+          quantity: purchaseRequisitionTemplateItem.packagingSize * (purchaseRequisitionTemplateItem.quantity || 0),
+          deliveryDate: purchaseRequisitionTemplateItem.deliveryDate || new Date(), // undefined problem
+        };
       });
-  }
+
+      const purchaseRequisitionRequest: IPurchaseRequisitionRequest = {
+        createdDate: new Date(),
+        templateId: selectedTemplate.id,
+        remarks: selectedTemplate.remarks,
+        purchaseRequisitionRequestItems: purchaseRequisitionRequestItems,
+      };
+      const result = await createPurchaseRequisitionRequest(purchaseRequisitionRequest);
+      if (result) {
+        setSubmissionInProgress(false);
+        if (result.status === ApiResponseStatus.SUCCESS) {
+          popNotification('Successfully Submitted Request', NotificationType.success);
+        }
+      }
+    }
+  };
 
   return (
     <>
@@ -153,7 +167,7 @@ const PurchaseRequisitionRequestPage: React.FC<IPurchaseRequisitionRequestPagePr
             <Input.TextArea className="remarks-textbox" value={selectedTemplate?.remarks} onChange={updateRemarks} rows={3} placeholder="Remarks here"></Input.TextArea>
           </div>
           <div className="col d-flex flex-column align-items-end">
-            <Button type="primary" size="large" onClick={submitPurchaseRequest}>
+            <Button type="primary" size="large" onClick={submitPurchaseRequisitionRequest} disabled={submissionInProgress}>
               Submit Request
             </Button>
           </div>

@@ -11,17 +11,18 @@ import PurchaseRequisitionRequestPage from './purchase-requisition-request/pages
 import PurchaseRequisitionApprovalPage from './purchase-requisition-approval/pages/purchase-requisition-approval-page';
 import PurchaseRequisitionSubmissionPage from './purchase-requisition-submissioin-record/pages/purchase-requisition-submission-page';
 import PurchaseOrderPage from './purchase-order/pages/purchase-order-page';
+import { UserAuthority } from '@constant/user-authority.enum';
 
 const Routes: React.FC = () => {
   return (
     <SwitchWithFallback>
       <Route exact path="/" component={LoginPage} />
       <Route path="/page-refresh/:destination" component={PageRefresh} /> {/* TODO: @LUXIANZE Remove this before production deployment */}
-      <PostLogInRoute path="/purchase-requisition-template" component={PurchaseRequisitionTemplateRoute} />
-      <PostLogInRoute path="/purchase-requisition-request" component={PurchaseRequisitionRequestPage} />
-      <PostLogInRoute path="/purchase-requisition-submission-record" component={PurchaseRequisitionSubmissionPage} />
-      <PostLogInRoute path="/purchase-requisition-approval" component={PurchaseRequisitionApprovalPage} />
-      <PostLogInRoute path="/purchase-order" component={PurchaseOrderPage} />
+      <PostLogInRoute authority={UserAuthority.ADMIN} path="/purchase-requisition-template" component={PurchaseRequisitionTemplateRoute} />
+      <PostLogInRoute authority={UserAuthority.NORMAL} path="/purchase-requisition-request" component={PurchaseRequisitionRequestPage} />
+      <PostLogInRoute authority={UserAuthority.ADMIN} path="/purchase-requisition-submission-record" component={PurchaseRequisitionSubmissionPage} />
+      <PostLogInRoute authority={UserAuthority.ADMIN} path="/purchase-requisition-approval" component={PurchaseRequisitionApprovalPage} />
+      <PostLogInRoute authority={UserAuthority.ADMIN} path="/purchase-order" component={PurchaseOrderPage} />
     </SwitchWithFallback>
   );
 };

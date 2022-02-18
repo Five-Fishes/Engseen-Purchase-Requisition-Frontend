@@ -1,3 +1,5 @@
+export const USER: string = 'user';
+export const LOGIN: string = USER + '/login';
 export const PURCHASE_REQUISITION_TEMPLATE: string = 'purchase-template';
 export const PURCHASE_REQUISITION_REQUEST: string = 'purchase-requisition';
 export const PURCHASE_REQUISITION_APPROVAL: string = 'purchase-requisition/approval';

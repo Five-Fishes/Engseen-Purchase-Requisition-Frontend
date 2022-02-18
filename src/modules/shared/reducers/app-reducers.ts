@@ -11,10 +11,10 @@ export const ACTION_TYPES = {
   LOGIN: 'app/LOGIN',
 };
 
-const initialState: IAppState = {
+export const initialState: IAppState = {
   loading: false,
-  loggedIn: false,
-  userGroup: '',
+  loggedIn: !!localStorage.getItem('authority'),
+  userGroup: localStorage.getItem('authority') ?? '',
 };
 
 // Reducer
@@ -52,15 +52,21 @@ export const setLoading = (isLoading: Boolean) => ({
   },
 });
 
-export const logout = () => ({
-  type: ACTION_TYPES.LOGOUT,
-});
+export const logout = () => {
+  localStorage.removeItem('authority');
+  return {
+    type: ACTION_TYPES.LOGOUT,
+  };
+};
 
-export const login = (userGroup: String) => ({
-  type: ACTION_TYPES.LOGIN,
-  payload: {
-    userGroup: userGroup,
-  },
-});
+export const login = (userGroup: string) => {
+  localStorage.setItem('authority', userGroup);
+  return {
+    type: ACTION_TYPES.LOGIN,
+    payload: {
+      userGroup: userGroup,
+    },
+  };
+};
 
 export default appReducer;

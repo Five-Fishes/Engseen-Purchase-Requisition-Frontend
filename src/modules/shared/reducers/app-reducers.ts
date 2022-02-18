@@ -2,7 +2,7 @@ import { AnyAction } from 'redux';
 export interface IAppState {
   loading: boolean;
   loggedIn: boolean;
-  userGroup: String;
+  userGroup: string;
 }
 
 export const ACTION_TYPES = {
@@ -23,7 +23,6 @@ const appReducer = (state: IAppState = initialState, action: AnyAction): IAppSta
   switch (action.type) {
     case ACTION_TYPES.SET_LOADING:
       const { loading } = action.payload;
-      console.log(loading);
       return {
         ...state,
         loading: loading,
@@ -45,7 +44,7 @@ const appReducer = (state: IAppState = initialState, action: AnyAction): IAppSta
 };
 
 // actions
-export const setLoading = (isLoading: Boolean) => ({
+export const setLoading = (isLoading: boolean) => ({
   type: ACTION_TYPES.SET_LOADING,
   payload: {
     loading: isLoading,

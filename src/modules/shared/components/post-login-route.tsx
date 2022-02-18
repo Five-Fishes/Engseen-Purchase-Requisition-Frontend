@@ -1,15 +1,24 @@
+import { connect } from 'react-redux';
 import { Redirect, Route, RouteProps } from 'react-router-dom';
+import { IRootState } from '../reducers';
 
-interface IPostLogInRouteProps extends RouteProps {}
+interface IPostLogInRouteProps extends RouteProps, StateProps, DispatchProps {}
 
 const PostLogInRoute: React.FC<IPostLogInRouteProps> = (props) => {
-  const loggedIn = true;
-
   return (
     <>
-      <Route {...props}>{!loggedIn && <Redirect to="/" />}</Route>
+      <Route {...props}>{!props.loggedIn && <Redirect to="/" />}</Route>
     </>
   );
 };
 
-export default PostLogInRoute;
+const mapStateToProps = ({ appState }: IRootState) => ({
+  loggedIn: appState.loggedIn,
+});
+
+const mapDispatchToProps = {};
+
+type StateProps = ReturnType<typeof mapStateToProps>;
+type DispatchProps = typeof mapDispatchToProps;
+
+export default connect(mapStateToProps, mapDispatchToProps)(PostLogInRoute);

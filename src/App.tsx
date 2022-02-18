@@ -16,6 +16,7 @@ import AppSider from '@module/layout/component/sider/sider';
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
 import { IRootState } from '@module/shared/reducers';
+import getMock from '@api/api-mocks.api';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -35,9 +36,7 @@ if (process.env.NODE_ENV === 'production') {
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   getAnalytics(app);
-}
-if (process.env.NODE_ENV === 'development') {
-  // getMock();
+  getMock();
 }
 
 export interface IAppProps extends StateProps, DispatchProps {}

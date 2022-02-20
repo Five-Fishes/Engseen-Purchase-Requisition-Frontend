@@ -14,9 +14,11 @@ import { IPurchaseRequisitionTemplateItem } from '@dto/i-purchase-requisition-te
 import { EditOutlined } from '@ant-design/icons';
 import { popNotification } from '@module/shared/components/notification';
 import { ApiResponseStatus } from '@constant/api-status.enum';
-import { createPurchaseRequisitionTemplate, getItemBySearch, getPurchaseRequisitionTemplate, updatePurchaseRequisitionTemplate } from '@api/purchase-requisition-template.api';
+import { createPurchaseRequisitionTemplate, getPurchaseRequisitionTemplate, updatePurchaseRequisitionTemplate } from '@api/purchase-requisition-template.api';
 import { NotificationType } from '@constant/notification.enum';
 import { setLoading } from '@module/shared/reducers/app-reducers';
+import { bulkGetItemBySearch, getItemBySearch } from '@api/component.api';
+import { IComponentSearch } from '@dto/i-component-search.dto';
 
 interface IPurchaseRequisitionTemplateProps  extends StateProps, DispatchProps {};
 
@@ -100,10 +102,33 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
     }
   };
 
-  const loadDatabaseWithExcelData = (): void => {
+  const loadDatabaseWithExcelData = async () => {
     console.log('Load Database');
-    console.log(excelData);
+    const formattedExcelData = formatExcelData(excelData);
+    const apiResponse = await bulkGetItemBySearch(formattedExcelData);
+
+    if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
+      apiResponse.data.forEach(item => insertItemToTemplate(item));
+    }
   };
+
+  /**
+   * Excel data format is:
+   * | ComponentCode | VendorId | PackagingSize |
+   * 
+   * @param excelData raw excel rows
+   * @returns request body for component search
+   */
+  const formatExcelData = (excelData: any[]) => {
+    // TODO: [LU] Please add typing to data
+    return excelData.map( row => {
+      return {
+        componentCode: row[0],
+        vendorId: row[1],
+        packagingSize: row[2]
+      } as IComponentSearch
+    })
+  }
 
   const getItems = async (component: string, vendor: string, packingSize?: number) => {
     const apiResponse = await getItemBySearch(component, vendor, packingSize);
@@ -135,7 +160,7 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
       sequence: values.itemSequence,
     };
     const insertIndex: number =
-      values.itemSequence === 0 || values.itemSequence > selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList.length ? selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList.length : values.itemSequence - 1;
+      values.itemSequence === 0 || values.itemSequence > selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList?.length ? selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList?.length : values.itemSequence - 1;
     selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList.splice(insertIndex, 0, itemToInsert);
     const sortedResult = updateTemplateItemsSequence(selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList);
     selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList = sortedResult;

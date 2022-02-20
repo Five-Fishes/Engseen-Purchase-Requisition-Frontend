@@ -115,7 +115,7 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
 
   const addNewComponentAsTemplateItem = (values: any): void => {
     if (Boolean(selectedPurchaseRequisitionTemplate.templateName)) {
-      getItems(values.componentCode, values.vendorId, values.packingSize).then(() => {
+      getItems(values.componentCode, values.vendorId, values.packagingSize).then(() => {
         setTemplateInsertItemSelect(true);
       });
     }

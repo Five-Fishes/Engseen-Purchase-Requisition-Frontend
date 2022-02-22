@@ -1,18 +1,35 @@
+import { getItemBySearch } from '@api/component.api';
+import { ApiResponseStatus } from '@constant/api-status.enum';
 import { Button, DatePicker, InputNumber, Select } from 'antd';
-
-const DUMMY_COMPONENT = ['abc', 'abcd', 'def', 'ghi'];
+import { useEffect, useState } from 'react';
 
 const ComponentSelector: React.FC = () => {
+
+  const [components, setComponents] = useState<any[]>();
+
+  useEffect(() => {
+    const getItemsWrapper = async () => {
+      const res = await getItemBySearch();
+
+      if (res && res.status === ApiResponseStatus.SUCCESS) {
+        setComponents(res.data);
+      }
+    }
+
+    getItemsWrapper();
+
+  }, [])
+
   return (
     <>
       <div className="row">
         <div className="row col-10">
           <div className="col">
             <Select style={{ width: '100%' }} placeholder="Please select a component">
-              {DUMMY_COMPONENT &&
-                DUMMY_COMPONENT.map((component, index) => (
-                  <Select.Option key={index} value={component}>
-                    {component}
+              {components &&
+                components.map((component, index) => (
+                  <Select.Option key={index} value={component.componentCode}>
+                    <div>{component.componentCode} - {component.vendorName}</div>
                   </Select.Option>
                 ))}
             </Select>

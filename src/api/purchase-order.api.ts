@@ -14,7 +14,8 @@ export async function issuePO(purchaseApprovalId: number) {
 }
 
 export async function getPurchaseOrders(startDate: Date, endDate: Date, sortBy: Sort) {
-  const wrappedParams = { startDate, endDate, sortBy };
+  // const wrappedParams = { startDate, endDate, sortBy }; // Disabled date sorting from backend temporarily
+  const wrappedParams = { sortBy };
   const url: string = QueryParamsBuilder.withUrl(PURCHASE_ORDER).addParams(wrappedParams).build();
   return await axios.get<IPurchaseApprovalOrder[]>(url);
 }

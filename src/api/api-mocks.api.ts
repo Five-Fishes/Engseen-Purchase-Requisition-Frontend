@@ -17,7 +17,7 @@ import { IPurchaseRequisitionApproval } from '@dto/i-purchase-requisition-approv
 import { PurchaseRequisitionApprovalStatus } from '@constant/purchase-requisition-approval-status.enum';
 
 let mock: MockAdapter;
-if (process.env.NODE_ENV === 'production') {
+if (process.env.MOCK === 'enabled') {
   mock = new MockAdapter(axios);
   mock.onPost(PURCHASE_REQUISITION_REQUEST).reply<IPurchaseRequisitionRequest>(200, {
     id: 1,

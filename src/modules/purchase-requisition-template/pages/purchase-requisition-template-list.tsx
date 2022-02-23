@@ -104,12 +104,33 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
 
   const loadDatabaseWithExcelData = async () => {
     console.log('Load Database');
-    const formattedExcelData = formatExcelData(excelData);
-    const apiResponse = await bulkGetItemBySearch(formattedExcelData);
+    if (!Boolean(selectedPurchaseRequisitionTemplate.templateName)) {
+      popNotification('Please Select a Template', NotificationType.error);
+    } else if (excelData.length === 0) {
+      popNotification('Please Upload an Excel File', NotificationType.error);
+    } else {
+      const formattedExcelData = formatExcelData(excelData);
+      const apiResponse = await bulkGetItemBySearch(formattedExcelData);
 
-    if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
-      apiResponse.data.forEach(item => insertItemToTemplate(item));
+      if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
+        apiResponse.data.forEach(item => insertExcelItemToTemplate(item));
+        popNotification('Success Load Component from File', NotificationType.success);
+      }
     }
+  };
+
+  const insertExcelItemToTemplate = (values: any): void => {
+    const itemToInsert: IPurchaseRequisitionTemplateItem = {
+      ...values,
+      sequence: 0,
+    };
+    const insertIndex: number =
+      values.itemSequence === 0 || values.itemSequence > selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList?.length ? selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList?.length : values.itemSequence - 1;
+    selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList.splice(insertIndex, 0, itemToInsert);
+    const sortedResult = updateTemplateItemsSequence(selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList);
+    selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList = sortedResult;
+    const deepCopy: IPurchaseRequisitionTemplate = CLONING_LIB.deepClone(selectedPurchaseRequisitionTemplate);
+    setSelectedPurchaseRequisitionTemplate(deepCopy);
   };
 
   /**
@@ -143,6 +164,8 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
       getItems(values.componentCode, values.vendorId, values.packagingSize).then(() => {
         setTemplateInsertItemSelect(true);
       });
+    } else {
+      popNotification('Please Select a Template', NotificationType.error);
     }
   };
 

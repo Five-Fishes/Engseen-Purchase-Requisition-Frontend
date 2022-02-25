@@ -24,6 +24,7 @@ import { DIVIDER_HEIGHT } from '@constant/display/divider.constant';
 import Paragraph from 'antd/lib/typography/Paragraph';
 import { popNotification } from '@module/shared/components/notification';
 import { NotificationType } from '@constant/notification.enum';
+import { IPurchaseRequisitionApprovalItem } from '@dto/i-purchase-requisition-approval-item.dto';
 
 interface IPurchaseRequisitionApprovalProps extends StateProps, DispatchProps {}
 
@@ -93,7 +94,7 @@ const PurchaseRequisitionApprovalPage: React.FC<IPurchaseRequisitionApprovalProp
     if (selectedPurchaseRequisitionApproval && purchaseRequisitionApprovalList) {
       const selectedId = selectedPurchaseRequisitionApproval.id;
       const selectedApproval = purchaseRequisitionApprovalList.find((approval) => approval.id === selectedId);
-      setSelectedPurchaseRequisitionApproval(selectedApproval);
+      setSelectedPurchaseRequisitionApproval(CLONING_LIB.deepClone(selectedApproval));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [purchaseRequisitionApprovalList]);
@@ -159,7 +160,6 @@ const PurchaseRequisitionApprovalPage: React.FC<IPurchaseRequisitionApprovalProp
     if (selectedPurchaseRequisitionApproval) {
       putPurchaseRequisitionApproval(selectedPurchaseRequisitionApproval)
         .then((res) => {
-          console.log(res.status);
           if (res.status === ApiResponseStatus.SUCCESS) {
             setApprovalUpdated(false);
             popNotification('Successfully Updated Approval', NotificationType.success);
@@ -174,6 +174,22 @@ const PurchaseRequisitionApprovalPage: React.FC<IPurchaseRequisitionApprovalProp
     }
   };
 
+  const onAddComponentHandler = (componentToAdd?: IPurchaseRequisitionApprovalItem) => {
+
+    console.log('componentToAdd :>> ', componentToAdd);
+
+    if (selectedPurchaseRequisitionApproval) {
+      if (componentToAdd === undefined || componentToAdd === null) {
+        popNotification('No component to add', NotificationType.error);
+      } else {
+        selectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems.push(componentToAdd);
+        updatePurchaseRequisitionApproval(selectedPurchaseRequisitionApproval);
+      }
+    } else {
+      popNotification('Please select an approval list before adding component', NotificationType.error);
+    }
+  }
+
   return (
     <>
       <div className="container-fluid">
@@ -187,7 +203,9 @@ const PurchaseRequisitionApprovalPage: React.FC<IPurchaseRequisitionApprovalProp
             <FilterAndSort sortChangedHandler={handleSortChange} dateRangeChangedHandler={handleDateRangeChange} dateRange={dateRange} sort={sort}></FilterAndSort>
           </div>
           <div className="col-6">
-            <ComponentSelector></ComponentSelector>
+            <ComponentSelector
+              onAddComponent={onAddComponentHandler}
+            ></ComponentSelector>
           </div>
         </div>
 

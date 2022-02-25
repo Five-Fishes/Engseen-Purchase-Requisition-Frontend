@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Button, DatePicker, Input, Popconfirm, Popover, Table } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 import moment, { Moment } from 'moment';
+import { v4 as uuidv4 } from 'uuid';
 
 import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
 import { getSearchText, SearchEngine } from '@utils/search/native-search';
@@ -246,7 +247,7 @@ const PurchaseRequititionApprovalTable: React.FC<IPurchaseRequititionApprovalTab
         </div>
         <Table
           dataSource={SELECTED_PURCHASE_REQUISITION_APPROVAL_ITEMS}
-          rowKey="id"
+          rowKey={(item) => `${item?.id || uuidv4()}`}
           scroll={{ y: windowSize.height - PURCHASE_REQUISITION_APPROVAL_TABLE_HEIGHT_CONSTRAINT }}
           pagination={TABLE_PAGINATION_CONFIG}
         >

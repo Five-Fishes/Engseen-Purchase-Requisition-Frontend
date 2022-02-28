@@ -25,6 +25,7 @@ export const PURCHASE_REQUISITION_APPROVAL_ITEM: string = PURCHASE_REQUISITION_A
  * Purchase Order
  */
 export const PURCHASE_ORDER: string = 'purchase-order';
+export const PURCHASE_ORDER_DOWNLOAD: string = PURCHASE_ORDER + '/download';
 export const PURCHASE_ORDER_REGEX: RegExp = new RegExp(`${PURCHASE_ORDER}*`);
 
 /**

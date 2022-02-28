@@ -7,7 +7,7 @@ import { Sort } from '@constant/sort.enum';
 import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
 import { ApiResponseStatus } from '@constant/api-status.enum';
 import { PurchaseRequisitionApprovalStatus } from '@constant/purchase-requisition-approval-status.enum';
-import { getPurchaseRequisitionApproval, putPurchaseRequisitionApproval } from '@api/purchase-requisition-approval.api';
+import { getPurchaseRequisitionApproval, postPurchaseRequisitionApprovalItem, putPurchaseRequisitionApproval } from '@api/purchase-requisition-approval.api';
 import { issuePO } from '@api/purchase-order.api';
 import { IPurchaseRequisitionApproval } from '@dto/i-purchase-requisition-approval.dto';
 import { setLoading } from '@module/shared/reducers/app-reducers';
@@ -40,20 +40,21 @@ const PurchaseRequisitionApprovalPage: React.FC<IPurchaseRequisitionApprovalProp
     APP_HEADER_HEIGHT + APP_CONTENT_MARGIN + PURCHASE_REQUISITION_APPROVAL_TITLE_HEIGHT + PURCHASE_REQUISITION_APPROVAL_TOP_TOOLS_HEIGHT + DIVIDER_HEIGHT;
 
   const { setLoading } = props;
+
+  const getApprovals = async () => {
+    const approvals = await getPurchaseRequisitionApproval();
+    console.log(approvals);
+    if (approvals && approvals.status === ApiResponseStatus.SUCCESS) {
+      console.log(approvals);
+      setPurchaseRequisitionApprovalList(approvals.data);
+      setFilteredPurchaseRequisitionApprovalList(approvals.data);
+    }
+  };
+
   /**
    * Initial data load
    */
   useEffect(() => {
-    const getApprovals = async () => {
-      const approvals = await getPurchaseRequisitionApproval();
-      console.log(approvals);
-      if (approvals && approvals.status === ApiResponseStatus.SUCCESS) {
-        console.log(approvals);
-        setPurchaseRequisitionApprovalList(approvals.data);
-        setFilteredPurchaseRequisitionApprovalList(approvals.data);
-      }
-    };
-
     getApprovals();
   }, []);
 
@@ -174,21 +175,27 @@ const PurchaseRequisitionApprovalPage: React.FC<IPurchaseRequisitionApprovalProp
     }
   };
 
-  const onAddComponentHandler = (componentToAdd?: IPurchaseRequisitionApprovalItem) => {
-
+  const onAddComponentHandler = async (componentToAdd?: IPurchaseRequisitionApprovalItem) => {
     console.log('componentToAdd :>> ', componentToAdd);
 
     if (selectedPurchaseRequisitionApproval) {
       if (componentToAdd === undefined || componentToAdd === null) {
         popNotification('No component to add', NotificationType.error);
       } else {
-        selectedPurchaseRequisitionApproval.purchaseRequisitionApprovalItems.push(componentToAdd);
-        updatePurchaseRequisitionApproval(selectedPurchaseRequisitionApproval);
+        const res = await postPurchaseRequisitionApprovalItem(selectedPurchaseRequisitionApproval.id, componentToAdd);
+
+        if (res && res.status === ApiResponseStatus.SUCCESS) {
+          console.log('res :>> ', res);
+          getApprovals();
+        } else {
+          console.log('res :>> ', res);
+          popNotification(`Error adding component :[${res.status}] ${res.statusText}`, NotificationType.error);
+        }
       }
     } else {
       popNotification('Please select an approval list before adding component', NotificationType.error);
     }
-  }
+  };
 
   return (
     <>
@@ -203,9 +210,7 @@ const PurchaseRequisitionApprovalPage: React.FC<IPurchaseRequisitionApprovalProp
             <FilterAndSort sortChangedHandler={handleSortChange} dateRangeChangedHandler={handleDateRangeChange} dateRange={dateRange} sort={sort}></FilterAndSort>
           </div>
           <div className="col-6">
-            <ComponentSelector
-              onAddComponent={onAddComponentHandler}
-            ></ComponentSelector>
+            <ComponentSelector onAddComponent={onAddComponentHandler}></ComponentSelector>
           </div>
         </div>
 

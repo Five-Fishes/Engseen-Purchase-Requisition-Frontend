@@ -9,6 +9,7 @@ import { IPurchaseApprovalOrder } from '@dto/i-purchase-approval-order.dto';
 import { downloadPOFromAPI, emailPurchaseOrder } from '@api/purchase-order.api';
 import { NotificationType } from '@constant/notification.enum';
 import { popNotification } from '@module/shared/components/notification';
+import { downloadBlobAsFileWithNameAndExtension } from '@utils/file-download/file-download';
 
 interface IPurchaseOrderTableProps {
   readonly currentPurchaseApprovalOrderRecord?: IPurchaseApprovalOrder;
@@ -81,23 +82,21 @@ const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
     console.group(PurchaseOrderTable.name);
     console.log('Download PO');
     console.log('Purchase Order: ', purchaseOrder);
+    console.groupEnd();
 
     /** Load from API */
     const res = await downloadPOFromAPI(purchaseOrder.id);
 
-    /** Load data as blob */
-    const blob = new Blob([res.data]);
+    /** 
+     * 1. Load data as blob 
+     * 2. Name the file
+     * 3. provide file extension
+     * */
+    const blob: Blob = new Blob([res.data]);
+    const fileName: string = `Purchase Order - ${purchaseOrder.poNumber} - ${new Date(purchaseOrder.revisionDate).toDateString()}`;
+    const fileExtension: string = 'pdf';
 
-    /** Create html link to as locator for resource in memory, then trigger the download link using html click() */
-    let link = document.createElement('a');
-    document.body.appendChild(link);
-    link.style.display = "none"
-    link.download = `Purchase Order - ${purchaseOrder.poNumber} - ${new Date(purchaseOrder.revisionDate).toDateString()}.pdf`;
-    link.href = URL.createObjectURL(blob);
-    link.click();
-    URL.revokeObjectURL(link.href);
-
-    console.groupEnd();
+    downloadBlobAsFileWithNameAndExtension(blob, fileName, fileExtension);
   };
 
   const downloadAllPO = () => {

@@ -2,7 +2,7 @@ import axios from 'axios';
 import { IPurchaseOrder } from '@dto/i-purchase-order.dto';
 import { Sort } from '@constant/sort.enum';
 import { QueryParamsBuilder } from '@utils/api/query-params-builder';
-import { PURCHASE_ORDER } from '@constant/api-endpoints';
+import { PURCHASE_ORDER, PURCHASE_ORDER_DOWNLOAD } from '@constant/api-endpoints';
 import { IPurchaseApprovalOrder } from '@dto/i-purchase-approval-order.dto';
 
 export async function createPurchaseOrder(purchaseOrder: IPurchaseOrder) {
@@ -22,4 +22,8 @@ export async function getPurchaseOrders(startDate: Date, endDate: Date, sortBy: 
 
 export async function emailPurchaseOrder(purchaseApprovalId: number) {
   return await axios.post<void>(`${PURCHASE_ORDER}/email/${purchaseApprovalId}`);
+}
+
+export async function downloadPOFromAPI(purchaseOrderId: number) {
+  return await axios.post(`${PURCHASE_ORDER_DOWNLOAD}/${purchaseOrderId}`, {}, { responseType: 'arraybuffer' });
 }

@@ -7,7 +7,7 @@ import { Sort } from '@constant/sort.enum';
 import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
 import { ApiResponseStatus } from '@constant/api-status.enum';
 import { PurchaseRequisitionApprovalStatus } from '@constant/purchase-requisition-approval-status.enum';
-import { getPurchaseRequisitionApproval, putPurchaseRequisitionApproval } from '@api/purchase-requisition-approval.api';
+import { getPurchaseRequisitionApproval, postPurchaseRequisitionApprovalItem, putPurchaseRequisitionApproval } from '@api/purchase-requisition-approval.api';
 import { issuePO } from '@api/purchase-order.api';
 import { IPurchaseRequisitionApproval } from '@dto/i-purchase-requisition-approval.dto';
 import { setLoading } from '@module/shared/reducers/app-reducers';
@@ -24,6 +24,7 @@ import { DIVIDER_HEIGHT } from '@constant/display/divider.constant';
 import Paragraph from 'antd/lib/typography/Paragraph';
 import { popNotification } from '@module/shared/components/notification';
 import { NotificationType } from '@constant/notification.enum';
+import { IPurchaseRequisitionApprovalItem } from '@dto/i-purchase-requisition-approval-item.dto';
 
 interface IPurchaseRequisitionApprovalProps extends StateProps, DispatchProps {}
 
@@ -39,20 +40,21 @@ const PurchaseRequisitionApprovalPage: React.FC<IPurchaseRequisitionApprovalProp
     APP_HEADER_HEIGHT + APP_CONTENT_MARGIN + PURCHASE_REQUISITION_APPROVAL_TITLE_HEIGHT + PURCHASE_REQUISITION_APPROVAL_TOP_TOOLS_HEIGHT + DIVIDER_HEIGHT;
 
   const { setLoading } = props;
+
+  const getApprovals = async () => {
+    const approvals = await getPurchaseRequisitionApproval();
+    console.log(approvals);
+    if (approvals && approvals.status === ApiResponseStatus.SUCCESS) {
+      console.log(approvals);
+      setPurchaseRequisitionApprovalList(approvals.data);
+      setFilteredPurchaseRequisitionApprovalList(approvals.data);
+    }
+  };
+
   /**
    * Initial data load
    */
   useEffect(() => {
-    const getApprovals = async () => {
-      const approvals = await getPurchaseRequisitionApproval();
-      console.log(approvals);
-      if (approvals && approvals.status === ApiResponseStatus.SUCCESS) {
-        console.log(approvals);
-        setPurchaseRequisitionApprovalList(approvals.data);
-        setFilteredPurchaseRequisitionApprovalList(approvals.data);
-      }
-    };
-
     getApprovals();
   }, []);
 
@@ -93,7 +95,7 @@ const PurchaseRequisitionApprovalPage: React.FC<IPurchaseRequisitionApprovalProp
     if (selectedPurchaseRequisitionApproval && purchaseRequisitionApprovalList) {
       const selectedId = selectedPurchaseRequisitionApproval.id;
       const selectedApproval = purchaseRequisitionApprovalList.find((approval) => approval.id === selectedId);
-      setSelectedPurchaseRequisitionApproval(selectedApproval);
+      setSelectedPurchaseRequisitionApproval(CLONING_LIB.deepClone(selectedApproval));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [purchaseRequisitionApprovalList]);
@@ -159,7 +161,6 @@ const PurchaseRequisitionApprovalPage: React.FC<IPurchaseRequisitionApprovalProp
     if (selectedPurchaseRequisitionApproval) {
       putPurchaseRequisitionApproval(selectedPurchaseRequisitionApproval)
         .then((res) => {
-          console.log(res.status);
           if (res.status === ApiResponseStatus.SUCCESS) {
             setApprovalUpdated(false);
             popNotification('Successfully Updated Approval', NotificationType.success);
@@ -171,6 +172,28 @@ const PurchaseRequisitionApprovalPage: React.FC<IPurchaseRequisitionApprovalProp
           const errorMessage = errResponse.data ? errResponse.data : 'Request Failed';
           popNotification(errorMessage, NotificationType.error);
         });
+    }
+  };
+
+  const onAddComponentHandler = async (componentToAdd?: IPurchaseRequisitionApprovalItem) => {
+    console.log('componentToAdd :>> ', componentToAdd);
+
+    if (selectedPurchaseRequisitionApproval) {
+      if (componentToAdd === undefined || componentToAdd === null) {
+        popNotification('No component to add', NotificationType.error);
+      } else {
+        const res = await postPurchaseRequisitionApprovalItem(selectedPurchaseRequisitionApproval.id, componentToAdd);
+
+        if (res && res.status === ApiResponseStatus.SUCCESS) {
+          console.log('res :>> ', res);
+          getApprovals();
+        } else {
+          console.log('res :>> ', res);
+          popNotification(`Error adding component :[${res.status}] ${res.statusText}`, NotificationType.error);
+        }
+      }
+    } else {
+      popNotification('Please select an approval list before adding component', NotificationType.error);
     }
   };
 
@@ -187,7 +210,7 @@ const PurchaseRequisitionApprovalPage: React.FC<IPurchaseRequisitionApprovalProp
             <FilterAndSort sortChangedHandler={handleSortChange} dateRangeChangedHandler={handleDateRangeChange} dateRange={dateRange} sort={sort}></FilterAndSort>
           </div>
           <div className="col-6">
-            <ComponentSelector></ComponentSelector>
+            <ComponentSelector onAddComponent={onAddComponentHandler}></ComponentSelector>
           </div>
         </div>
 

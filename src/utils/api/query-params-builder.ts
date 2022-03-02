@@ -18,7 +18,10 @@ export class QueryParamsBuilder {
     if (paramsIsObject) {
       const inferredParamNames = Object.keys(params);
       inferredParamNames.forEach((inferredParamName) => {
-        this.url = `${this.url}${inferredParamName}=${(params as any)[inferredParamName]}&`;
+        const paramValue: any = (params as any)[inferredParamName];
+        if(paramValue) {
+          this.url = `${this.url}${inferredParamName}=${paramValue}&`;
+        }
       });
     }
 

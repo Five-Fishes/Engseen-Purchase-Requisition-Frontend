@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Table from 'antd/lib/table';
 import moment from 'moment';
 import { Moment } from 'moment';
@@ -16,6 +16,8 @@ import { APP_HEADER_HEIGHT } from '@constant/display/header.constant';
 import { APP_CONTENT_MARGIN } from '@constant/display/content.constant';
 import { PURCHASE_REQUISITION_BOTTOM_TOOLS_HEIGHT, PURCHASE_REQUISITION_TITLE_HEIGHT, PURCHASE_REQUISITION_TOP_TOOLS_HEIGHT } from '@constant/display/purchase-requisition-request.constant';
 import { TABLE_PAGINATION_TOOLS_HEIGHT, TABLE_HEADER_HEIGHT } from '@constant/display/table.constant';
+import { getStockBalance } from '@api/component.api';
+import { ApiResponseStatus } from '@constant/api-status.enum';
 
 interface IPurchaseRequisitionRequestConstructorProps {
   readonly currentTemplate?: IPurchaseRequisitionTemplate;
@@ -37,6 +39,7 @@ interface IPurchaseRequisitionRequestConstructorProps {
 const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionRequestConstructorProps> = (props) => {
   const updateTemplate = props.updateTemplate;
   const windowSize: IWindowSize = useWindowResized();
+  const [componentAndStockBalance, setComponentAndStockBalance] = useState<Map<string, number>>();
   const TABLE_BODY_MAX_HEIHGT_CONSTRAINT: number =
     APP_HEADER_HEIGHT +
     APP_CONTENT_MARGIN +
@@ -45,6 +48,32 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
     PURCHASE_REQUISITION_BOTTOM_TOOLS_HEIGHT +
     TABLE_HEADER_HEIGHT +
     TABLE_PAGINATION_TOOLS_HEIGHT;
+
+  const getStockBalanceByComponentCode = async (componentCode: string) => {
+    const res = await getStockBalance(componentCode);
+
+    if (res && res.status === ApiResponseStatus.SUCCESS) {
+      return res.data;
+    } else {
+      return 0;
+    }
+  };
+
+  /**
+   * Effect that populates the stock balance
+   */
+  useEffect(() => {
+    if (props.searchResult) {
+      let tempComponentAndStockBalanceMap: Map<string, number> = new Map();
+      props.searchResult.forEach(templateItem => {
+        getStockBalanceByComponentCode(templateItem.componentCode)
+        .then(res => {
+          tempComponentAndStockBalanceMap.set(templateItem.componentCode, res);
+        } ).catch(console.error);
+      })
+      setComponentAndStockBalance(tempComponentAndStockBalanceMap);
+    }
+  }, [props.searchResult])
 
   const updateAllDeliveryDate: (value: any) => void = (value) => {
     if (props.currentTemplate) {
@@ -172,7 +201,7 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
           </span>
         }
         width="133px"
-        render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <>{Math.floor(Math.random() * 10000)}</>}
+        render={(value, record: IPurchaseRequisitionTemplateItem, index: number) => <>{componentAndStockBalance?.get(record.componentCode) || 0}</>}
         key={`balance-${CURRENT_TIME}`}
       />
     ),

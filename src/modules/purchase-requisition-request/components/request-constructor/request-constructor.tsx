@@ -63,17 +63,21 @@ const PurchaseRequisitionRequestConstructor: React.FC<IPurchaseRequisitionReques
    * Effect that populates the stock balance
    */
   useEffect(() => {
-    if (props.searchResult) {
-      let tempComponentAndStockBalanceMap: Map<string, number> = new Map();
-      props.searchResult.forEach(templateItem => {
-        getStockBalanceByComponentCode(templateItem.componentCode)
-        .then(res => {
-          tempComponentAndStockBalanceMap.set(templateItem.componentCode, res);
-        } ).catch(console.error);
-      })
-      setComponentAndStockBalance(tempComponentAndStockBalanceMap);
-    }
-  }, [props.searchResult])
+
+    const stockBalance = async () => {
+      if (props.searchResult) {
+        let tempComponentAndStockBalanceMap: Map<string, number> = new Map();
+        for (let index = 0; index < props.searchResult.length; index++) {
+          const element: IPurchaseRequisitionTemplateItem = props.searchResult[index];
+          const balanceQty: number = await getStockBalanceByComponentCode(element.componentCode);
+          tempComponentAndStockBalanceMap.set(element.componentCode, balanceQty);
+        }
+        setComponentAndStockBalance(tempComponentAndStockBalanceMap);
+      }
+    };
+    
+    stockBalance();
+  }, [props.searchResult]);
 
   const updateAllDeliveryDate: (value: any) => void = (value) => {
     if (props.currentTemplate) {

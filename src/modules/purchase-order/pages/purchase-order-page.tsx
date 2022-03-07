@@ -19,8 +19,6 @@ import { popNotification } from '@module/shared/components/notification';
 import { NotificationType } from '@constant/notification.enum';
 import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
 import { setLoading } from '@module/shared/reducers/app-reducers';
-// import { PDFDownloadLink } from "@react-pdf/renderer";
-// import PurchaseOrderTemplate from "@module/shared/components/PurchaseOrderTemplate/PurchaseOrderTemplate";
 
 interface IPurchaseOrderProps extends StateProps, DispatchProps {}
 
@@ -73,8 +71,7 @@ const PurchaseOrderPage: React.FC<IPurchaseOrderProps> = (props: IPurchaseOrderP
 
   const getPurchaseApprovalOrdersProgress = (purchaseApprovalOrders: IPurchaseApprovalOrder[]) => {
     const purchaseApprovalOrderProgress = purchaseApprovalOrders.map((purchaseApprovalOrder) => {
-      const incompletePO = purchaseApprovalOrder.purchaseOrders.filter((purchaseOrder) => !(purchaseOrder.emailed || purchaseOrder.downloaded));
-      purchaseApprovalOrder.completed = incompletePO.length === 0;
+      purchaseApprovalOrder.completed = purchaseApprovalOrder.purchaseOrders.every((purchaseOrder) => purchaseOrder.emailed && purchaseOrder.downloaded);;
       return purchaseApprovalOrder;
     });
     return purchaseApprovalOrderProgress;

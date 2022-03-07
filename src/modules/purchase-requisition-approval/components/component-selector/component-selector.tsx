@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 
 import moment from 'moment';
 import { Button, DatePicker, InputNumber } from 'antd';
@@ -23,7 +23,7 @@ const ComponentSelector: React.FC<IComponentSelectorProps> = (props) => {
       setComponents(res.data);
       return res.data.map((component) => {
         return {
-          label: `${component.componentName} - ${component.vendorName}`,
+          label: <>{`${component.componentName} - ${component.vendorName}`}</>,
           value: component.id,
         };
       });
@@ -55,8 +55,8 @@ const ComponentSelector: React.FC<IComponentSelectorProps> = (props) => {
               value={componentToAdd && { value: `${componentToAdd.componentName} - ${componentToAdd.vendorName}` }}
               placeholder="Select Components"
               fetchOptions={getItemsWrapper}
-              onChange={(e) => {
-                const selectedComponent = components.find((component) => component.id === e.value);
+              onChange={(e: { value: string, label: ReactNode }) => {
+                const selectedComponent = components.find((component) => component.id === Number(e.value));
                 let approvalItem: IPurchaseRequisitionApprovalItem | undefined;
                 if (selectedComponent) {
                   approvalItem = mapTemplateItemToApprovalItem(selectedComponent);

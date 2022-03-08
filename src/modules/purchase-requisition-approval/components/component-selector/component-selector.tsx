@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 
 import moment from 'moment';
 import { Button, DatePicker, InputNumber } from 'antd';
@@ -14,14 +14,16 @@ interface IComponentSelectorProps {
 }
 
 const ComponentSelector: React.FC<IComponentSelectorProps> = (props) => {
-  const getItemsWrapper = async () => {
-    const res = await getItemBySearch();
+  const getItemsWrapper = async (searchString: string) => {
+    const componentCode = searchString;
+    const vendorId = searchString;
+    const res = await getItemBySearch(componentCode, vendorId);
 
     if (res && res.status === ApiResponseStatus.SUCCESS) {
       setComponents(res.data);
       return res.data.map((component) => {
         return {
-          label: `${component.componentName} - ${component.vendorName} [${component.packagingSize}]`,
+          label: <>{`${component.componentName} - ${component.vendorName}`}</>,
           value: component.id,
         };
       });
@@ -50,11 +52,11 @@ const ComponentSelector: React.FC<IComponentSelectorProps> = (props) => {
           <div className="col">
             <DebounceSelect
               showSearch
-              value={componentToAdd && { value: `${componentToAdd.componentName} - ${componentToAdd.vendorName} [${componentToAdd.packagingSize}]` }}
+              value={componentToAdd && { value: `${componentToAdd.componentName} - ${componentToAdd.vendorName}` }}
               placeholder="Select Components"
               fetchOptions={getItemsWrapper}
-              onChange={(e) => {
-                const selectedComponent = components.find((component) => component.id === e.value);
+              onChange={(e: { value: string, label: ReactNode }) => {
+                const selectedComponent = components.find((component) => component.id === Number(e.value));
                 let approvalItem: IPurchaseRequisitionApprovalItem | undefined;
                 if (selectedComponent) {
                   approvalItem = mapTemplateItemToApprovalItem(selectedComponent);

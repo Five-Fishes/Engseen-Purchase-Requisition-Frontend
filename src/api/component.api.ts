@@ -4,7 +4,7 @@ import { IPurchaseRequisitionTemplateItem } from '@dto/i-purchase-requisition-te
 import { QueryParamsBuilder } from '@utils/api/query-params-builder';
 import axios from 'axios';
 
-export async function getItemBySearch(component?: string, vendor?: string, packingSize?: number) {
+export async function getItemBySearch(component?: string | null, vendor?: string | null, packingSize?: number | null) {
   const url = QueryParamsBuilder.withUrl(COMPONENT).addParams({ component, vendor, packingSize }).build();
   return await axios.get<IPurchaseRequisitionTemplateItem[]>(url);
 }

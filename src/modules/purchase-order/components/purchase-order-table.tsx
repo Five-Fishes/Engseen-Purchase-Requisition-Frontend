@@ -10,6 +10,7 @@ import { downloadPOFromAPI, emailPurchaseOrder } from '@api/purchase-order.api';
 import { NotificationType } from '@constant/notification.enum';
 import { popNotification } from '@module/shared/components/notification';
 import { downloadBlobAsFileWithNameAndExtension } from '@utils/file-download/file-download';
+import { ApiResponseStatus } from '@constant/api-status.enum';
 
 interface IPurchaseOrderTableProps {
   readonly currentPurchaseApprovalOrderRecord?: IPurchaseApprovalOrder;
@@ -87,23 +88,40 @@ const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
     /** Load from API */
     const res = await downloadPOFromAPI(purchaseOrder.id);
 
-    /** 
-     * 1. Load data as blob 
-     * 2. Name the file
-     * 3. provide file extension
-     * */
-    const blob: Blob = new Blob([res.data]);
-    const fileName: string = `Purchase Order - ${purchaseOrder.poNumber} - ${new Date(purchaseOrder.revisionDate).toDateString()}`;
-    const fileExtension: string = 'pdf';
+    if (res) {
+      if (res.status === ApiResponseStatus.SUCCESS) {
+        /** 
+         * 1. Load data as blob 
+         * 2. Name the file
+         * 3. provide file extension
+         * */
+        const blob: Blob = new Blob([res.data]);
+        const fileName: string = `Purchase Order - ${purchaseOrder.poNumber} - ${new Date(purchaseOrder.revisionDate).toDateString()}`;
+        const fileExtension: string = 'pdf';
+    
+        downloadBlobAsFileWithNameAndExtension(blob, fileName, fileExtension);
+      } else {
+        popNotification(res.statusText, NotificationType.error);  
+      }
+    } else {
+      popNotification("Server Download PO PDF API error", NotificationType.error);  
+    }
 
-    downloadBlobAsFileWithNameAndExtension(blob, fileName, fileExtension);
   };
 
-  const downloadAllPO = () => {
+  const downloadAllPO = async () => {
     console.group(PurchaseOrderTable.name);
     console.log('Download All PO');
     console.log('Purchase Approval Orders Id: ', currentPurchaseApprovalOrderRecord?.id);
     console.log('Purchase Orders List: ', currentPurchaseApprovalOrderRecord?.purchaseOrders);
+    if (currentPurchaseApprovalOrderRecord && currentPurchaseApprovalOrderRecord.purchaseOrders) {
+      const downloadRequests: Promise<void>[] = currentPurchaseApprovalOrderRecord.purchaseOrders.map(purchaseOrder => downloadPO(purchaseOrder))
+      try {
+        await Promise.all(downloadRequests);
+      } catch (e: any) {
+        popNotification(e, NotificationType.error);
+      }
+    }
     console.groupEnd();
   };
 
@@ -130,6 +148,11 @@ const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
     console.log('Email All PO');
     console.log('Purchase Approval Orders Id: ', currentPurchaseApprovalOrderRecord?.id);
     console.log('Purchase Orders List: ', currentPurchaseApprovalOrderRecord?.purchaseOrders);
+    if (currentPurchaseApprovalOrderRecord && currentPurchaseApprovalOrderRecord.purchaseOrders) {
+      currentPurchaseApprovalOrderRecord.purchaseOrders.forEach(purchaseOrder => {
+        emailPO(purchaseOrder);
+      })
+    }
     console.groupEnd();
   };
 

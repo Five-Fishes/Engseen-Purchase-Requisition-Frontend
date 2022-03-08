@@ -19,8 +19,10 @@ import { NotificationType } from '@constant/notification.enum';
 import { setLoading } from '@module/shared/reducers/app-reducers';
 import { bulkGetItemBySearch, getItemBySearch } from '@api/component.api';
 import { IComponentSearch } from '@dto/i-component-search.dto';
+import VendorDebounceSelect from '../components/vendor-debounce-select';
+import ComponentCodeSelector from '../components/component-code-selector';
 
-interface IPurchaseRequisitionTemplateProps  extends StateProps, DispatchProps {};
+interface IPurchaseRequisitionTemplateProps extends StateProps, DispatchProps { };
 
 const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProps> = (props: IPurchaseRequisitionTemplateProps) => {
   const [purchaseRequisitionTemplates, setPurchaseRequisitionTemplates] = useState<IPurchaseRequisitionTemplate[]>();
@@ -39,6 +41,9 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
   const [templateInsertItemSelect, setTemplateInsertItemSelect] = useState<boolean>(false);
   const [insertItemOptions, setInsertItemOptions] = useState<IPurchaseRequisitionTemplateItem[]>();
   const [insertItemsForm] = Form.useForm();
+
+  const [selectedVendor, setSelectedVendor] = useState<string>();
+  const [selectedComponentCode, setSelectedComponentCode] = useState<string>('');
 
   useEffect(() => {
     const getTemplates = async () => {
@@ -98,7 +103,7 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
         setExcelData(rows);
         popNotification('Success Upload Excel', NotificationType.success);
       })
-      .then(() => props.setLoading(false));
+        .then(() => props.setLoading(false));
     }
   };
 
@@ -142,7 +147,7 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
    */
   const formatExcelData = (excelData: any[]) => {
     // TODO: [LU] Please add typing to data
-    return excelData.map( row => {
+    return excelData.map(row => {
       return {
         componentCode: row[0],
         vendorId: row[1],
@@ -161,7 +166,7 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
 
   const addNewComponentAsTemplateItem = (values: any): void => {
     if (Boolean(selectedPurchaseRequisitionTemplate.templateName)) {
-      getItems(values.componentCode, values.vendorId, values.packagingSize).then(() => {
+      getItems(selectedComponentCode, selectedVendor || '', values.packagingSize).then(() => {
         setTemplateInsertItemSelect(true);
       });
     } else {
@@ -277,8 +282,8 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
         <Divider type="vertical" style={{ height: '100vh' }} className="mx-4" />
 
         <div className="px-2" style={{ minWidth: "680px" }}>
-          <PurchaseRequisitionTemplateBrowser 
-            setSelectedTemplate={setSelectedPurchaseRequisitionTemplate} 
+          <PurchaseRequisitionTemplateBrowser
+            setSelectedTemplate={setSelectedPurchaseRequisitionTemplate}
             setLoading={props.setLoading}
             purchaseRequisitionTemplates={purchaseRequisitionTemplates ?? []}
             setPurchaseRequisitionTemplates={setPurchaseRequisitionTemplates} />
@@ -301,38 +306,32 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
           </Row>
           {/* Add Component */}
           <div className="mt-5">
+            <Row>
+              <VendorDebounceSelect selectedVendor={selectedVendor} setSelectedVendor={setSelectedVendor} />
+            </Row>
+            <Row>
+              <ComponentCodeSelector selectedVendor={selectedVendor} selectedComponentCode={selectedComponentCode} setSelectedComponentCode={setSelectedComponentCode} />
+            </Row>
             <Form onFinish={addNewComponentAsTemplateItem} onFinishFailed={formValidationFailed}>
-              <Row>
-                <Col span={16}>
-                  <Form.Item className="input-group" name="componentCode" rules={[{ required: true, message: 'Enter component code' }]}>
-                    <Input key="component-input" type="text" placeholder="Component" />
-                  </Form.Item>
-                  <Form.Item className="input-group" name="vendorId" rules={[{ required: true, message: 'Enter vendor ID' }]}>
-                    <Input key="vendor-input" type="text" placeholder="Vendor" />
-                  </Form.Item>
-                  <Form.Item
-                    className="input-group"
-                    name="packagingSize"
-                    rules={[
-                      { required: true, message: 'Enter packing size' },
-                      {
-                        type: 'number',
-                        min: 1,
-                        message: 'Packing Size must be positive',
-                      },
-                    ]}
-                  >
-                    <InputNumber type="number" className="w-100" key="packing-size-input" placeholder="Packing Size" />
-                  </Form.Item>
-                </Col>
-                <Col span={6} offset={2}>
-                  <Form.Item>
-                    <Button className="input-group-btn float-end" key="load-database-button" type="primary" htmlType="submit">
-                      Add Component
-                    </Button>
-                  </Form.Item>
-                </Col>
-              </Row>
+              <Form.Item
+                className="input-group"
+                name="packagingSize"
+                rules={[
+                  { required: true, message: 'Enter packing size' },
+                  {
+                    type: 'number',
+                    min: 1,
+                    message: 'Packing Size must be positive',
+                  },
+                ]}
+              >
+                <InputNumber type="number" className="w-100" key="packing-size-input" placeholder="Packing Size" />
+              </Form.Item>
+              <Form.Item>
+                <Button className="input-group-btn float-end" key="load-database-button" type="primary" htmlType="submit">
+                  Add Component
+                </Button>
+              </Form.Item>
             </Form>
           </div>
           <Divider />
@@ -346,7 +345,7 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
             Save Template
           </Button>
         </div>
-        
+
       </div>
       <Modal title="Edit Template Name" key="edit-templateName-modal" visible={editTemplateNameModal} footer={null} onCancel={closeTemplateNameModal}>
         <Form onFinish={editTemplateName}>
@@ -377,7 +376,7 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
                 {insertItemOptions &&
                   insertItemOptions.length > 0 &&
                   insertItemOptions.map((item, index) => {
-                    return <Radio.Button id={`item-option-${index}`} value={item}>{`${item.componentName} - ${item.vendorName} ${item.packagingSize}`}</Radio.Button>;
+                    return <Radio.Button key={index} id={`item-option-${index}`} value={item}>{`${item.componentName} - ${item.vendorName} ${item.packagingSize}`}</Radio.Button>;
                   })}
               </Space>
             </Radio.Group>

@@ -35,3 +35,13 @@ export const COMPONENT: string = 'component';
 export const COMPONENT_SEARCH_BULK: string = COMPONENT + '/bulk-search';
 export const COMPONENT_STOCK_BALANCE: string = COMPONENT + '/stock-balance';
 export const GET_COMPONENT_BY_SEARCH: RegExp = new RegExp(`${COMPONENT}*`);
+
+/**
+ * Item Master
+ */
+ export const ITEM_MASTER: string = 'item-master';
+
+ /**
+ * Item Master
+ */
+ export const VENDOR_MASTER: string = 'vendor-master';

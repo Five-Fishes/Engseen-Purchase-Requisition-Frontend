@@ -25,5 +25,11 @@ export async function emailPurchaseOrder(purchaseApprovalId: number) {
 }
 
 export async function downloadPOFromAPI(purchaseOrderId: number) {
-  return await axios.post(`${PURCHASE_ORDER_DOWNLOAD}/${purchaseOrderId}`, {}, { responseType: 'arraybuffer' });
+  return await axios({
+    url: `${PURCHASE_ORDER_DOWNLOAD}/${purchaseOrderId}`,
+    method: 'POST',
+    baseURL: process.env.PDF_API,
+    data: {},
+    responseType: 'arraybuffer',
+  });
 }

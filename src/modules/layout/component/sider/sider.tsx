@@ -57,6 +57,11 @@ const AppSider: React.FC<IAppSider> = (props) => {
               Download PO
             </Link>
           </Menu.Item>
+          <Menu.Item key="9" icon={<DownloadOutlined />}>
+            <Link className="router-link" to="/purchase-order-receipt-record">
+              PO Receipt Record
+            </Link>
+          </Menu.Item>
         </Menu>
       </Drawer>
       {/* </Sider> */}

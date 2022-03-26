@@ -12,7 +12,6 @@ import {
   PURCHASE_ORDER_RECEIPT_TOP_TOOLS_HEIGHT,
 } from '@constant/display/purchase-order-receipt.constant';
 import { IWindowSize, useWindowResized } from '@hook/window-resized.hook';
-import { DIVIDER_HEIGHT } from '@constant/display/divider.constant';
 import { IPurchaseOrderReceiptHeader } from '@dto/i-purchase-order-receipt-header.dto';
 
 interface IPurchaseOrderReceiptTableProps {
@@ -25,7 +24,6 @@ const PurchaseOrderReceiptTable: React.FC<IPurchaseOrderReceiptTableProps> = (pr
     APP_CONTENT_MARGIN +
     PURCHASE_ORDER_RECEIPT_TITLE_HEIGHT +
     PURCHASE_ORDER_RECEIPT_TOP_TOOLS_HEIGHT +
-    DIVIDER_HEIGHT +
     PURCHASE_ORDER_RECEIPT_TABLE_HEADER_HEIGHT +
     TABLE_PAGINATION_TOOLS_HEIGHT;
   const windowSize: IWindowSize = useWindowResized();
@@ -90,9 +88,9 @@ const PurchaseOrderReceiptTable: React.FC<IPurchaseOrderReceiptTableProps> = (pr
     console.group(PurchaseOrderReceiptTable.name);
     console.log('Open PO Receipt');
     console.log('Purchase Receipt Header: ', purchaseOrderReceiptHeader);
-    // TODO: navigation for Open PO Receipt to Create PO Receipt with grnNo
     console.log('GRN No: ', purchaseOrderReceiptHeader.grnNo);
-
+    // TODO: navigation for Open PO Receipt to Create PO Receipt with grnNo
+    window.location.href = `/purchase-order-receipt-creation?grnNo=${purchaseOrderReceiptHeader.grnNo}`;
     console.groupEnd();
   };
   

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Input, Button, DatePicker } from 'antd';
+import { Input, Button, DatePicker, Select } from 'antd';
 import Title from 'antd/lib/typography/Title';
 import { ReloadOutlined } from '@ant-design/icons';
 import moment from 'moment';
@@ -28,7 +28,7 @@ const PurchaseOrderReceiptRecordPage: React.FC<IPurchaseOrderReceiptRecordProps>
 
   const [startDateFilterCriteria, setStartDateFilterCriteria] = useState<Date>();
   const [endDateFilterCriteria, setEndDateFilterCriteria] = useState<Date>();
-  // const [sortCriteria, setSortCriteria] = useState<Sort>(Sort.DES);
+  const [sortCriteria, setSortCriteria] = useState<Sort>(Sort.DES);
 
   useEffect(() => {
     const getPurchaseOrderReceiptHeaderList = async () => {
@@ -54,14 +54,14 @@ const PurchaseOrderReceiptRecordPage: React.FC<IPurchaseOrderReceiptRecordProps>
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startDateFilterCriteria, endDateFilterCriteria]);
 
-  /* useEffect(() => {
+  useEffect(() => {
     console.group(PurchaseOrderReceiptRecordPage.name);
     console.log('Sorting list after sort is set >>: ', {
       sortCriteria,
     });
     sortPurchaseOrderReceiptHeaderByDate(sortCriteria);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sortCriteria]); */
+  }, [sortCriteria]);
 
   const search = () => {
     props.setLoading(true);
@@ -69,7 +69,7 @@ const PurchaseOrderReceiptRecordPage: React.FC<IPurchaseOrderReceiptRecordProps>
     const filteredData = searchEngine.updateEngine(purchaseOrderReceiptHeaders ?? []).search(sanitisedSearchText);
     setFilteredPurchaseOrderReceiptHeaders(filteredData);
     setTimeout(function () {
-    props.setLoading(false);
+      props.setLoading(false);
     }, 500);
   };
 
@@ -100,7 +100,7 @@ const PurchaseOrderReceiptRecordPage: React.FC<IPurchaseOrderReceiptRecordProps>
     }, 500);
   };
 
-  /* const sortPurchaseOrderReceiptHeaderByDate = (sort: Sort) => {
+  const sortPurchaseOrderReceiptHeaderByDate = (sort: Sort) => {
     props.setLoading(true);
     setSortCriteria(sort);
     filteredPurchaseOrderReceiptHeaders?.sort((purchaseOrderReceiptHeader1, purchaseOrderReceiptHeader2) => {
@@ -114,15 +114,15 @@ const PurchaseOrderReceiptRecordPage: React.FC<IPurchaseOrderReceiptRecordProps>
     setTimeout(function () {
       props.setLoading(false);
     }, 500);
-  }; */
+  };
 
   const resetSortingAndFilter = () => {
     setFilteredPurchaseOrderReceiptHeaders(purchaseOrderReceiptHeaders);
 
     setStartDateFilterCriteria(undefined);
     setEndDateFilterCriteria(undefined);
-    // setSortCriteria(Sort.DES);
-    // sortPurchaseOrderReceiptHeaderByDate(Sort.DES);
+    setSortCriteria(Sort.DES);
+    sortPurchaseOrderReceiptHeaderByDate(Sort.DES);
 
     filterPurchaseOrderReceiptHeaders();
     popNotification('Success Reset Sorting & Filtering', NotificationType.success);
@@ -134,11 +134,10 @@ const PurchaseOrderReceiptRecordPage: React.FC<IPurchaseOrderReceiptRecordProps>
         <div>
           <div className="mb-2 w-100">
             <Title className="d-inline-block" level={4}>
-            Purchase Order Receipt Record
+              Purchase Order Receipt Record
             </Title>
           </div>
           <div className="d-inline-flex flex-row align-items-center" style={{ gap: '15px', width: 'max-content' }}>
-            <label>Advance Sorting / Filtering</label>
             <DatePicker.RangePicker
               inputReadOnly
               format="DD/MM/YYYY"
@@ -146,35 +145,33 @@ const PurchaseOrderReceiptRecordPage: React.FC<IPurchaseOrderReceiptRecordProps>
               value={[startDateFilterCriteria === undefined ? null : moment(startDateFilterCriteria), endDateFilterCriteria === undefined ? null : moment(endDateFilterCriteria)]}
               onChange={(dateValues) => filterByDateRange(dateValues != null ? dateValues[0]?.toString() : undefined, dateValues != null ? dateValues[1]?.toString() : undefined)}
             />
-            {/* <Select key="sort-submission-request-select" value={sortCriteria} onChange={(value) => sortPurchaseApprovalOrderByDate(value)}>
-              <Select.Option value={Sort.DES}>Created Date Desc</Select.Option>
-              <Select.Option value={Sort.ASC}>Created Date Asc</Select.Option>
-            </Select> */}
+            <Select key="sort-submission-request-select" value={sortCriteria} onChange={(value) => sortPurchaseOrderReceiptHeaderByDate(value)}>
+              <Select.Option value={Sort.DES}>Receipt Date Desc</Select.Option>
+              <Select.Option value={Sort.ASC}>Receipt Date Asc</Select.Option>
+            </Select>
             <Button className="d-inline-flex align-items-center" onClick={resetSortingAndFilter}>
               <ReloadOutlined />
               Reset
             </Button>
           </div>
+          <div className="d-flex flex-column justify-content-center">
+            <Input.Search
+              allowClear
+              placeholder="Search"
+              bordered={false}
+              value={searchText}
+              onChange={(e: any) => setSearchText(e.target.value)}
+              onSearch={search}
+              style={{
+                width: '40%',
+                borderBottom: '1px solid #d9d9d9',
+                position: 'absolute',
+                right: '5px',
+              }}
+            />
+          </div>
           <div className="mx-2 d-inline-flex border-top mt-4 w-100">
-            <div className="my-2 mx-4 position-relative w-100">
-              <div className="d-flex flex-column justify-content-center">
-                <Input.Search
-                  allowClear
-                  placeholder="Search"
-                  bordered={false}
-                  value={searchText}
-                  onChange={(e: any) => setSearchText(e.target.value)}
-                  onSearch={search}
-                  style={{
-                    width: '40%',
-                    borderBottom: '1px solid #d9d9d9',
-                    position: 'absolute',
-                    right: '5px',
-                  }}
-                />
-              </div>
-              <PurchaseOrderReceiptTable filteredItems={filteredPurchaseOrderReceiptHeaders} />
-            </div>
+            <PurchaseOrderReceiptTable filteredItems={filteredPurchaseOrderReceiptHeaders} />
           </div>
         </div>
       </div>

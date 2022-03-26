@@ -1,4 +1,12 @@
-import { DownloadOutlined, FileDoneOutlined, FileOutlined, FileTextOutlined, HistoryOutlined, LaptopOutlined } from '@ant-design/icons';
+import { 
+  DownloadOutlined,
+  FileDoneOutlined,
+  FileOutlined,
+  FileTextOutlined,
+  HistoryOutlined,
+  LaptopOutlined,
+  DatabaseOutlined,
+} from '@ant-design/icons';
 import { Drawer, Menu } from 'antd';
 import { Link } from 'react-router-dom';
 import React from 'react';
@@ -57,7 +65,7 @@ const AppSider: React.FC<IAppSider> = (props) => {
               Download PO
             </Link>
           </Menu.Item>
-          <Menu.Item key="9" icon={<DownloadOutlined />}>
+          <Menu.Item key="9" icon={<DatabaseOutlined />}>
             <Link className="router-link" to="/purchase-order-receipt-record">
               PO Receipt Record
             </Link>

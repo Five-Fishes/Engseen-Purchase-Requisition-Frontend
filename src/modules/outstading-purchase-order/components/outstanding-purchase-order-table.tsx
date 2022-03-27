@@ -1,43 +1,97 @@
+import { IPurchaseOrderItem } from '@dto/i-purchase-order-item.dto';
 import { Table } from 'antd';
 
-const OutstandingPurchaseOrderTable: React.FC = () => {
-  const ds = [{ a: 1 }, { a: 2 }, { a: 3 }, { a: 4 }];
+interface IOutstandingPurchaseOrderTableProps {
+  outstandingPurchaseOrderSearchResult?: IPurchaseOrderItem[];
+}
+
+const OutstandingPurchaseOrderTable: React.FC<IOutstandingPurchaseOrderTableProps> = (props) => {
+  const outstandingPurchaseOrderSearchResult = props.outstandingPurchaseOrderSearchResult;
 
   return (
-    <Table dataSource={ds} rowKey={(outstandingPurchaseOrder) => outstandingPurchaseOrder.a}>
+    <Table dataSource={outstandingPurchaseOrderSearchResult} rowKey={(outstandingPurchaseOrder) => outstandingPurchaseOrder.id}>
       <Table.Column
-        key="1"
-        title="1"
-        render={(value, record: { a: number }, index) => {
-          return <div key={index}>{record.a}</div>;
+        title="Vendor"
+        key="vendorName"
+        render={(value, record: IPurchaseOrderItem, index) => {
+          return <div key={index}>{record.vendorName}</div>;
         }}
       />
       <Table.Column
-        title="2"
-        key="2"
-        render={(value, record: { a: number }, index) => {
-          return <div key={index}>{record.a}</div>;
+        title="PO Number"
+        key="poNumber"
+        render={(value, record: IPurchaseOrderItem, index) => {
+          return <div key={index}>{record.poNumber}</div>;
         }}
       />
       <Table.Column
-        title="3"
-        key="3"
-        render={(value, record: { a: number }, index) => {
-          return <div key={index}>{record.a}</div>;
+        title="Component ID"
+        key="componentCode"
+        render={(value, record: IPurchaseOrderItem, index) => {
+          return <div key={index}>{record.componentCode}</div>;
         }}
       />
       <Table.Column
-        title="4"
-        key="4"
-        render={(value, record: { a: number }, index) => {
-          return <div key={index}>{record.a}</div>;
+        title="Component Name"
+        key="componentName"
+        render={(value, record: IPurchaseOrderItem, index) => {
+          return <div key={index}>{record.componentName}</div>;
         }}
       />
       <Table.Column
-        title="5"
-        key="5"
-        render={(value, record: { a: number }, index) => {
-          return <div key={index}>{record.a}</div>;
+        title="Order Qty (kgs)"
+        key="orderQuantity"
+        render={(value, record: IPurchaseOrderItem, index) => {
+          return <div key={index}>{record.orderQuantity}</div>;
+        }}
+      />
+      <Table.Column
+        title="Order Qty (packs)"
+        key="orderQuantityPack"
+        render={(value, record: IPurchaseOrderItem, index) => {
+          return <div key={index}>{record.orderQuantityPack}</div>;
+        }}
+      />
+      <Table.Column
+        title="Received Qty (kgs)"
+        key="receivedQuantity"
+        render={(value, record: IPurchaseOrderItem, index) => {
+          return <div key={index}>{record.receivedQuantity}</div>;
+        }}
+      />
+      <Table.Column
+        title="Received Qty (packs)"
+        key="receivedQuantityPack"
+        render={(value, record: IPurchaseOrderItem, index) => {
+          return <div key={index}>{record.receivedQuantityPack}</div>;
+        }}
+      />
+      <Table.Column
+        title="Open Qty (kgs)"
+        key="openQuantity"
+        render={(value, record: IPurchaseOrderItem, index) => {
+          return <div key={index}>{record.openQuantity}</div>;
+        }}
+      />
+      <Table.Column
+        title="Open Qty (packs)"
+        key="openQuantityPack"
+        render={(value, record: IPurchaseOrderItem, index) => {
+          return <div key={index}>{record.openQuantityPack}</div>;
+        }}
+      />
+      <Table.Column
+        title="Delivery Date"
+        key="deliveryDate"
+        render={(value, record: IPurchaseOrderItem, index) => {
+          return <div key={index}>{record.deliveryDate}</div>;
+        }}
+      />
+      <Table.Column
+        title="Remarks"
+        key="remarks"
+        render={(value, record: IPurchaseOrderItem, index) => {
+          return <div key={index}>{record.remarks}</div>;
         }}
       />
     </Table>

@@ -2,27 +2,30 @@ import { SettingOutlined } from '@ant-design/icons';
 import { getOutstandingPurchaseOrder } from '@api/purchase-order.api';
 import { ApiResponseStatus } from '@constant/api-status.enum';
 import { NotificationType } from '@constant/notification.enum';
-import { IPurchaseOrder } from '@dto/i-purchase-order.dto';
+import { IPurchaseOrderItem } from '@dto/i-purchase-order-item.dto';
 import { popNotification } from '@module/shared/components/notification';
 import { generateErrorMessage } from '@utils/api/api-error-handler';
 import { Button, Input } from 'antd';
 import Title from 'antd/lib/typography/Title';
 import { AxiosResponse } from 'axios';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import OutstandingPurchaseOrderTable from '../components/outstanding-purchase-order-table';
 
 interface IOutstandingPurchaseOrderPageProps {}
 const OutstandingPurchaseOrderPage: React.FC<IOutstandingPurchaseOrderPageProps> = (props) => {
+  const [outstandingPurchaseOrder, setOutstandingPurchaseOrder] = useState<IPurchaseOrderItem[]>();
+  const [outstandingPurchaseOrderSearchResult, setOutstandingPurchaseOrderSearchResult] = useState<IPurchaseOrderItem[]>();
+
   /**
    * Initialise table data
    */
   useEffect(() => {
     (async () => {
       try {
-        const outstandingPurchaseOrderResponse: AxiosResponse<IPurchaseOrder[]> = await getOutstandingPurchaseOrder();
+        const outstandingPurchaseOrderResponse: AxiosResponse<IPurchaseOrderItem[]> = await getOutstandingPurchaseOrder();
         if (outstandingPurchaseOrderResponse) {
           if (outstandingPurchaseOrderResponse.status === ApiResponseStatus.SUCCESS) {
-            console.log('outstandingPurchaseOrderResponse.data :>> ', outstandingPurchaseOrderResponse.data);
+            setOutstandingPurchaseOrder(outstandingPurchaseOrderResponse.data);
           } else {
             const errorMessage: string = generateErrorMessage(outstandingPurchaseOrderResponse.status);
             popNotification(errorMessage, NotificationType.error);
@@ -35,6 +38,13 @@ const OutstandingPurchaseOrderPage: React.FC<IOutstandingPurchaseOrderPageProps>
       }
     })();
   }, []);
+
+  /**
+   * Trigger local search whenever api refetch happens
+   */
+  useEffect(() => {
+    setOutstandingPurchaseOrderSearchResult(outstandingPurchaseOrder);
+  }, [outstandingPurchaseOrder]);
 
   return (
     <div className="container-fluid">
@@ -51,7 +61,7 @@ const OutstandingPurchaseOrderPage: React.FC<IOutstandingPurchaseOrderPageProps>
       </div>
       <div className="row">
         <div className="col">
-          <OutstandingPurchaseOrderTable />
+          <OutstandingPurchaseOrderTable outstandingPurchaseOrderSearchResult={outstandingPurchaseOrderSearchResult} />
         </div>
       </div>
     </div>

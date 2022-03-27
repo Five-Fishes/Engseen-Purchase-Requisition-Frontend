@@ -11,6 +11,7 @@ import PurchaseRequisitionRequestPage from './purchase-requisition-request/pages
 import PurchaseRequisitionApprovalPage from './purchase-requisition-approval/pages/purchase-requisition-approval-page';
 import PurchaseRequisitionSubmissionPage from './purchase-requisition-submissioin-record/pages/purchase-requisition-submission-page';
 import PurchaseOrderPage from './purchase-order/pages/purchase-order-page';
+import PurchaseOrderReceiptCreationPage from './purchase-order-receipt-creation/pages/purchase-order-receipt-creation-page';
 import { UserAuthority } from '@constant/user-authority.enum';
 
 const Routes: React.FC = () => {
@@ -23,6 +24,8 @@ const Routes: React.FC = () => {
       <PostLogInRoute authority={UserAuthority.ADMIN} path="/purchase-requisition-submission-record" component={PurchaseRequisitionSubmissionPage} />
       <PostLogInRoute authority={UserAuthority.ADMIN} path="/purchase-requisition-approval" component={PurchaseRequisitionApprovalPage} />
       <PostLogInRoute authority={UserAuthority.ADMIN} path="/purchase-order" component={PurchaseOrderPage} />
+      
+      <PostLogInRoute authority={UserAuthority.ADMIN} path="/purchase-order-receipt-creation/:vendorId/:grnNo" component={PurchaseOrderReceiptCreationPage} />
     </SwitchWithFallback>
   );
 };

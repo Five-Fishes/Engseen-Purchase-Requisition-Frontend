@@ -25,7 +25,7 @@ const Routes: React.FC = () => {
       <PostLogInRoute authority={UserAuthority.ADMIN} path="/purchase-requisition-approval" component={PurchaseRequisitionApprovalPage} />
       <PostLogInRoute authority={UserAuthority.ADMIN} path="/purchase-order" component={PurchaseOrderPage} />
       
-      <PostLogInRoute authority={UserAuthority.ADMIN} path="/purchase-order-receipt-creation/:vendorId/:grnNo" component={PurchaseOrderReceiptCreationPage} />
+      <PostLogInRoute authority={UserAuthority.ADMIN} path="/purchase-order-receipt-creation/:vendorId/:grnNo?" component={PurchaseOrderReceiptCreationPage} />
     </SwitchWithFallback>
   );
 };

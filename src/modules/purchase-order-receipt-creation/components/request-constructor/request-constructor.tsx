@@ -1,3 +1,4 @@
+import './request-constructor.less';
 import React, { useEffect, useState } from 'react';
 import Table from 'antd/lib/table';
 import { Button, Popconfirm, Popover } from 'antd';
@@ -132,27 +133,37 @@ const PurchaseOrderReceiptCreationRequestConstructor: React.FC<IPurchaseOrderRec
   const CURRENT_TIME: number = props.tableColumnDisplaySettingsUpdateTime.getTime();
   const COLUMNS: ITableColumn = {
     poNumber: <Table.Column title="PO Number" width="120px" dataIndex="poNumber" key={`poNumber-${CURRENT_TIME}`} />,
+    componentCode: <Table.Column title="Component Code" width="140px" dataIndex="componentCode" key={`componentCode-${CURRENT_TIME}`} />,
     componentName: <Table.Column title="Component Name" width="172px" dataIndex="componentName" key={`componentName-${CURRENT_TIME}`} />,
+    orderQuantityPack: <Table.Column title="Ordered Qty(packs)" width="100px" dataIndex="orderQuantityPack" key={`orderQtyPack-${CURRENT_TIME}`} />,
+    receivedQuantityPack: <Table.Column title="Received Qty(packs)" width="100px" dataIndex="receivedQuantityPack" key={`receivedQtyPack-${CURRENT_TIME}`} />,
+    openQuantityPack: <Table.Column title="Open Qty(packs)" width="100px" dataIndex="openQuantityPack" key={`openQtyPack-${CURRENT_TIME}`} />,
     receivingQuantityPack: <Table.Column title="Receiving Qty(packs)" width="100px" dataIndex="receivingQuantityPack" key={`receivingQtyPack-${CURRENT_TIME}`} />,
     uomPack: <Table.Column title="UOM (packs)" width="60px" dataIndex="uomPack" key={`uomPack-${CURRENT_TIME}`} />,
+    orderQuantity: <Table.Column title="Ordered Qty(kgs)" width="110px" dataIndex="orderQuantity" key={`orderQty-${CURRENT_TIME}`} />,
+    receivedQuantity: <Table.Column title="Received Qty(kgs)" width="110px" dataIndex="receivedQuantity" key={`receivedQty-${CURRENT_TIME}`} />,
+    openQuantity: <Table.Column title="Open Qty(kgs)" width="110px" dataIndex="openQuantity" key={`openQty-${CURRENT_TIME}`} />,
     receivingQuantity: <Table.Column title="Receiving Qty(kgs)" width="110px" dataIndex="receivingQuantity" key={`receivingQty-${CURRENT_TIME}`} />,
     uom: <Table.Column title="UOM (kgs)" width="60px" dataIndex="uom" key={`uom-${CURRENT_TIME}`} />,
     status: (
       <Table.Column
         title={<span>Issue Receiving</span>}
         width="114px"
+        dataIndex="status"
         render={
-            (value: PurchaseOrderReceiptItemStatus, record: IPurchaseOrderReceiptItem, index: number) => 
-                <Button onClick={() => updatePurchaseOrderReceiptItemStatus(record)}>{`${PurchaseOrderReceiptItemStatusDisplayText(value)}`}</Button>
+          (value: PurchaseOrderReceiptItemStatus, record: IPurchaseOrderReceiptItem, index: number) => 
+            <Button className={`po-receipt-status-${value.toLowerCase()}`} onClick={() => updatePurchaseOrderReceiptItemStatus(record)}>
+              {`${PurchaseOrderReceiptItemStatusDisplayText(value)}`}
+            </Button>
         }
-        key={`balance-${CURRENT_TIME}`}
+        key={`status-${CURRENT_TIME}`}
       />
     ),
   };
 
   return (
     <>
-      <Table dataSource={props.searchResult} rowKey="id" scroll={{ y: windowSize.height - TABLE_BODY_MAX_HEIHGT_CONSTRAINT }} pagination={TABLE_PAGINATION_CONFIG}>
+      <Table dataSource={props.searchResult} rowKey="id" scroll={{ y: windowSize.height - TABLE_BODY_MAX_HEIHGT_CONSTRAINT }} pagination={false}>
         {props.tableColumnDisplaySettings &&
           props.tableColumnDisplaySettings.filter((columnDisplaySetting) => columnDisplaySetting.visible).map((columnDisplaySetting) => COLUMNS[columnDisplaySetting.columnKey])}
       </Table>

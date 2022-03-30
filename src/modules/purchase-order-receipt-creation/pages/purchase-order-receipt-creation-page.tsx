@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
+import { RouteComponentProps } from 'react-router-dom';
 import { Input, Button, Drawer, Form } from 'antd';
 import Title from 'antd/lib/typography/Title';
-import { SettingOutlined } from '@ant-design/icons';
+import { SettingOutlined, FormOutlined } from '@ant-design/icons';
 
 import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
 import { ITableColumnDisplaySettings } from '@dto/i-table-columns';
@@ -11,6 +12,8 @@ import { getSearchText, SearchEngine } from '@utils/search/native-search';
 import PurchaseOrderReceiptCreationRequestConstructor from '../components/request-constructor/request-constructor';
 import PurchaseOrderReceiptCreationTableDisplaySettings from '../components/table-column-display-settings/table-column-display-settings';
 import generateIndex from '../components/request-constructor/request-constructor-indexer';
+import PurchaseOrderReceiptCreationRequestRemarks from '../components/request-remark/request-remark';
+import PurchaseOrderReceiptHeaderInfo from '../components/receipt-header-info/receipt-header-info';
 import { setLoading } from '@module/shared/reducers/app-reducers';
 import { IWindowSize, useWindowResized } from '@hook/window-resized.hook';
 import { APP_HEADER_HEIGHT } from '@constant/display/header.constant';
@@ -18,37 +21,54 @@ import DEFAULT_PURCHASE_ORDER_RECEIPT_CREATION_TABLE_DISPLAY_SETTINGS from '@con
 import { APP_CONTENT_MARGIN } from '@constant/display/content.constant';
 import { PURCHASE_ORDER_RECEIPT_CREATION_BOTTOM_TOOLS_HEIGHT, PURCHASE_ORDER_RECEIPT_CREATION_TITLE_HEIGHT, PURCHASE_ORDER_RECEIPT_CREATION_TOP_TOOLS_HEIGHT } from '@constant/display/purchase-order-receipt-creation.constant';
 import { IPurchaseOrderItem } from '@dto/i-purchase-order-item.dto';
+import { getGrnReceiptWithVendorOutstandingPO, getOutstandingPurchaseOrder } from '@api/purchase-order.api';
 import { ApiResponseStatus } from '@constant/api-status.enum';
 
-interface IPurchaseOrderReceiptCreationPageProps extends StateProps, DispatchProps {}
+interface IPurchaseOrderReceiptCreationPageProps extends StateProps, DispatchProps, RouteComponentProps<{ vendorId: string, grnNo?: string }> {}
 
 const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPageProps> = (props: IPurchaseOrderReceiptCreationPageProps) => {
   const [submissionInProgress, setSubmissionInProgress] = useState<boolean>(false);
   const [purchaseOrderItem, setPurchaseOrderItem] = useState<IPurchaseOrderItem[]>();
+  const [searchResult, setSearchResult] = useState<IPurchaseOrderItem[]>();
+  const searchEngine: SearchEngine<IPurchaseOrderItem> = new SearchEngine([], generateIndex);
+  const [doNumber, setDONumber] = useState<string>('');
   const [remarks, setRemarks] = useState<string>('');
   const [reference, setReference] = useState<string>('');
+  const [showRemarksSider, setShowRemarksSider] = useState<boolean>(false);
   const [tableColumnDisplaySettings, setTableColumnDisplaySettings] = useState<ITableColumnDisplaySettings[]>();
   const [tableColumnDisplaySettingsUpdateTime, setTableColumnDisplaySettingsUpdateTime] = useState<Date>(new Date());
-  const [searchResult, setSearchResult] = useState<IPurchaseOrderItem[]>();
   const [showTableDisplaySettings, setShowTableDisplaySettings] = useState<boolean>(false);
-  const searchEngine: SearchEngine<IPurchaseOrderItem> = new SearchEngine([], generateIndex);
   const windowSize: IWindowSize = useWindowResized();
   const PURCHASE_ORDER_RECEIPT_CREATION_CONSTRUCTOR_WRAPPER_HEIGHT_CONSTRAINT: number =
     APP_HEADER_HEIGHT + APP_CONTENT_MARGIN + PURCHASE_ORDER_RECEIPT_CREATION_TITLE_HEIGHT + PURCHASE_ORDER_RECEIPT_CREATION_TOP_TOOLS_HEIGHT + PURCHASE_ORDER_RECEIPT_CREATION_BOTTOM_TOOLS_HEIGHT;
 
-    /* useEffect(() => {
-      const getOutstandingPurchaseOrderItemList = async () => {
-        const vendorID: string = '';
-        const apiResponse = await getOutstanfingPurchaseOrder(vendorID);
-  
-        if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
-          const deepCopy: IPurchaseOrderItem[] = CLONING_LIB.deepClone(apiResponse.data);
-          setPurchaseOrderItem(deepCopy);
-        }
-      };
-  
-      getOustandingPurchaseOrderItemList();
-    }, []); */
+  const { vendorId, grnNo } = props.match.params;
+
+  useEffect(() => {
+    const getGrnPOReceiptWithVendorOutstandingPO = async () => {
+      const apiResponse = await getGrnReceiptWithVendorOutstandingPO(vendorId, grnNo ?? '');
+
+      if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
+        const deepCopy: IPurchaseOrderItem[] = CLONING_LIB.deepClone(apiResponse.data);
+        setPurchaseOrderItem(deepCopy);
+      }
+    };
+
+    const getOutstandingPurchaseOrderItemList = async () => {
+      const apiResponse = await getOutstandingPurchaseOrder(vendorId);
+
+      if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
+        const deepCopy: IPurchaseOrderItem[] = CLONING_LIB.deepClone(apiResponse.data);
+        setPurchaseOrderItem(deepCopy);
+      }
+    };
+
+    if (grnNo != null && grnNo.trim() !== '') {
+      getGrnPOReceiptWithVendorOutstandingPO();
+    } else {
+      getOutstandingPurchaseOrderItemList();
+    }
+  }, [vendorId, grnNo]);
 
   useEffect(() => {
     const savedPurchaseOrderReceiptCreationTableDisplaySettings = localStorage.getItem('purchaseOrderReceiptCreationTableDisplaySettings');
@@ -95,6 +115,10 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
     setShowTableDisplaySettings(!showTableDisplaySettings);
   };
 
+  const openRemarksSider = () => {
+    setShowRemarksSider(!showRemarksSider);
+  }
+
   const submitPurchaseOrderReceiptCreation = async () => {
     setSubmissionInProgress(true);
     if (purchaseOrderItem) {
@@ -131,26 +155,21 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
           </div>
         </div>
 
-        <div>
-          {/* TODO: PO Receipt Header Information */}
-        </div>
-
-        <div className="row" style={{ height: `${PURCHASE_ORDER_RECEIPT_CREATION_TOP_TOOLS_HEIGHT}px` }}>
-          <div className="col-4 d-flex">
+        <div style={{ height: `${PURCHASE_ORDER_RECEIPT_CREATION_TOP_TOOLS_HEIGHT}px` }}>
+          <div>
+            {/* TODO: PO Receipt Header Information */}
+            <PurchaseOrderReceiptHeaderInfo
+              vendorId={vendorId}
+              doNumber={doNumber}
+              setDONumber={setDONumber}
+              grnNo={grnNo}
+            />
+          </div>
+          <div className="d-flex float-end">
             <Input.Search placeholder="Search" onSearch={handleSearch} allowClear></Input.Search>
+            <Button onClick={openRemarksSider} style={{ width: '50px' }} icon={<FormOutlined />}></Button>
             <Button onClick={openTableDisplaySettings} style={{ width: '50px' }} icon={<SettingOutlined />}></Button>
           </div>
-        </div>
-
-        <div>
-          <Form name="basic" layout="vertical" autoComplete="off">
-            <Form.Item label="Reference">
-              <Input.TextArea className="remarks-textbox" value={reference} onChange={(e) => setReference(e.target.value)} rows={3} placeholder="Reference here"></Input.TextArea>
-            </Form.Item>
-            <Form.Item label="Remarks">
-              <Input.TextArea className="remarks-textbox" value={remarks} onChange={(e) => setRemarks(e.target.value)} rows={3} placeholder="Remarks here"></Input.TextArea>
-            </Form.Item>
-          </Form>
         </div>
 
         <div
@@ -173,14 +192,12 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
             <Button type="primary" size="large" onClick={submitPurchaseOrderReceiptCreation} disabled={submissionInProgress}>
               Submit Receiving
             </Button>
-          </div>
-          <div className="col">
-            <Button type="primary" size="large" onClick={checkPurchaseOrderReceiptCreation} disabled={submissionInProgress}>
+            <Button className="mx-4 input-group-btn" type="default" size="large" onClick={checkPurchaseOrderReceiptCreation} disabled={submissionInProgress}>
               Check Receiving
             </Button>
           </div>
           <div className="col d-flex flex-column align-items-end">
-            <Button type="primary" size="large" onClick={completePurchaseOrderReceiptCreation} disabled={submissionInProgress}>
+            <Button className="mx-4 input-group-btn" type="default" size="large" onClick={completePurchaseOrderReceiptCreation} disabled={submissionInProgress}>
               Done
             </Button>
           </div>
@@ -189,6 +206,15 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
 
       <Drawer title="Column Settings" placement="right" onClose={openTableDisplaySettings} visible={showTableDisplaySettings}>
         <PurchaseOrderReceiptCreationTableDisplaySettings tableColumnDisplaySettings={tableColumnDisplaySettings} setTableColumnDisplaySettings={setTableColumnDisplaySettings} />
+      </Drawer>
+
+      <Drawer title="Remarks & Reference" placement="right" width="max-content" onClose={openRemarksSider} visible={showRemarksSider}>
+        <PurchaseOrderReceiptCreationRequestRemarks
+          remarks={remarks}
+          setRemarks={setRemarks}
+          reference={reference}
+          setReference={setReference}
+        />
       </Drawer>
     </>
   );

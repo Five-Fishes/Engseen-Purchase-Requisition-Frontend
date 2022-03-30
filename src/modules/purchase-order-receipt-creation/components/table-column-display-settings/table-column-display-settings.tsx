@@ -5,7 +5,7 @@ import Checkbox, { CheckboxChangeEvent } from 'antd/lib/checkbox/Checkbox';
 
 import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
 import { ITableColumnDisplaySettings } from '@dto/i-table-columns';
-import DEFAULT_PURCHASE_REQUISITION_REQUEST_TABLE_DISPLAY_SETTINGS from '@constant/purchase-requisition-request/purchase-requisition-request-table-display-settings';
+import DEFAULT_PURCHASE_ORDER_RECEIPT_CREATION_TABLE_DISPLAY_SETTINGS from '@constant/purchase-order-receipt-creation/purchase-order-receipt-creation-table-display-settings';
 import { popNotification } from '@module/shared/components/notification';
 import { NotificationType } from '@constant/notification.enum';
 import { Button } from 'antd';
@@ -28,8 +28,8 @@ const PurchaseOrderReceiptCreationTableDisplaySettings: React.FC<IPurchaseOrderR
       const parsedSavedPurchaseOrderReceiptCreationTableDisplaySettings: ITableColumnDisplaySettings[] = JSON.parse(savedPurchaseOrderReceiptCreationTableDisplaySettings);
       setTableColumnDisplaySettings(parsedSavedPurchaseOrderReceiptCreationTableDisplaySettings);
     } else {
-      setTableColumnDisplaySettings(DEFAULT_PURCHASE_REQUISITION_REQUEST_TABLE_DISPLAY_SETTINGS);
-      saveDisplaySettings(DEFAULT_PURCHASE_REQUISITION_REQUEST_TABLE_DISPLAY_SETTINGS);
+      setTableColumnDisplaySettings(DEFAULT_PURCHASE_ORDER_RECEIPT_CREATION_TABLE_DISPLAY_SETTINGS);
+      saveDisplaySettings(DEFAULT_PURCHASE_ORDER_RECEIPT_CREATION_TABLE_DISPLAY_SETTINGS);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -64,8 +64,8 @@ const PurchaseOrderReceiptCreationTableDisplaySettings: React.FC<IPurchaseOrderR
 
   const resetTableDisplaySettings = () => {
     localStorage.removeItem(TABLE_DISPLAY_SETTINGS_NAME);
-    setTableColumnDisplaySettings(DEFAULT_PURCHASE_REQUISITION_REQUEST_TABLE_DISPLAY_SETTINGS);
-    saveDisplaySettings(DEFAULT_PURCHASE_REQUISITION_REQUEST_TABLE_DISPLAY_SETTINGS);
+    setTableColumnDisplaySettings(DEFAULT_PURCHASE_ORDER_RECEIPT_CREATION_TABLE_DISPLAY_SETTINGS);
+    saveDisplaySettings(DEFAULT_PURCHASE_ORDER_RECEIPT_CREATION_TABLE_DISPLAY_SETTINGS);
   };
 
   const moveColumn = (item: ITableColumnDisplaySettings, moveIndex: number) => {

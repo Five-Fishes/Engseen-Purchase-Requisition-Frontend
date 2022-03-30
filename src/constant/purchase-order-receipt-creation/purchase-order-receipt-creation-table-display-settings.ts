@@ -68,18 +68,6 @@ const DEFAULT_PURCHASE_ORDER_RECEIPT_CREATION_TABLE_DISPLAY_SETTINGS: ITableColu
     visibilityEditable: true,
   },
   {
-    columnKey: 'issuedQuantity',
-    settingDisplayName: 'Issued Qty(kgs)',
-    visible: false,
-    visibilityEditable: true,
-  },
-  {
-    columnKey: 'issuedQuantityPack',
-    settingDisplayName: 'Issued Qty(packs)',
-    visible: false,
-    visibilityEditable: true,
-  },
-  {
     columnKey: 'uom',
     settingDisplayName: 'UOM (kgs)',
     visible: true,
@@ -90,6 +78,12 @@ const DEFAULT_PURCHASE_ORDER_RECEIPT_CREATION_TABLE_DISPLAY_SETTINGS: ITableColu
     settingDisplayName: 'UOM (packs)',
     visible: true,
     visibilityEditable: true,
+  },
+  {
+    columnKey: 'status',
+    settingDisplayName: 'Issue Receiving',
+    visible: true,
+    visibilityEditable: false,
   },
 ];
 

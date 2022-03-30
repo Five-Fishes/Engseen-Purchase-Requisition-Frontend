@@ -7,6 +7,14 @@ export async function createPurchaseOrderReceiptHeader(purchaseReceiptHeader: IP
     return await axios.post<IPurchaseOrderReceiptHeader>(`${PURCHASE_ORDER_RECEIPT_HEADER}`, purchaseReceiptHeader);
 }
 
+export async function createPurchaseOrderReceiptHeaderByVendorId(vendorId: string) {
+    return await axios.post<IPurchaseOrderReceiptHeader>(`${PURCHASE_ORDER_RECEIPT_HEADER}/${vendorId}`);
+}
+
 export async function createPurchaseOrderReceipts(purchaseReceiptItems: IPurchaseOrderReceiptItem) {
     return await axios.post<IPurchaseOrderReceiptItem>(`${PURCHASE_ORDER_RECEIPT_ITEM}`, purchaseReceiptItems);
+}
+
+export async function getPurchaseOrderReceiptHeaderByGrnNo(grnNo: string) {
+    return await axios.get<IPurchaseOrderReceiptHeader>(`${PURCHASE_ORDER_RECEIPT_HEADER}/${grnNo}`);
 }

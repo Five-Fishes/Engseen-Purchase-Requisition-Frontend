@@ -1,6 +1,6 @@
-import { IPurchaseOrderItem } from '@dto/i-purchase-order-item.dto';
+import { IPurchaseOrderReceiptItem } from '@dto/i-purchase-order-receipt-item.dto';
 
-export default function generateIndex(purchaseOrderItem: IPurchaseOrderItem): string {
-  const searchIndex = JSON.stringify(purchaseOrderItem);
+export default function generateIndex(purchaseOrderReceiptItem: IPurchaseOrderReceiptItem): string {
+  const searchIndex = JSON.stringify(purchaseOrderReceiptItem);
   return searchIndex.replace(/\s+/g, '').toLowerCase();
 }

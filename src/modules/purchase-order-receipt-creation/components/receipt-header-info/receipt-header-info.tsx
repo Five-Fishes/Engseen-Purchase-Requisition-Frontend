@@ -58,7 +58,7 @@ const PurchaseOrderReceiptHeaderInfo: React.FC<IPurchaseOrderReceiptHeaderInfoPr
         </div>
         <div>
           <strong>PO Receipt Created</strong>: {grnNo ?? poReceiptHeader?.grnNo}<br/>
-          <strong>Date</strong>: {convertToLocalString(poReceiptHeader?.grnDate)}<br/>
+          <strong>Date</strong>: {poReceiptHeader ? convertToLocalString(poReceiptHeader.grnDate) : ''}<br/>
           <strong>Vendor</strong>: {vendorId} {poReceiptHeader?.vendorName}<br/>
         </div>
       </div>

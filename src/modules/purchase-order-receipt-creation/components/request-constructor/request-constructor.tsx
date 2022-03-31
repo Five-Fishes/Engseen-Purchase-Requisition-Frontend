@@ -1,11 +1,8 @@
 import './request-constructor.less';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Table from 'antd/lib/table';
-import { Button, Popconfirm, Popover } from 'antd';
+import { Button } from 'antd';
 
-import { TABLE_PAGINATION_CONFIG } from '@constant/pagination-config';
-import { IPurchaseRequisitionTemplate } from '@dto/i-purchase-requisition-template.dto';
-import { IPurchaseRequisitionTemplateItem } from '@dto/i-purchase-requisition-template-item.dto';
 import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
 import { ChangeEvent } from '@constant/change-event.enum';
 import { ITableColumn, ITableColumnDisplaySettings } from '@dto/i-table-columns';
@@ -16,10 +13,12 @@ import { PURCHASE_REQUISITION_BOTTOM_TOOLS_HEIGHT, PURCHASE_REQUISITION_TITLE_HE
 import { TABLE_PAGINATION_TOOLS_HEIGHT, TABLE_HEADER_HEIGHT } from '@constant/display/table.constant';
 import { PurchaseOrderReceiptItemStatus, PurchaseOrderReceiptItemStatusDisplayText } from '@constant/purchase-order-receipt-item-status.enum';
 import { IPurchaseOrderReceiptItem } from '@dto/i-purchase-order-receipt-item.dto';
-import { IPurchaseOrderItem } from '@dto/i-purchase-order-item.dto';
+import StatefulNumberInput from '@module/shared/components/stateful-input/stateful-number-input/stateful-number-input';
+import { PurchaseRequisitionApprovalStatus } from '@constant/purchase-requisition-approval-status.enum';
 
 interface IPurchaseOrderReceiptCreationRequestConstructorProps {
-  readonly searchResult?: IPurchaseOrderItem[];
+  readonly searchResult?: IPurchaseOrderReceiptItem[];
+  updatePurchaseOrderReceiptItem: (purchaseOrderReceiptItemList: IPurchaseOrderReceiptItem[]) => void;
   tableColumnDisplaySettings?: ITableColumnDisplaySettings[];
   tableColumnDisplaySettingsUpdateTime: Date;
 }
@@ -35,6 +34,7 @@ interface IPurchaseOrderReceiptCreationRequestConstructorProps {
  */
 const PurchaseOrderReceiptCreationRequestConstructor: React.FC<IPurchaseOrderReceiptCreationRequestConstructorProps> = (props) => {
 
+  const { searchResult, updatePurchaseOrderReceiptItem } = props;
   const windowSize: IWindowSize = useWindowResized();
   const TABLE_BODY_MAX_HEIHGT_CONSTRAINT: number =
     APP_HEADER_HEIGHT +
@@ -59,26 +59,27 @@ const PurchaseOrderReceiptCreationRequestConstructor: React.FC<IPurchaseOrderRec
             break;
         }
         // TODO: Update Item Status
-        /* const updatedApproval = updateData(props.selectedPurchaseRequisitionApproval, udpatedValue, item, 'status');
-        updatePurchaseRequisitionApproval(updatedApproval); */
+        const updatedList = updateData(udpatedValue, item, 'status');
+        updatePurchaseOrderReceiptItem(updatedList);
     };
 
-    const updateData: (selectedPurchaseRequisitionApproval: IPurchaseRequisitionTemplate, value: any, record: IPurchaseRequisitionTemplateItem, key: string) => IPurchaseRequisitionTemplate = (
-        selectedPurchaseRequisitionApproval,
-        value,
-        record,
-        key
+    const updateData: (value: any, record: IPurchaseOrderReceiptItem, key: string) => IPurchaseOrderReceiptItem[] = (
+      value,
+      record,
+      key
     ) => {
-        const idToUpdate = record.id;
-        const updatedSelectedPurchaseRequisitionApprovalItems = selectedPurchaseRequisitionApproval.purchaseRequisitionTemplateItemList.map((item) => {
-        if (item.id === idToUpdate) {
-            (item as any)[key] = value;
-        }
-        return item;
-        });
-        const updatedSelectedPurchaseRequisitionApproval = CLONING_LIB.deepClone(selectedPurchaseRequisitionApproval);
-        updatedSelectedPurchaseRequisitionApproval.purchaseRequisitionTemplateItemList = updatedSelectedPurchaseRequisitionApprovalItems;
-        return updatedSelectedPurchaseRequisitionApproval;
+      if (searchResult === undefined) {
+        return [];
+      }
+      const idToUpdate = record.id;
+      const updatedPurchaseOrderItemList = searchResult.map((item) => {
+      if (item.id === idToUpdate) {
+        (item as any)[key] = value;
+      }
+      return item;
+      });
+      const updatedPurchaseOrderItemListCopy = CLONING_LIB.deepClone(updatedPurchaseOrderItemList);
+      return updatedPurchaseOrderItemListCopy;
     };
 
   /**
@@ -88,7 +89,7 @@ const PurchaseOrderReceiptCreationRequestConstructor: React.FC<IPurchaseOrderRec
    * @param key the key of the modified field (to perform modifying logic)
    * @param index the index of current row (against table)
    */
-  /* const dataChanged: (changeEventType: ChangeEvent, changeEvent: any, record: IPurchaseRequisitionTemplateItem, key: string, index: number) => void = (
+  const dataChanged: (changeEventType: ChangeEvent, changeEvent: any, record: IPurchaseOrderReceiptItem, key: string, index: number) => void = (
     changeEventType,
     changeEvent,
     record,
@@ -108,9 +109,6 @@ const PurchaseOrderReceiptCreationRequestConstructor: React.FC<IPurchaseOrderRec
       case ChangeEvent.NUMBER_INPUT:
         valueToUpdate = changeEvent;
         break;
-      case ChangeEvent.DATE_TIME:
-        valueToUpdate = changeEvent ? (changeEvent as Moment).toDate() : undefined;
-        break;
       case ChangeEvent.TEXT_INPUT:
         valueToUpdate = changeEvent.target.value;
         break;
@@ -119,11 +117,11 @@ const PurchaseOrderReceiptCreationRequestConstructor: React.FC<IPurchaseOrderRec
         break;
     }
 
-    if (props.currentTemplate) {
-      const updatedSelectedPurchaseRequisitionApproval = updateData(props.currentTemplate, valueToUpdate, record, key);
-      updateTemplate(updatedSelectedPurchaseRequisitionApproval);
+    if (searchResult) {
+      const updatedList = updateData(valueToUpdate, record, key);
+      updatePurchaseOrderReceiptItem(updatedList);
     }
-  }; */
+  };
 
   /**
    * Add column display settings updated time stamp to the tail of column keys to ensure columns are always refreshed after settings updated
@@ -138,12 +136,40 @@ const PurchaseOrderReceiptCreationRequestConstructor: React.FC<IPurchaseOrderRec
     orderQuantityPack: <Table.Column title="Ordered Qty(packs)" width="100px" dataIndex="orderQuantityPack" key={`orderQtyPack-${CURRENT_TIME}`} />,
     receivedQuantityPack: <Table.Column title="Received Qty(packs)" width="100px" dataIndex="receivedQuantityPack" key={`receivedQtyPack-${CURRENT_TIME}`} />,
     openQuantityPack: <Table.Column title="Open Qty(packs)" width="100px" dataIndex="openQuantityPack" key={`openQtyPack-${CURRENT_TIME}`} />,
-    receivingQuantityPack: <Table.Column title="Receiving Qty(packs)" width="100px" dataIndex="receivingQuantityPack" key={`receivingQtyPack-${CURRENT_TIME}`} />,
+    receivingQuantityPack: (
+      <Table.Column
+        title="Receiving Qty(packs)"
+        width="100px"
+        dataIndex="receivingQuantityPack"
+        key={`receivingQtyPack-${CURRENT_TIME}`}
+        render={(value, record: IPurchaseOrderReceiptItem, index: number) => {
+          return <StatefulNumberInput
+            state={record.status === PurchaseOrderReceiptItemStatus.PENDING ? PurchaseRequisitionApprovalStatus.TO_CONFIRM : PurchaseRequisitionApprovalStatus.CONFIRMED }
+            value={value}
+            onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, 'recevingQuantityPack', index)}
+          />;
+        }}
+      />
+    ),
     uomPack: <Table.Column title="UOM (packs)" width="60px" dataIndex="uomPack" key={`uomPack-${CURRENT_TIME}`} />,
     orderQuantity: <Table.Column title="Ordered Qty(kgs)" width="110px" dataIndex="orderQuantity" key={`orderQty-${CURRENT_TIME}`} />,
     receivedQuantity: <Table.Column title="Received Qty(kgs)" width="110px" dataIndex="receivedQuantity" key={`receivedQty-${CURRENT_TIME}`} />,
     openQuantity: <Table.Column title="Open Qty(kgs)" width="110px" dataIndex="openQuantity" key={`openQty-${CURRENT_TIME}`} />,
-    receivingQuantity: <Table.Column title="Receiving Qty(kgs)" width="110px" dataIndex="receivingQuantity" key={`receivingQty-${CURRENT_TIME}`} />,
+    receivingQuantity: (
+      <Table.Column
+        title="Receiving Qty(kgs)"
+        width="110px"
+        dataIndex="receivingQuantity"
+        key={`receivingQty-${CURRENT_TIME}`}
+        render={(value, record: IPurchaseOrderReceiptItem, index: number) => {
+          return <StatefulNumberInput
+            state={record.status === PurchaseOrderReceiptItemStatus.PENDING ? PurchaseRequisitionApprovalStatus.TO_CONFIRM : PurchaseRequisitionApprovalStatus.CONFIRMED }
+            value={value}
+            onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, 'recevingQuantity', index)}
+          />;
+        }}
+      />
+    ),
     uom: <Table.Column title="UOM (kgs)" width="60px" dataIndex="uom" key={`uom-${CURRENT_TIME}`} />,
     status: (
       <Table.Column

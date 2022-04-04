@@ -9,12 +9,25 @@ import { Button, Input } from 'antd';
 import Title from 'antd/lib/typography/Title';
 import { AxiosResponse } from 'axios';
 import { useEffect, useState } from 'react';
+import { getSearchText, SearchEngine } from '@utils/search/native-search';
 import OutstandingPurchaseOrderTable from '../components/outstanding-purchase-order-table';
+import OutstandingPurchaseOrderTableColumnSetting from '../components/outstanding-purchase-order-table-column-setting';
+import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
 
 interface IOutstandingPurchaseOrderPageProps {}
+
+const purchaseOrderItemSearchIndexer = (items: IPurchaseOrderItem) => {
+  const str = JSON.stringify(items);
+  return getSearchText(str).toLowerCase();
+};
+
 const OutstandingPurchaseOrderPage: React.FC<IOutstandingPurchaseOrderPageProps> = (props) => {
+  const searchEngine = new SearchEngine<IPurchaseOrderItem>([], purchaseOrderItemSearchIndexer);
+  const [searchText, setSearchText] = useState<string>('');
   const [outstandingPurchaseOrder, setOutstandingPurchaseOrder] = useState<IPurchaseOrderItem[]>();
-  const [outstandingPurchaseOrderSearchResult, setOutstandingPurchaseOrderSearchResult] = useState<IPurchaseOrderItem[]>();
+  const [outstandingPurchaseOrderSearchResult, setOutstandingPurchaseOrderSearchResult] = useState<IPurchaseOrderItem[]>([]);
+  const [outstandingPurchaseOrderTableColumnSetting, setOutstandingPurchaseOrderTableColumnSetting] = useState<[]>([]);
+  const [outstandingPurchaseOrderTableColumnSettingVisible, setOutstandingPurchaseOrderTableColumnSettingVisible] = useState<boolean>(false);
 
   /**
    * Initialise table data
@@ -43,28 +56,47 @@ const OutstandingPurchaseOrderPage: React.FC<IOutstandingPurchaseOrderPageProps>
    * Trigger local search whenever api refetch happens
    */
   useEffect(() => {
-    setOutstandingPurchaseOrderSearchResult(outstandingPurchaseOrder);
-  }, [outstandingPurchaseOrder]);
+    if (outstandingPurchaseOrder) {
+      const searchResult = searchEngine.updateEngine(outstandingPurchaseOrder).search(searchText);
+      setOutstandingPurchaseOrderSearchResult(CLONING_LIB.deepClone(searchResult));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [outstandingPurchaseOrder, searchText]);
+
+  const onSearch = (value: string) => {
+    setSearchText(getSearchText(value));
+  };
 
   return (
-    <div className="container-fluid">
-      <div className="row">
-        <div className="col">
-          <Title level={4}>Outstanding Purchase Order</Title>
+    <>
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col">
+            <Title level={4}>Outstanding Purchase Order</Title>
+          </div>
+          <div className="col d-flex flex-column align-items-end">
+            <div className="d-flex">
+              <Input.Search placeholder="Search" onSearch={onSearch} allowClear></Input.Search>
+              <Button onClick={() => {}} style={{ width: '50px' }} icon={<SettingOutlined />}></Button>
+            </div>
+          </div>
         </div>
-        <div className="col d-flex flex-column align-items-end">
-          <div className="d-flex">
-            <Input.Search placeholder="Search" onSearch={() => {}} allowClear></Input.Search>
-            <Button onClick={() => {}} style={{ width: '50px' }} icon={<SettingOutlined />}></Button>
+        <div className="row">
+          <div className="col">
+            <OutstandingPurchaseOrderTable
+              outstandingPurchaseOrderSearchResult={outstandingPurchaseOrderSearchResult}
+              outstandingPurchaseOrderTableColumnSetting={outstandingPurchaseOrderTableColumnSetting}
+            />
           </div>
         </div>
       </div>
-      <div className="row">
-        <div className="col">
-          <OutstandingPurchaseOrderTable outstandingPurchaseOrderSearchResult={outstandingPurchaseOrderSearchResult} />
-        </div>
-      </div>
-    </div>
+      <OutstandingPurchaseOrderTableColumnSetting
+        visible={outstandingPurchaseOrderTableColumnSettingVisible}
+        setVisible={setOutstandingPurchaseOrderTableColumnSettingVisible}
+        outstandingPurchaseOrderTableColumnSetting={outstandingPurchaseOrderTableColumnSetting}
+        setOutstandingPurchaseOrderTableColumnSetting={setOutstandingPurchaseOrderTableColumnSetting}
+      />
+    </>
   );
 };
 

@@ -3,6 +3,7 @@ import { Table } from 'antd';
 
 interface IOutstandingPurchaseOrderTableProps {
   outstandingPurchaseOrderSearchResult?: IPurchaseOrderItem[];
+  outstandingPurchaseOrderTableColumnSetting: any;
 }
 
 const OutstandingPurchaseOrderTable: React.FC<IOutstandingPurchaseOrderTableProps> = (props) => {

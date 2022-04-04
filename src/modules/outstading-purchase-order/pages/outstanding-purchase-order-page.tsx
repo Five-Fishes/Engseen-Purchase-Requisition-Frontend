@@ -10,9 +10,8 @@ import Title from 'antd/lib/typography/Title';
 import { AxiosResponse } from 'axios';
 import { useEffect, useState } from 'react';
 import { getSearchText, SearchEngine } from '@utils/search/native-search';
-import OutstandingPurchaseOrderTable from '../components/outstanding-purchase-order-table';
-import OutstandingPurchaseOrderTableColumnSetting from '../components/outstanding-purchase-order-table-column-setting';
 import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
+import OutstandingPurchaseOrderTable from '../components/outstanding-purchase-order-table';
 
 interface IOutstandingPurchaseOrderPageProps {}
 
@@ -26,7 +25,6 @@ const OutstandingPurchaseOrderPage: React.FC<IOutstandingPurchaseOrderPageProps>
   const [searchText, setSearchText] = useState<string>('');
   const [outstandingPurchaseOrder, setOutstandingPurchaseOrder] = useState<IPurchaseOrderItem[]>();
   const [outstandingPurchaseOrderSearchResult, setOutstandingPurchaseOrderSearchResult] = useState<IPurchaseOrderItem[]>([]);
-  const [outstandingPurchaseOrderTableColumnSetting, setOutstandingPurchaseOrderTableColumnSetting] = useState<[]>([]);
   const [outstandingPurchaseOrderTableColumnSettingVisible, setOutstandingPurchaseOrderTableColumnSettingVisible] = useState<boolean>(false);
 
   /**
@@ -77,7 +75,13 @@ const OutstandingPurchaseOrderPage: React.FC<IOutstandingPurchaseOrderPageProps>
           <div className="col d-flex flex-column align-items-end">
             <div className="d-flex">
               <Input.Search placeholder="Search" onSearch={onSearch} allowClear></Input.Search>
-              <Button onClick={() => {}} style={{ width: '50px' }} icon={<SettingOutlined />}></Button>
+              <Button
+                onClick={() => {
+                  setOutstandingPurchaseOrderTableColumnSettingVisible(!outstandingPurchaseOrderTableColumnSettingVisible);
+                }}
+                style={{ width: '50px' }}
+                icon={<SettingOutlined />}
+              ></Button>
             </div>
           </div>
         </div>
@@ -85,17 +89,12 @@ const OutstandingPurchaseOrderPage: React.FC<IOutstandingPurchaseOrderPageProps>
           <div className="col">
             <OutstandingPurchaseOrderTable
               outstandingPurchaseOrderSearchResult={outstandingPurchaseOrderSearchResult}
-              outstandingPurchaseOrderTableColumnSetting={outstandingPurchaseOrderTableColumnSetting}
+              outstandingPurchaseOrderTableColumnSettingVisible={outstandingPurchaseOrderTableColumnSettingVisible}
+              setOutstandingPurchaseOrderTableColumnSettingVisible={setOutstandingPurchaseOrderTableColumnSettingVisible}
             />
           </div>
         </div>
       </div>
-      <OutstandingPurchaseOrderTableColumnSetting
-        visible={outstandingPurchaseOrderTableColumnSettingVisible}
-        setVisible={setOutstandingPurchaseOrderTableColumnSettingVisible}
-        outstandingPurchaseOrderTableColumnSetting={outstandingPurchaseOrderTableColumnSetting}
-        setOutstandingPurchaseOrderTableColumnSetting={setOutstandingPurchaseOrderTableColumnSetting}
-      />
     </>
   );
 };

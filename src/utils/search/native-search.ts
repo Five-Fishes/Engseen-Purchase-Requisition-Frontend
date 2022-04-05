@@ -32,6 +32,7 @@ export class SearchEngine<T> {
   }
 }
 
+// TODO: [LU] rename to --> remove white space
 export function getSearchText(searchInput: string): string {
   return searchInput.replace(/\s+/g, '');
 }

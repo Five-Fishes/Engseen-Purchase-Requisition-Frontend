@@ -11,6 +11,7 @@ import PurchaseRequisitionRequestPage from './purchase-requisition-request/pages
 import PurchaseRequisitionApprovalPage from './purchase-requisition-approval/pages/purchase-requisition-approval-page';
 import PurchaseRequisitionSubmissionPage from './purchase-requisition-submissioin-record/pages/purchase-requisition-submission-page';
 import PurchaseOrderPage from './purchase-order/pages/purchase-order-page';
+import OutstandingPurchaseOrderPage from './outstading-purchase-order/pages/outstanding-purchase-order-page';
 import PurchaseOrderReceiptRecordPage from './purchase-order-receipt-record/pages/purchase-order-receipt-record-page';
 import { UserAuthority } from '@constant/user-authority.enum';
 
@@ -24,6 +25,7 @@ const Routes: React.FC = () => {
       <PostLogInRoute authority={UserAuthority.ADMIN} path="/purchase-requisition-submission-record" component={PurchaseRequisitionSubmissionPage} />
       <PostLogInRoute authority={UserAuthority.ADMIN} path="/purchase-requisition-approval" component={PurchaseRequisitionApprovalPage} />
       <PostLogInRoute authority={UserAuthority.ADMIN} path="/purchase-order" component={PurchaseOrderPage} />
+      <PostLogInRoute authority={UserAuthority.ADMIN} path="/outstanding-purchase-order" component={OutstandingPurchaseOrderPage} />
       <PostLogInRoute authority={UserAuthority.ADMIN} path="/purchase-order-receipt-record" component={PurchaseOrderReceiptRecordPage} />
     </SwitchWithFallback>
   );

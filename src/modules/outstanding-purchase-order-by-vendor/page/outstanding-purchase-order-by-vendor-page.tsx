@@ -1,4 +1,5 @@
 import { SettingOutlined, StarOutlined } from '@ant-design/icons';
+import { createFavouriteVendor } from '@api/favourite-vendor.api';
 import { getOutstandingPurchaseOrder } from '@api/purchase-order.api';
 import { ApiResponseStatus } from '@constant/api-status.enum';
 import { NotificationType } from '@constant/notification.enum';
@@ -66,6 +67,21 @@ const OutstandingPurchaseOrderByVendorPage: React.FC<{}> = () => {
     setSearchText(getSearchText(value));
   };
 
+  const onMarkAsFavouriteVendorClicked = async () => {
+    if (selectedVendorID) {
+      try {
+        const res = await createFavouriteVendor(selectedVendorID);
+        if (res.status === ApiResponseStatus.SUCCESS) {
+          popNotification('Successfully Added as Favourite Vendor', NotificationType.success);
+        } else {
+          popNotification(generateErrorMessage(res.status), NotificationType.error);
+        }
+      } catch (error) {
+        popNotification(`${error}`, NotificationType.error);
+      }
+    }
+  };
+
   return (
     <>
       <div className="container-fluid">
@@ -77,13 +93,14 @@ const OutstandingPurchaseOrderByVendorPage: React.FC<{}> = () => {
             <div className="d-flex w-100">
               <VendorDebounceSelect selectedVendor={selectedVendorID} setSelectedVendor={setSelectedVendorID}></VendorDebounceSelect>
               <div style={{ width: 5 }}></div>
-              <Button onClick={() => setFavouriteVendortVisible(true)} style={{ width: '50px' }} icon={<StarOutlined />}></Button>
+              <Button onClick={onMarkAsFavouriteVendorClicked} style={{ width: '50px' }} icon={<StarOutlined />}></Button>
             </div>
           </div>
           <div className="col d-flex flex-column align-items-end">
             <div className="d-flex">
               <Input.Search placeholder="Search" onSearch={onSearch} allowClear></Input.Search>
               <Button onClick={() => setTableSettingVisible(true)} style={{ width: '50px' }} icon={<SettingOutlined />}></Button>
+              <Button onClick={() => setFavouriteVendortVisible(true)}>Fav. Vendors</Button>
             </div>
           </div>
         </div>

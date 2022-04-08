@@ -23,20 +23,26 @@ const FavouriteVendorDrawer: React.FC<IFavouriteVendorDrawerProps> = (props) => 
   };
 
   const [favouriteVendorList, setFavouriteVendorList] = useState<IFavouriteVendor[]>([]);
+
   useEffect(() => {
-    (async () => {
-      try {
-        const getFavouriteVendorRes = await getFavouriteVendor();
-        if (getFavouriteVendorRes.status === ApiResponseStatus.SUCCESS) {
-          setFavouriteVendorList(getFavouriteVendorRes.data);
-        } else {
-          popNotification(generateErrorMessage(getFavouriteVendorRes.status), NotificationType.error);
+    /**
+     * Only refetch when drawer opens
+     */
+    if (visible) {
+      (async () => {
+        try {
+          const getFavouriteVendorRes = await getFavouriteVendor();
+          if (getFavouriteVendorRes.status === ApiResponseStatus.SUCCESS) {
+            setFavouriteVendorList(getFavouriteVendorRes.data);
+          } else {
+            popNotification(generateErrorMessage(getFavouriteVendorRes.status), NotificationType.error);
+          }
+        } catch (error) {
+          popNotification(`${error}`, NotificationType.error);
         }
-      } catch (error) {
-        popNotification(`${error}`, NotificationType.error);
-      }
-    })();
-  }, []);
+      })();
+    }
+  }, [visible]);
 
   return (
     <>

@@ -45,9 +45,10 @@ export const GET_COMPONENT_BY_SEARCH: RegExp = new RegExp(`${COMPONENT}*`);
 /**
  * Item Master
  */
- export const ITEM_MASTER: string = 'item-master';
+export const ITEM_MASTER: string = 'item-master';
 
- /**
+/**
  * Item Master
  */
- export const VENDOR_MASTER: string = 'vendor-master';
+export const VENDOR_MASTER: string = 'vendor-master';
+export const FAVOURITE_VENDOR: string = 'favourite-vendor';

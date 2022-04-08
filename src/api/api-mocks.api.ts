@@ -9,6 +9,7 @@ import {
   GET_COMPONENT_BY_SEARCH,
   PURCHASE_ORDER_OUTSTANDING_ITEM,
   LOGIN,
+  FAVOURITE_VENDOR,
 } from '@constant/api-endpoints';
 import { IPurchaseRequisitionRequest } from '@dto/i-purchase-requisition-request.dto';
 import { IPurchaseRequisitionTemplate } from '@dto/i-purchase-requisition-template.dto';
@@ -17,6 +18,7 @@ import { IPurchaseApprovalOrder } from '@dto/i-purchase-approval-order.dto';
 import { IPurchaseRequisitionApproval } from '@dto/i-purchase-requisition-approval.dto';
 import { PurchaseRequisitionApprovalStatus } from '@constant/purchase-requisition-approval-status.enum';
 import { IPurchaseOrderItem } from '@dto/i-purchase-order-item.dto';
+import { IFavouriteVendor } from '@dto/i-favourite-vendor.dto';
 
 let mock: MockAdapter;
 if (process.env.REACT_APP_MOCK === 'enabled') {
@@ -3296,6 +3298,21 @@ if (process.env.REACT_APP_MOCK === 'enabled') {
     })()
   );
 
+  mock.onGet(FAVOURITE_VENDOR).reply<IFavouriteVendor[]>(
+    200,
+    (() => {
+      const lst: IFavouriteVendor[] = [];
+      for (let index = 0; index < 10; index++) {
+        lst.push({
+          id: index,
+          vendorId: `Vendor ${index + 1}`,
+          createdBy: '',
+          createdDate: new Date(),
+        });
+      }
+      return lst;
+    })()
+  );
   mock.onPost(LOGIN).reply<string>(200, 'ADMIN');
 
   console.log(mock);

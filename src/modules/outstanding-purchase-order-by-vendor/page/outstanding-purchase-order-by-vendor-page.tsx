@@ -3,6 +3,7 @@ import { getOutstandingPurchaseOrder } from '@api/purchase-order.api';
 import { ApiResponseStatus } from '@constant/api-status.enum';
 import { NotificationType } from '@constant/notification.enum';
 import { IPurchaseOrderItem } from '@dto/i-purchase-order-item.dto';
+import VendorDebounceSelect from '@module/purchase-requisition-template/components/vendor-debounce-select';
 import { popNotification } from '@module/shared/components/notification';
 import { generateErrorMessage } from '@utils/api/api-error-handler';
 import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
@@ -24,7 +25,7 @@ const OutstandingPurchaseOrderByVendorPage: React.FC<{}> = () => {
   const searchEngine = new SearchEngine<IPurchaseOrderItem>([], purchaseOrderItemSearchIndexer);
   const [tableSettingVisible, setTableSettingVisible] = useState<boolean>(false);
   const [favouriteVendortVisible, setFavouriteVendortVisible] = useState<boolean>(false);
-  const [selectedFavouriteVendorID, setSelectedFavouriteVendorID] = useState<string>();
+  const [selectedVendorID, setSelectedVendorID] = useState<string>();
   const [outstandingPurchaseOrder, setOutstandingPurchaseOrder] = useState<IPurchaseOrderItem[]>();
   const [outstandingPurchaseOrderSearchResult, setOutstandingPurchaseOrderSearchResult] = useState<IPurchaseOrderItem[]>([]);
   const [poReceiptDate, setPoReceiptDate] = useState<Date>(new Date());
@@ -36,7 +37,7 @@ const OutstandingPurchaseOrderByVendorPage: React.FC<{}> = () => {
   useEffect(() => {
     (async () => {
       try {
-        const outstandingPurchaseOrderResponse: AxiosResponse<IPurchaseOrderItem[]> = await getOutstandingPurchaseOrder();
+        const outstandingPurchaseOrderResponse: AxiosResponse<IPurchaseOrderItem[]> = await getOutstandingPurchaseOrder(selectedVendorID);
         if (outstandingPurchaseOrderResponse) {
           if (outstandingPurchaseOrderResponse.status === ApiResponseStatus.SUCCESS) {
             setOutstandingPurchaseOrder(outstandingPurchaseOrderResponse.data);
@@ -51,7 +52,7 @@ const OutstandingPurchaseOrderByVendorPage: React.FC<{}> = () => {
         popNotification('No response from server!! Please check is server live and running 📡📡📡', NotificationType.error);
       }
     })();
-  }, []);
+  }, [selectedVendorID]);
 
   useEffect(() => {
     if (outstandingPurchaseOrder) {
@@ -74,7 +75,7 @@ const OutstandingPurchaseOrderByVendorPage: React.FC<{}> = () => {
           </div>
           <div className="col d-flex flex-column align-items-end">
             <div className="d-flex w-100">
-              <Input value={selectedFavouriteVendorID}></Input>
+              <VendorDebounceSelect selectedVendor={selectedVendorID} setSelectedVendor={setSelectedVendorID}></VendorDebounceSelect>
               <div style={{ width: 5 }}></div>
               <Button onClick={() => setFavouriteVendortVisible(true)} style={{ width: '50px' }} icon={<StarOutlined />}></Button>
             </div>
@@ -104,7 +105,7 @@ const OutstandingPurchaseOrderByVendorPage: React.FC<{}> = () => {
           </div>
         </div>
       </div>
-      <FavouriteVendorDrawer visible={favouriteVendortVisible} setVisible={setFavouriteVendortVisible} setSelectedFavouriteVendorID={setSelectedFavouriteVendorID} />
+      <FavouriteVendorDrawer visible={favouriteVendortVisible} setVisible={setFavouriteVendortVisible} setSelectedFavouriteVendorID={setSelectedVendorID} />
     </>
   );
 };

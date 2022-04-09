@@ -62,6 +62,11 @@ const AppSider: React.FC<IAppSider> = (props) => {
               Outstanding Purchase Order
             </Link>
           </Menu.Item>
+          <Menu.Item key="7" icon={<FileSyncOutlined />}>
+            <Link className="router-link" to="/outstanding-purchase-order-by-vendor">
+              Outstanding Purchase Order By Vendor
+            </Link>
+          </Menu.Item>
           <Menu.Item key="9" icon={<DatabaseOutlined />}>
             <Link className="router-link" to="/purchase-order-receipt-record">
               PO Receipt Record

@@ -14,6 +14,7 @@ import PurchaseOrderPage from './purchase-order/pages/purchase-order-page';
 import OutstandingPurchaseOrderPage from './outstading-purchase-order/pages/outstanding-purchase-order-page';
 import OutstandingPurchaseOrderByVendorPage from './outstanding-purchase-order-by-vendor/page/outstanding-purchase-order-by-vendor-page';
 import PurchaseOrderReceiptRecordPage from './purchase-order-receipt-record/pages/purchase-order-receipt-record-page';
+import PurchaseOrderReceiptCreationPage from './purchase-order-receipt-creation/pages/purchase-order-receipt-creation-page';
 import { UserAuthority } from '@constant/user-authority.enum';
 
 const Routes: React.FC = () => {
@@ -29,6 +30,7 @@ const Routes: React.FC = () => {
       <PostLogInRoute authority={UserAuthority.ADMIN} path="/outstanding-purchase-order" component={OutstandingPurchaseOrderPage} />
       <PostLogInRoute authority={UserAuthority.ADMIN} path="/outstanding-purchase-order-by-vendor" component={OutstandingPurchaseOrderByVendorPage} />
       <PostLogInRoute authority={UserAuthority.ADMIN} path="/purchase-order-receipt-record" component={PurchaseOrderReceiptRecordPage} />
+      <PostLogInRoute authority={UserAuthority.ADMIN} path="/purchase-order-receipt-creation/:vendorId/:grnNo?" component={PurchaseOrderReceiptCreationPage} />
     </SwitchWithFallback>
   );
 };

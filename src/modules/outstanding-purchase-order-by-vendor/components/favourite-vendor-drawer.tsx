@@ -49,7 +49,7 @@ const FavouriteVendorDrawer: React.FC<IFavouriteVendorDrawerProps> = (props) => 
       <Drawer placement="right" visible={visible} title="Favourite Vendor" onClose={closeDrawer} width={400}>
         {favouriteVendorList.map((favouriteVendor) => {
           return (
-            <Button className="w-100 m-1" onClick={() => onSelectVendor(favouriteVendor)}>
+            <Button key={favouriteVendor.id} className="w-100 m-1" onClick={() => onSelectVendor(favouriteVendor)}>
               {favouriteVendor.vendorId}
             </Button>
           );

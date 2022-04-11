@@ -5,7 +5,6 @@ import { QueryParamsBuilder } from '@utils/api/query-params-builder';
 import { PURCHASE_ORDER, PURCHASE_ORDER_DOWNLOAD, PURCHASE_ORDER_OUTSTANDING_ITEM } from '@constant/api-endpoints';
 import { IPurchaseApprovalOrder } from '@dto/i-purchase-approval-order.dto';
 import { IPurchaseOrderItem } from '@dto/i-purchase-order-item.dto';
-import { IPurchaseOrderReceiptItem } from '@dto/i-purchase-order-receipt-item.dto';
 
 export async function createPurchaseOrder(purchaseOrder: IPurchaseOrder) {
   return await axios.post<IPurchaseApprovalOrder>(PURCHASE_ORDER, purchaseOrder);
@@ -52,5 +51,5 @@ export async function getGrnReceiptWithVendorOutstandingPO(vendorId: string, grn
   };
   const apiUrl: string = `${PURCHASE_ORDER}/${grnNo}/outstanding-item/${vendorId}`;
   const url: string = QueryParamsBuilder.withUrl(apiUrl).addParams(paginationParams).build();
-  return await axios.get<IPurchaseOrderReceiptItem[]>(url);
+  return await axios.get<IPurchaseOrderItem[]>(url);
 }

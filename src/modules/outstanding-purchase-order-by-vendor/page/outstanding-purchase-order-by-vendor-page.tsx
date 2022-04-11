@@ -14,6 +14,7 @@ import Title from 'antd/lib/typography/Title';
 import { AxiosResponse } from 'axios';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import FavouriteVendorDrawer from '../components/favourite-vendor-drawer';
 import OutstandingPurchaseOrderByVendorTable from '../components/outstanding-purchase-order-by-vendor-table';
 
@@ -24,6 +25,7 @@ const purchaseOrderItemSearchIndexer = (items: IPurchaseOrderItem) => {
 
 const OutstandingPurchaseOrderByVendorPage: React.FC<{}> = () => {
   const searchEngine = new SearchEngine<IPurchaseOrderItem>([], purchaseOrderItemSearchIndexer);
+  const routingHistory = useHistory();
   const [tableSettingVisible, setTableSettingVisible] = useState<boolean>(false);
   const [favouriteVendortVisible, setFavouriteVendortVisible] = useState<boolean>(false);
   const [selectedVendorID, setSelectedVendorID] = useState<string>();
@@ -82,6 +84,10 @@ const OutstandingPurchaseOrderByVendorPage: React.FC<{}> = () => {
     }
   };
 
+  const navigateToCreatePoReceiptPage = () => {
+    routingHistory.push(`/purchase-order-receipt-creation/${selectedVendorID}/${123}`); //TODO: [LU] add required path variables correctly
+  };
+
   return (
     <>
       <div className="container-fluid">
@@ -115,7 +121,9 @@ const OutstandingPurchaseOrderByVendorPage: React.FC<{}> = () => {
         </div>
         <div className="row">
           <div className="col p-2">
-            <Button type="primary">Create PO Receipt</Button>
+            <Button onClick={navigateToCreatePoReceiptPage} type="primary">
+              Create PO Receipt
+            </Button>
           </div>
           <div className="col p-2">
             Date: <DatePicker format="DD/MM/YYYY" value={moment(poReceiptDate)} onChange={(date) => setPoReceiptDate(date?.toDate() || new Date())} inputReadOnly></DatePicker>

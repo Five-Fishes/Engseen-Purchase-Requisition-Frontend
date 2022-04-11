@@ -2,4 +2,4 @@
 . "$(dirname "$0")/_/husky.sh"
 
 npm test
-npx lint-staged && npm test && echo 'executed husky hook'
+npx lint-staged && echo 'executed husky hook'

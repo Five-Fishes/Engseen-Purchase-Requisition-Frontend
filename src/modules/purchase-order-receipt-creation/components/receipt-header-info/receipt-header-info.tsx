@@ -1,4 +1,5 @@
-import { createPurchaseOrderReceiptHeaderByVendorId, getPurchaseOrderReceiptHeaderByGrnNo } from '@api/purchase-order-receipt.api';
+import { createPurchaseOrderReceiptHeaderByVendorId } from '@api/purchase-order-receipt-header.api';
+import { getPurchaseOrderReceiptHeaderByGrnNo } from '@api/purchase-order-receipt.api';
 import { ApiResponseStatus } from '@constant/api-status.enum';
 import { IPurchaseOrderReceiptHeader } from '@dto/i-purchase-order-receipt-header.dto';
 import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';

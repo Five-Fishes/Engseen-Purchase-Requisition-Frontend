@@ -33,7 +33,7 @@ export const PURCHASE_ORDER_REGEX: RegExp = new RegExp(`${PURCHASE_ORDER}*`);
  * Purchase Order Receipt
  */
 export const PURCHASE_ORDER_RECEIPT_HEADER: string = 'purchase-order-receipt-header';
-export const PURCHASE_ORDER_RECEIPT_ITEM: string = 'purchase-order-receipt';
+export const PURCHASE_ORDER_RECEIPT: string = 'purchase-order-receipt';
 
 /**
  * Component API

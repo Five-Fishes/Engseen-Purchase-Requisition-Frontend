@@ -10,7 +10,7 @@ import {
 } from '@constant/display/purchase-order-receipt-creation.constant';
 import DEFAULT_PURCHASE_ORDER_RECEIPT_CREATION_TABLE_DISPLAY_SETTINGS from '@constant/purchase-order-receipt-creation/purchase-order-receipt-creation-table-display-settings';
 import { PurchaseOrderReceiptItemStatus } from '@constant/purchase-order-receipt-item-status.enum';
-import { IPurchaseOrderReceiptItem } from '@dto/i-purchase-order-receipt-item.dto';
+import { IPurchaseOrderItem } from '@dto/i-purchase-order-item.dto';
 import { ITableColumnDisplaySettings } from '@dto/i-table-columns';
 import { IWindowSize, useWindowResized } from '@hook/window-resized.hook';
 import { setLoading } from '@module/shared/reducers/app-reducers';
@@ -31,9 +31,9 @@ interface IPurchaseOrderReceiptCreationPageProps extends StateProps, DispatchPro
 
 const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPageProps> = (props: IPurchaseOrderReceiptCreationPageProps) => {
   const [submissionInProgress, setSubmissionInProgress] = useState<boolean>(false);
-  const [purchaseOrderItem, setPurchaseOrderItem] = useState<IPurchaseOrderReceiptItem[]>();
-  const [searchResult, setSearchResult] = useState<IPurchaseOrderReceiptItem[]>();
-  const searchEngine: SearchEngine<IPurchaseOrderReceiptItem> = new SearchEngine([], generateIndex);
+  const [purchaseOrderItem, setPurchaseOrderItem] = useState<IPurchaseOrderItem[]>();
+  const [searchResult, setSearchResult] = useState<IPurchaseOrderItem[]>();
+  const searchEngine: SearchEngine<IPurchaseOrderItem> = new SearchEngine([], generateIndex);
   const [doNumber, setDONumber] = useState<string>('');
   const [remarks, setRemarks] = useState<string>('');
   const [reference, setReference] = useState<string>('');
@@ -52,7 +52,7 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
       const apiResponse = await getGrnReceiptWithVendorOutstandingPO(vendorId, grnNo ?? '');
 
       if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
-        const deepCopy: IPurchaseOrderReceiptItem[] = CLONING_LIB.deepClone(apiResponse.data);
+        const deepCopy: IPurchaseOrderItem[] = CLONING_LIB.deepClone(apiResponse.data);
         setPurchaseOrderItem(deepCopy);
       }
     };
@@ -61,7 +61,7 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
       const apiResponse = await getOutstandingPurchaseOrder(vendorId);
 
       if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
-        const deepCopy: IPurchaseOrderReceiptItem[] = CLONING_LIB.deepClone(apiResponse.data);
+        const deepCopy: IPurchaseOrderItem[] = CLONING_LIB.deepClone(apiResponse.data);
         setPurchaseOrderItem(deepCopy);
       }
     };
@@ -122,7 +122,7 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
     setShowRemarksSider(!showRemarksSider);
   };
 
-  const updatePurchaseOrderReceiptItem = (list: IPurchaseOrderReceiptItem[]) => {
+  const updatePurchaseOrderReceiptItem = (list: IPurchaseOrderItem[]) => {
     if (searchResult) {
       const updatedList = CLONING_LIB.deepClone(list);
       setSearchResult(updatedList);
@@ -134,7 +134,7 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
     if (purchaseOrderItem) {
       // TODO: submit for Insert PO Receipt
       /* const purchaseOrderReceiptHeader = {};
-      const purchaseOrderReceiptItems: IPurchaseOrderReceiptItem[] = purchaseOrderItem.map((item) => {
+      const purchaseOrderReceiptItems: IPurchaseOrderItem[] = purchaseOrderItem.map((item) => {
         return {};
       });
       

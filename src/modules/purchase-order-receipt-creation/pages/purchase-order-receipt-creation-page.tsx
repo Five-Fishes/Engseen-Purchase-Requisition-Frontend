@@ -1,4 +1,5 @@
 import { FormOutlined, SettingOutlined } from '@ant-design/icons';
+import { createPurchaseOrderReceiptHeader } from '@api/purchase-order-receipt.api';
 import { getGrnReceiptWithVendorOutstandingPO, getOutstandingPurchaseOrder } from '@api/purchase-order.api';
 import { ApiResponseStatus } from '@constant/api-status.enum';
 import { APP_CONTENT_MARGIN } from '@constant/display/content.constant';
@@ -8,11 +9,14 @@ import {
   PURCHASE_ORDER_RECEIPT_CREATION_TITLE_HEIGHT,
   PURCHASE_ORDER_RECEIPT_CREATION_TOP_TOOLS_HEIGHT,
 } from '@constant/display/purchase-order-receipt-creation.constant';
+import { NotificationType } from '@constant/notification.enum';
 import DEFAULT_PURCHASE_ORDER_RECEIPT_CREATION_TABLE_DISPLAY_SETTINGS from '@constant/purchase-order-receipt-creation/purchase-order-receipt-creation-table-display-settings';
 import { PurchaseOrderReceiptItemStatus } from '@constant/purchase-order-receipt-item-status.enum';
 import { IPurchaseOrderItem } from '@dto/i-purchase-order-item.dto';
+import { IPurchaseOrderReceiptItem } from '@dto/i-purchase-order-receipt-item.dto';
 import { ITableColumnDisplaySettings } from '@dto/i-table-columns';
 import { IWindowSize, useWindowResized } from '@hook/window-resized.hook';
+import { popNotification } from '@module/shared/components/notification';
 import { setLoading } from '@module/shared/reducers/app-reducers';
 import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
 import { getSearchText, SearchEngine } from '@utils/search/native-search';
@@ -118,22 +122,28 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
   const submitPurchaseOrderReceiptCreation = async () => {
     setSubmissionInProgress(true);
     if (purchaseOrderItem) {
-      // TODO: submit for Insert PO Receipt
-      /* const purchaseOrderReceiptHeader = {};
-      const purchaseOrderReceiptItems: IPurchaseOrderItem[] = purchaseOrderItem.map((item) => {
-        return {};
+      const purchaseOrderReceiptItems: IPurchaseOrderReceiptItem[] = purchaseOrderItem.map((item) => {
+        return { ...item } as IPurchaseOrderReceiptItem;
       });
-      
-      const result = await createPurchaseOrderReceipts(purchaseOrderReceiptHeader);
+      const purchaseOrderReceiptHeader = {
+        id: null,
+        grnNo: grnNo ?? '',
+        grnDate: new Date(),
+        vendorID: vendorId,
+        poReceiptDtoList: purchaseOrderReceiptItems,
+      };
+
+      const result = await createPurchaseOrderReceiptHeader(purchaseOrderReceiptHeader);
       if (result) {
         setSubmissionInProgress(false);
         if (result.status === ApiResponseStatus.SUCCESS) {
           popNotification('Successfully Create PO Receipt', NotificationType.success);
         }
-      } */
+      }
     }
   };
 
+  // TODO: [LU] Declaring component inside component is causing slow performance
   const checkPurchaseOrderReceiptCreation = () => {
     console.log('Popup Modal to show receiving items');
     console.log(PurchaseOrderReceiptItemStatus.CONFIRMED);

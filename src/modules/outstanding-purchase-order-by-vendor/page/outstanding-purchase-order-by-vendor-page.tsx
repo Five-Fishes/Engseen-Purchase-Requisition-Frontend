@@ -40,16 +40,18 @@ const OutstandingPurchaseOrderByVendorPage: React.FC<{}> = () => {
   useEffect(() => {
     (async () => {
       try {
-        const outstandingPurchaseOrderResponse: AxiosResponse<IPurchaseOrderItem[]> = await getOutstandingPurchaseOrder(selectedVendorID);
-        if (outstandingPurchaseOrderResponse) {
-          if (outstandingPurchaseOrderResponse.status === ApiResponseStatus.SUCCESS) {
-            setOutstandingPurchaseOrder(outstandingPurchaseOrderResponse.data);
+        if (selectedVendorID) {
+          const outstandingPurchaseOrderResponse: AxiosResponse<IPurchaseOrderItem[]> = await getOutstandingPurchaseOrder(selectedVendorID);
+          if (outstandingPurchaseOrderResponse) {
+            if (outstandingPurchaseOrderResponse.status === ApiResponseStatus.SUCCESS) {
+              setOutstandingPurchaseOrder(outstandingPurchaseOrderResponse.data);
+            } else {
+              const errorMessage: string = generateErrorMessage(outstandingPurchaseOrderResponse.status);
+              popNotification(errorMessage, NotificationType.error);
+            }
           } else {
-            const errorMessage: string = generateErrorMessage(outstandingPurchaseOrderResponse.status);
-            popNotification(errorMessage, NotificationType.error);
+            popNotification('No response from server!! Please check is server live and running 📡📡📡', NotificationType.error);
           }
-        } else {
-          popNotification('No response from server!! Please check is server live and running 📡📡📡', NotificationType.error);
         }
       } catch (error) {
         popNotification('No response from server!! Please check is server live and running 📡📡📡', NotificationType.error);
@@ -85,7 +87,11 @@ const OutstandingPurchaseOrderByVendorPage: React.FC<{}> = () => {
   };
 
   const navigateToCreatePoReceiptPage = () => {
-    routingHistory.push(`/purchase-order-receipt-creation/${selectedVendorID}/${123}`); //TODO: [LU] add required path variables correctly
+    if (selectedVendorID) {
+      routingHistory.push(`/purchase-order-receipt-creation/${selectedVendorID}`); //TODO: [LU] add required path variables correctly
+    } else {
+      popNotification('No Vendor Selected!!', NotificationType.warning);
+    }
   };
 
   return (

@@ -65,7 +65,6 @@ const DynamicColumnTable: React.FC<IDynamicColumnTableProps<any>> = (props) => {
     (async () => {
       const stored = await localStorage.getItem(displaySettingKey);
       if (stored) {
-        console.log('stored :>> ', JSON.parse(stored));
         setTableColumnDisplaySettings(JSON.parse(stored));
       } else {
         setTableColumnDisplaySettings(defaultTableColumnDisplaySettings);

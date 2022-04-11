@@ -20,9 +20,17 @@ const PurchaseOrderReceiptSearchForm: React.FC<IPurchaseOrderReceiptSearchFormPr
   const [form] = Form.useForm();
 
   const setGrnDateRange = (startDate?: string, endDate?: string) => {
-    const startDateValue = startDate === undefined ? startDate : new Date(new Date(startDate).setHours(0, 0, 0, 0));
+    let startDateValue = startDate === undefined ? startDate : new Date(startDate);
+    if (startDateValue) {
+      const startDateUTC = Date.UTC(startDateValue.getFullYear(), startDateValue.getMonth(), startDateValue.getDate(), 0, 0, 0);
+      startDateValue = new Date(startDateUTC);
+    } 
     setStartGrnDateCriteria(startDateValue);
-    const endDateValue = endDate === undefined ? endDate : new Date(new Date(endDate).setHours(23, 59, 59, 59));
+    let endDateValue = endDate === undefined ? endDate : new Date(endDate);
+    if (endDateValue) {
+      const endDateUTC = Date.UTC(endDateValue.getFullYear(), endDateValue.getMonth(), endDateValue.getDate(), 23, 59, 59);
+      endDateValue = new Date(endDateUTC);
+    }
     setEndGrnDateCriteria(endDateValue);
   };
 

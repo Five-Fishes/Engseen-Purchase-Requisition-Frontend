@@ -3261,7 +3261,7 @@ if (process.env.REACT_APP_MOCK === 'enabled') {
     },
   ]);
 
-  mock.onGet(PURCHASE_ORDER_OUTSTANDING_ITEM + '?').reply<IPurchaseOrderItem[]>(
+  mock.onGet(PURCHASE_ORDER_OUTSTANDING_ITEM + '?vendorId=Vendor 1').reply<IPurchaseOrderItem[]>(
     200,
     (() => {
       const elem: IPurchaseOrderItem[] = [];
@@ -3288,7 +3288,7 @@ if (process.env.REACT_APP_MOCK === 'enabled') {
           receivingQuantity: currentIndexPlus_1,
           receivingQuantityPack: currentIndexPlus_1,
           remarks: currentIndexPlus_1,
-          status: `status ${currentIndexPlus_1}`,
+          status: `PENDING`,
           uomPack: currentIndexPlus_1,
           vendorId: `vendorId ${currentIndexPlus_1}`,
           vendorName: `vendorName ${currentIndexPlus_1}`,

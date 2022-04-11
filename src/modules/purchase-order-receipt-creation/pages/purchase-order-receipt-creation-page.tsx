@@ -48,29 +48,22 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
   const { vendorId, grnNo } = props.match.params;
 
   useEffect(() => {
-    const getGrnPOReceiptWithVendorOutstandingPO = async () => {
-      const apiResponse = await getGrnReceiptWithVendorOutstandingPO(vendorId, grnNo ?? '');
+    (async () => {
+      let apiResponse;
+
+      if (grnNo != null && grnNo.trim() !== '') {
+        apiResponse = await getGrnReceiptWithVendorOutstandingPO(vendorId, grnNo ?? '');
+      } else {
+        apiResponse = await getOutstandingPurchaseOrder(vendorId);
+      }
 
       if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
-        const deepCopy: IPurchaseOrderItem[] = CLONING_LIB.deepClone(apiResponse.data);
-        setPurchaseOrderItem(deepCopy);
+        const purchaseOrderItemDeepCopy: IPurchaseOrderItem[] = CLONING_LIB.deepClone(apiResponse.data);
+        const searchResultDeepCopy: IPurchaseOrderItem[] = CLONING_LIB.deepClone(apiResponse.data);
+        setPurchaseOrderItem(purchaseOrderItemDeepCopy);
+        setSearchResult(searchResultDeepCopy);
       }
-    };
-
-    const getOutstandingPurchaseOrderItemList = async () => {
-      const apiResponse = await getOutstandingPurchaseOrder(vendorId);
-
-      if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
-        const deepCopy: IPurchaseOrderItem[] = CLONING_LIB.deepClone(apiResponse.data);
-        setPurchaseOrderItem(deepCopy);
-      }
-    };
-
-    if (grnNo != null && grnNo.trim() !== '') {
-      getGrnPOReceiptWithVendorOutstandingPO();
-    } else {
-      getOutstandingPurchaseOrderItemList();
-    }
+    })();
   }, [vendorId, grnNo]);
 
   useEffect(() => {
@@ -89,13 +82,6 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
   useEffect(() => {
     setTableColumnDisplaySettingsUpdateTime(new Date());
   }, [tableColumnDisplaySettings]);
-
-  useEffect(() => {
-    if (purchaseOrderItem !== undefined) {
-      const initSearchResult = CLONING_LIB.deepClone(purchaseOrderItem);
-      setSearchResult(initSearchResult);
-    }
-  }, [purchaseOrderItem]);
 
   const handleSearch = (value: string, event: React.ChangeEvent<HTMLInputElement> | React.MouseEvent<HTMLElement, MouseEvent> | React.KeyboardEvent<HTMLInputElement> | undefined) => {
     props.setLoading(true);

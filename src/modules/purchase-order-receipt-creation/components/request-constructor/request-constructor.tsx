@@ -136,7 +136,7 @@ const PurchaseOrderReceiptCreationRequestConstructor: React.FC<IPurchaseOrderRec
             <StatefulNumberInput
               state={record.status === PurchaseOrderReceiptItemStatus.PENDING ? PurchaseRequisitionApprovalStatus.TO_CONFIRM : PurchaseRequisitionApprovalStatus.CONFIRMED}
               value={value}
-              onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, 'recevingQuantityPack', index)}
+              onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, 'receivingQuantityPack', index)}
             />
           );
         }}
@@ -157,7 +157,7 @@ const PurchaseOrderReceiptCreationRequestConstructor: React.FC<IPurchaseOrderRec
             <StatefulNumberInput
               state={record.status === PurchaseOrderReceiptItemStatus.PENDING ? PurchaseRequisitionApprovalStatus.TO_CONFIRM : PurchaseRequisitionApprovalStatus.CONFIRMED}
               value={value}
-              onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, 'recevingQuantity', index)}
+              onChange={(e) => dataChanged(ChangeEvent.NUMBER_INPUT, e, record, 'receivingQuantity', index)}
             />
           );
         }}

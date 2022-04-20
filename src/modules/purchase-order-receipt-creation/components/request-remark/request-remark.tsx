@@ -1,4 +1,4 @@
-import { Form, Input } from "antd";
+import { Form, Input } from 'antd';
 
 interface IPurchaseOrderReceiptCreationRequestRemarksProps {
   remarks: string;

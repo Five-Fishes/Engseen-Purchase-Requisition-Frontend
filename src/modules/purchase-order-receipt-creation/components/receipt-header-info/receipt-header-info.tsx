@@ -1,10 +1,11 @@
-import { createPurchaseOrderReceiptHeaderByVendorId, getPurchaseOrderReceiptHeaderByGrnNo } from "@api/purchase-order-receipt.api";
-import { ApiResponseStatus } from "@constant/api-status.enum";
-import { IPurchaseOrderReceiptHeader } from "@dto/i-purchase-order-receipt-header.dto";
-import CLONING_LIB from "@utils/cloning/cloning-lib-wrapper";
-import { convertToLocalString } from "@utils/date-time/date-time-format";
-import { Form, Input } from "antd";
-import { useEffect, useState } from "react";
+import { createPurchaseOrderReceiptHeaderByVendorId } from '@api/purchase-order-receipt-header.api';
+import { getPurchaseOrderReceiptHeaderByGrnNo } from '@api/purchase-order-receipt.api';
+import { ApiResponseStatus } from '@constant/api-status.enum';
+import { IPurchaseOrderReceiptHeader } from '@dto/i-purchase-order-receipt-header.dto';
+import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
+import { convertToLocalString } from '@utils/date-time/date-time-format';
+import { Form, Input } from 'antd';
+import { useEffect, useState } from 'react';
 
 interface IPurchaseOrderReceiptHeaderInfoProps {
   doNumber: string;
@@ -34,7 +35,7 @@ const PurchaseOrderReceiptHeaderInfo: React.FC<IPurchaseOrderReceiptHeaderInfoPr
 
     const getPOReceiptHeaderByGrnNo = async (grnNo: string) => {
       const apiResponse = await getPurchaseOrderReceiptHeaderByGrnNo(grnNo);
-  
+
       if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
         const deepCopy: IPurchaseOrderReceiptHeader = CLONING_LIB.deepClone(apiResponse.data);
         setPOReceiptHeader(deepCopy);
@@ -42,9 +43,9 @@ const PurchaseOrderReceiptHeaderInfo: React.FC<IPurchaseOrderReceiptHeaderInfoPr
     };
 
     if (grnNo != null && grnNo.trim() !== '') {
-        getPOReceiptHeaderByGrnNo(grnNo);
+      getPOReceiptHeaderByGrnNo(grnNo);
     } else {
-        getNewPOReceiptHeader(vendorId);
+      getNewPOReceiptHeader(vendorId);
     }
   }, [grnNo, vendorId]);
 
@@ -57,9 +58,12 @@ const PurchaseOrderReceiptHeaderInfo: React.FC<IPurchaseOrderReceiptHeaderInfoPr
           </Form.Item>
         </div>
         <div>
-          <strong>PO Receipt Created</strong>: {grnNo ?? poReceiptHeader?.grnNo}<br/>
-          <strong>Date</strong>: {poReceiptHeader ? convertToLocalString(poReceiptHeader.grnDate) : ''}<br/>
-          <strong>Vendor</strong>: {vendorId} {poReceiptHeader?.vendorName}<br/>
+          <strong>PO Receipt Created</strong>: {grnNo ?? poReceiptHeader?.grnNo}
+          <br />
+          <strong>Date</strong>: {poReceiptHeader ? convertToLocalString(poReceiptHeader.grnDate) : ''}
+          <br />
+          <strong>Vendor</strong>: {vendorId} {poReceiptHeader?.vendorName}
+          <br />
         </div>
       </div>
     </>

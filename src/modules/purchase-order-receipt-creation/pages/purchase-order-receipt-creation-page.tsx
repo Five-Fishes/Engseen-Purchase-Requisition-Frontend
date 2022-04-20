@@ -1,14 +1,22 @@
 import { FormOutlined, SettingOutlined } from '@ant-design/icons';
+import { createPurchaseOrderReceiptHeader } from '@api/purchase-order-receipt.api';
 import { getGrnReceiptWithVendorOutstandingPO, getOutstandingPurchaseOrder } from '@api/purchase-order.api';
 import { ApiResponseStatus } from '@constant/api-status.enum';
 import { APP_CONTENT_MARGIN } from '@constant/display/content.constant';
 import { APP_HEADER_HEIGHT } from '@constant/display/header.constant';
-import { PURCHASE_ORDER_RECEIPT_CREATION_BOTTOM_TOOLS_HEIGHT, PURCHASE_ORDER_RECEIPT_CREATION_TITLE_HEIGHT, PURCHASE_ORDER_RECEIPT_CREATION_TOP_TOOLS_HEIGHT } from '@constant/display/purchase-order-receipt-creation.constant';
+import {
+  PURCHASE_ORDER_RECEIPT_CREATION_BOTTOM_TOOLS_HEIGHT,
+  PURCHASE_ORDER_RECEIPT_CREATION_TITLE_HEIGHT,
+  PURCHASE_ORDER_RECEIPT_CREATION_TOP_TOOLS_HEIGHT,
+} from '@constant/display/purchase-order-receipt-creation.constant';
+import { NotificationType } from '@constant/notification.enum';
 import DEFAULT_PURCHASE_ORDER_RECEIPT_CREATION_TABLE_DISPLAY_SETTINGS from '@constant/purchase-order-receipt-creation/purchase-order-receipt-creation-table-display-settings';
 import { PurchaseOrderReceiptItemStatus } from '@constant/purchase-order-receipt-item-status.enum';
+import { IPurchaseOrderItem } from '@dto/i-purchase-order-item.dto';
 import { IPurchaseOrderReceiptItem } from '@dto/i-purchase-order-receipt-item.dto';
 import { ITableColumnDisplaySettings } from '@dto/i-table-columns';
 import { IWindowSize, useWindowResized } from '@hook/window-resized.hook';
+import { popNotification } from '@module/shared/components/notification';
 import { setLoading } from '@module/shared/reducers/app-reducers';
 import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
 import { getSearchText, SearchEngine } from '@utils/search/native-search';
@@ -23,15 +31,13 @@ import generateIndex from '../components/request-constructor/request-constructor
 import PurchaseOrderReceiptCreationRequestRemarks from '../components/request-remark/request-remark';
 import PurchaseOrderReceiptCreationTableDisplaySettings from '../components/table-column-display-settings/table-column-display-settings';
 
-
-
-interface IPurchaseOrderReceiptCreationPageProps extends StateProps, DispatchProps, RouteComponentProps<{ vendorId: string, grnNo?: string }> {}
+interface IPurchaseOrderReceiptCreationPageProps extends StateProps, DispatchProps, RouteComponentProps<{ vendorId: string; grnNo?: string }> {}
 
 const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPageProps> = (props: IPurchaseOrderReceiptCreationPageProps) => {
   const [submissionInProgress, setSubmissionInProgress] = useState<boolean>(false);
-  const [purchaseOrderItem, setPurchaseOrderItem] = useState<IPurchaseOrderReceiptItem[]>();
-  const [searchResult, setSearchResult] = useState<IPurchaseOrderReceiptItem[]>();
-  const searchEngine: SearchEngine<IPurchaseOrderReceiptItem> = new SearchEngine([], generateIndex);
+  const [purchaseOrderItem, setPurchaseOrderItem] = useState<IPurchaseOrderItem[]>();
+  const [searchResult, setSearchResult] = useState<IPurchaseOrderItem[]>();
+  const searchEngine: SearchEngine<IPurchaseOrderItem> = new SearchEngine([], generateIndex);
   const [doNumber, setDONumber] = useState<string>('');
   const [remarks, setRemarks] = useState<string>('');
   const [reference, setReference] = useState<string>('');
@@ -46,29 +52,22 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
   const { vendorId, grnNo } = props.match.params;
 
   useEffect(() => {
-    const getGrnPOReceiptWithVendorOutstandingPO = async () => {
-      const apiResponse = await getGrnReceiptWithVendorOutstandingPO(vendorId, grnNo ?? '');
+    (async () => {
+      let apiResponse;
+
+      if (grnNo != null && grnNo.trim() !== '') {
+        apiResponse = await getGrnReceiptWithVendorOutstandingPO(vendorId, grnNo ?? '');
+      } else {
+        apiResponse = await getOutstandingPurchaseOrder(vendorId);
+      }
 
       if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
-        const deepCopy: IPurchaseOrderReceiptItem[] = CLONING_LIB.deepClone(apiResponse.data);
-        setPurchaseOrderItem(deepCopy);
+        const purchaseOrderItemDeepCopy: IPurchaseOrderItem[] = CLONING_LIB.deepClone(apiResponse.data);
+        const searchResultDeepCopy: IPurchaseOrderItem[] = CLONING_LIB.deepClone(apiResponse.data);
+        setPurchaseOrderItem(purchaseOrderItemDeepCopy);
+        setSearchResult(searchResultDeepCopy);
       }
-    };
-
-    const getOutstandingPurchaseOrderItemList = async () => {
-      const apiResponse = await getOutstandingPurchaseOrder(vendorId);
-
-      if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
-        const deepCopy: IPurchaseOrderReceiptItem[] = CLONING_LIB.deepClone(apiResponse.data);
-        setPurchaseOrderItem(deepCopy);
-      }
-    };
-
-    if (grnNo != null && grnNo.trim() !== '') {
-      getGrnPOReceiptWithVendorOutstandingPO();
-    } else {
-      getOutstandingPurchaseOrderItemList();
-    }
+    })();
   }, [vendorId, grnNo]);
 
   useEffect(() => {
@@ -87,13 +86,6 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
   useEffect(() => {
     setTableColumnDisplaySettingsUpdateTime(new Date());
   }, [tableColumnDisplaySettings]);
-
-  useEffect(() => {
-    if (purchaseOrderItem !== undefined) {
-      const initSearchResult = CLONING_LIB.deepClone(purchaseOrderItem);
-      setSearchResult(initSearchResult);
-    }
-  }, [purchaseOrderItem]);
 
   const handleSearch = (value: string, event: React.ChangeEvent<HTMLInputElement> | React.MouseEvent<HTMLElement, MouseEvent> | React.KeyboardEvent<HTMLInputElement> | undefined) => {
     props.setLoading(true);
@@ -120,7 +112,7 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
     setShowRemarksSider(!showRemarksSider);
   };
 
-  const updatePurchaseOrderReceiptItem = (list: IPurchaseOrderReceiptItem[]) => {
+  const updatePurchaseOrderReceiptItem = (list: IPurchaseOrderItem[]) => {
     if (searchResult) {
       const updatedList = CLONING_LIB.deepClone(list);
       setSearchResult(updatedList);
@@ -130,28 +122,33 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
   const submitPurchaseOrderReceiptCreation = async () => {
     setSubmissionInProgress(true);
     if (purchaseOrderItem) {
-      // TODO: submit for Insert PO Receipt 
-      /* const purchaseOrderReceiptHeader = {};
       const purchaseOrderReceiptItems: IPurchaseOrderReceiptItem[] = purchaseOrderItem.map((item) => {
-        return {};
+        return { ...item } as IPurchaseOrderReceiptItem;
       });
-      
-      const result = await createPurchaseOrderReceipts(purchaseOrderReceiptHeader);
+      const purchaseOrderReceiptHeader = {
+        id: null,
+        grnNo: grnNo ?? '',
+        grnDate: new Date(),
+        vendorID: vendorId,
+        poReceiptDtoList: purchaseOrderReceiptItems,
+      };
+
+      const result = await createPurchaseOrderReceiptHeader(purchaseOrderReceiptHeader);
       if (result) {
         setSubmissionInProgress(false);
         if (result.status === ApiResponseStatus.SUCCESS) {
           popNotification('Successfully Create PO Receipt', NotificationType.success);
         }
-      } */
+      }
     }
   };
 
+  // TODO: [LU] Declaring component inside component is causing slow performance
   const checkPurchaseOrderReceiptCreation = () => {
-    console.log("Popup Modal to show receiving items");
+    console.log('Popup Modal to show receiving items');
     console.log(PurchaseOrderReceiptItemStatus.CONFIRMED);
     console.log(purchaseOrderItem);
-    const confirmedItems = CLONING_LIB.deepClone(purchaseOrderItem ?? [])
-      .filter(item => item.status === PurchaseOrderReceiptItemStatus.CONFIRMED);
+    const confirmedItems = CLONING_LIB.deepClone(purchaseOrderItem ?? []).filter((item) => item.status === PurchaseOrderReceiptItemStatus.CONFIRMED);
     console.log(confirmedItems);
     return (
       <Table dataSource={confirmedItems}>
@@ -163,7 +160,7 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
   };
 
   const completePurchaseOrderReceiptCreation = () => {
-    console.log("Done PO Receipt Creation");
+    console.log('Done PO Receipt Creation');
   };
 
   return (
@@ -177,12 +174,7 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
 
         <div style={{ height: `${PURCHASE_ORDER_RECEIPT_CREATION_TOP_TOOLS_HEIGHT}px` }}>
           <div>
-            <PurchaseOrderReceiptHeaderInfo
-              vendorId={vendorId}
-              doNumber={doNumber}
-              setDONumber={setDONumber}
-              grnNo={grnNo}
-            />
+            <PurchaseOrderReceiptHeaderInfo vendorId={vendorId} doNumber={doNumber} setDONumber={setDONumber} grnNo={grnNo} />
           </div>
           <div className="d-flex float-end">
             <Input.Search placeholder="Search" onSearch={handleSearch} allowClear></Input.Search>
@@ -212,10 +204,7 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
             <Button type="primary" size="large" onClick={submitPurchaseOrderReceiptCreation} disabled={submissionInProgress}>
               Submit Receiving
             </Button>
-            <Popover
-              content={checkPurchaseOrderReceiptCreation}
-              trigger="click"
-            >
+            <Popover content={checkPurchaseOrderReceiptCreation} trigger="click">
               <Button className="mx-4 input-group-btn" type="default" size="large" disabled={submissionInProgress}>
                 Check Receiving
               </Button>
@@ -234,12 +223,7 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
       </Drawer>
 
       <Drawer title="Remarks & Reference" placement="right" width="max-content" onClose={openRemarksSider} visible={showRemarksSider}>
-        <PurchaseOrderReceiptCreationRequestRemarks
-          remarks={remarks}
-          setRemarks={setRemarks}
-          reference={reference}
-          setReference={setReference}
-        />
+        <PurchaseOrderReceiptCreationRequestRemarks remarks={remarks} setRemarks={setRemarks} reference={reference} setReference={setReference} />
       </Drawer>
     </>
   );

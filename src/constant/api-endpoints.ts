@@ -33,7 +33,7 @@ export const PURCHASE_ORDER_REGEX: RegExp = new RegExp(`${PURCHASE_ORDER}*`);
  * Purchase Order Receipt
  */
 export const PURCHASE_ORDER_RECEIPT_HEADER: string = 'purchase-order-receipt-header';
-export const PURCHASE_ORDER_RECEIPT_ITEM: string = 'purchase-order-receipt';
+export const PURCHASE_ORDER_RECEIPT: string = 'purchase-order-receipt';
 
 /**
  * Component API
@@ -46,9 +46,10 @@ export const GET_COMPONENT_BY_SEARCH: RegExp = new RegExp(`${COMPONENT}*`);
 /**
  * Item Master
  */
- export const ITEM_MASTER: string = 'item-master';
+export const ITEM_MASTER: string = 'item-master';
 
- /**
+/**
  * Item Master
  */
- export const VENDOR_MASTER: string = 'vendor-master';
+export const VENDOR_MASTER: string = 'vendor-master';
+export const FAVOURITE_VENDOR: string = 'favourite-vendor';

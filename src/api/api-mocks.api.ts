@@ -5,9 +5,11 @@ import {
   PURCHASE_REQUISITION_REQUEST_REGEX,
   PURCHASE_REQUISITION_TEMPLATE,
   PURCHASE_ORDER,
-  PURCHASE_ORDER_REGEX,
   PURCHASE_REQUISITION_APPROVAL,
   GET_COMPONENT_BY_SEARCH,
+  PURCHASE_ORDER_OUTSTANDING_ITEM,
+  LOGIN,
+  FAVOURITE_VENDOR,
 } from '@constant/api-endpoints';
 import { IPurchaseRequisitionRequest } from '@dto/i-purchase-requisition-request.dto';
 import { IPurchaseRequisitionTemplate } from '@dto/i-purchase-requisition-template.dto';
@@ -15,9 +17,11 @@ import { IPurchaseRequisitionTemplateItem } from '@dto/i-purchase-requisition-te
 import { IPurchaseApprovalOrder } from '@dto/i-purchase-approval-order.dto';
 import { IPurchaseRequisitionApproval } from '@dto/i-purchase-requisition-approval.dto';
 import { PurchaseRequisitionApprovalStatus } from '@constant/purchase-requisition-approval-status.enum';
+import { IPurchaseOrderItem } from '@dto/i-purchase-order-item.dto';
+import { IFavouriteVendor } from '@dto/i-favourite-vendor.dto';
 
 let mock: MockAdapter;
-if (process.env.MOCK === 'enabled') {
+if (process.env.REACT_APP_MOCK === 'enabled') {
   mock = new MockAdapter(axios);
   mock.onPost(PURCHASE_REQUISITION_REQUEST).reply<IPurchaseRequisitionRequest>(200, {
     id: 1,
@@ -37,7 +41,7 @@ if (process.env.MOCK === 'enabled') {
     ],
     remarks: 'abc',
   });
-  
+
   mock.onGet(PURCHASE_REQUISITION_REQUEST_REGEX).reply<IPurchaseRequisitionRequest[]>(200, [
     {
       id: 1,
@@ -319,7 +323,7 @@ if (process.env.MOCK === 'enabled') {
       remarks: 'abc',
     },
   ]);
-  
+
   mock.onGet(GET_COMPONENT_BY_SEARCH).reply<IPurchaseRequisitionTemplateItem[]>(200, [
     {
       id: 1,
@@ -358,7 +362,7 @@ if (process.env.MOCK === 'enabled') {
       sequence: 4,
     },
   ]);
-  
+
   mock.onPost(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate>(200, {
     id: 1,
     templateName: 'template 1',
@@ -402,7 +406,7 @@ if (process.env.MOCK === 'enabled') {
     ],
     remarks: '',
   });
-  
+
   mock.onGet(PURCHASE_REQUISITION_TEMPLATE).reply<IPurchaseRequisitionTemplate[]>(200, [
     {
       id: 1,
@@ -889,7 +893,7 @@ if (process.env.MOCK === 'enabled') {
       remarks: '',
     },
   ]);
-  
+
   mock.onPost(PURCHASE_ORDER).reply<IPurchaseApprovalOrder>(200, {
     id: 1,
     createdDate: new Date(),
@@ -919,8 +923,8 @@ if (process.env.MOCK === 'enabled') {
       },
     ],
   });
-  
-  mock.onGet(PURCHASE_ORDER_REGEX).reply<IPurchaseApprovalOrder[]>(200, [
+
+  mock.onGet(PURCHASE_ORDER).reply<IPurchaseApprovalOrder[]>(200, [
     {
       id: 1,
       createdDate: new Date(),
@@ -1362,7 +1366,7 @@ if (process.env.MOCK === 'enabled') {
       ],
     },
   ]);
-  
+
   mock.onGet(PURCHASE_REQUISITION_APPROVAL).reply<IPurchaseRequisitionApproval[]>(200, [
     {
       id: 0,
@@ -3256,6 +3260,62 @@ if (process.env.MOCK === 'enabled') {
       remarks: '',
     },
   ]);
+
+  mock.onGet(PURCHASE_ORDER_OUTSTANDING_ITEM + '?vendorId=Vendor 1').reply<IPurchaseOrderItem[]>(
+    200,
+    (() => {
+      const elem: IPurchaseOrderItem[] = [];
+      for (let index = 0; index < 100; index++) {
+        const currentIndexPlus_1 = index + 1;
+        elem.push({
+          id: currentIndexPlus_1,
+          purchaseOrderId: currentIndexPlus_1,
+          componentCode: `componentCode ${currentIndexPlus_1}`,
+          componentName: `componentName ${currentIndexPlus_1}`,
+          packagingSize: currentIndexPlus_1,
+          noOfPacks: currentIndexPlus_1,
+          quantity: currentIndexPlus_1,
+          deliveryDate: new Date(),
+          itemCost: currentIndexPlus_1,
+          uom: `uom ${currentIndexPlus_1}`,
+          openQuantity: currentIndexPlus_1,
+          openQuantityPack: currentIndexPlus_1,
+          orderQuantity: currentIndexPlus_1,
+          orderQuantityPack: currentIndexPlus_1,
+          poNumber: `poNumber ${currentIndexPlus_1}`,
+          receivedQuantity: currentIndexPlus_1,
+          receivedQuantityPack: currentIndexPlus_1,
+          receivingQuantity: currentIndexPlus_1,
+          receivingQuantityPack: currentIndexPlus_1,
+          remarks: currentIndexPlus_1,
+          status: `PENDING`,
+          uomPack: currentIndexPlus_1,
+          vendorId: `vendorId ${currentIndexPlus_1}`,
+          vendorName: `vendorName ${currentIndexPlus_1}`,
+        });
+      }
+      return elem;
+    })()
+  );
+
+  mock.onGet(FAVOURITE_VENDOR).reply<IFavouriteVendor[]>(
+    200,
+    (() => {
+      const lst: IFavouriteVendor[] = [];
+      for (let index = 0; index < 10; index++) {
+        lst.push({
+          id: index,
+          vendorId: `Vendor ${index + 1}`,
+          createdBy: '',
+          createdDate: new Date(),
+        });
+      }
+      return lst;
+    })()
+  );
+  mock.onPost(LOGIN).reply<string>(200, 'ADMIN');
+
+  console.log(mock);
 } else {
   mock = {} as MockAdapter;
 }

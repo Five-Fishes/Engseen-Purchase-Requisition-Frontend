@@ -4,7 +4,7 @@ export interface ITableColumn {
 
 export interface ITableColumnDisplaySettings {
   columnKey: string;
-  settingDisplayName: string;
+  settingDisplayName?: string;
   visible: boolean;
   visibilityEditable: boolean;
 }

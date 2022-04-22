@@ -1,9 +1,9 @@
 export enum PurchaseOrderReceiptItemStatus {
   PENDING = 'PENDING',
-	CONFIRMED = 'CONFIRMED',
-	RECEIVED = 'RECEIVED',
+  CONFIRMED = 'CONFIRMED',
+  RECEIVED = 'RECEIVED',
 }
-  
+
 const DISPLAY_TEXT_MAP = new Map<string, string>();
 DISPLAY_TEXT_MAP.set(PurchaseOrderReceiptItemStatus.PENDING, 'Confirm');
 DISPLAY_TEXT_MAP.set(PurchaseOrderReceiptItemStatus.CONFIRMED, 'Confirmed');
@@ -18,4 +18,3 @@ export function PurchaseOrderReceiptItemStatusDisplayText(key: PurchaseOrderRece
     throw new Error("Status's Display Text not defined. Please define status display text at function: PurchaseOrderReceiptItemStatusDisplayText");
   }
 }
-  

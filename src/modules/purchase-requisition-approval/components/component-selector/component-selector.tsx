@@ -23,7 +23,7 @@ const ComponentSelector: React.FC<IComponentSelectorProps> = (props) => {
       setComponents(res.data);
       return res.data.map((component) => {
         return {
-          label: <>{`${component.componentName} - ${component.vendorName}`}</>,
+          label: <>{`${component.componentCode} - ${component.componentName}`}</>,
           value: component.id,
         };
       });

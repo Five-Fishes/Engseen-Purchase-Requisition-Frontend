@@ -51,7 +51,7 @@ const ComponentCodeSelector: React.FC<IComponentCodeSelectorProps> = (props) => 
 
     return <><Select value={selectedComponentCode.trim().length === 0 ? undefined : selectedComponentCode } onChange={setSelectedComponentCode} style={{ width: '100%' }} placeholder="Please Select Component Code">
         {components && components.map(component => {
-            return <Select.Option key={component.id} value={component.componentCode}>{component.componentCode}</Select.Option>
+            return <Select.Option key={component.id} value={component.componentCode}>{component.componentName}</Select.Option>
         })}
     </Select></>
 }

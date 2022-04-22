@@ -38,7 +38,7 @@ const PurchaseOrderPage: React.FC<IPurchaseOrderProps> = (props: IPurchaseOrderP
 
   useEffect(() => {
     const getPurchaseApprovalOrderList = async () => {
-      const apiResponse = await getPurchaseOrders(new Date(), new Date(), Sort.ASC);
+      const apiResponse = await getPurchaseOrders(new Date(), new Date(), Sort.DES);
 
       if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
         const deepCopy: IPurchaseApprovalOrder[] = CLONING_LIB.deepClone(getPurchaseApprovalOrdersProgress(apiResponse.data));

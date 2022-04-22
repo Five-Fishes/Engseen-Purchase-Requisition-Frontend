@@ -109,7 +109,13 @@ const PurchaseRequisitionRequestPage: React.FC<IPurchaseRequisitionRequestPagePr
           quantity: purchaseRequisitionTemplateItem.packagingSize * (purchaseRequisitionTemplateItem.quantity || 0),
           deliveryDate: purchaseRequisitionTemplateItem.deliveryDate || new Date(), // undefined problem
         };
-      });
+      }).filter(items => items.quantity > 0);
+      
+      if (purchaseRequisitionRequestItems.length === 0) {
+        popNotification('No Items to be Submit', NotificationType.error);
+        setSubmissionInProgress(false);
+        return;
+      }
 
       const purchaseRequisitionRequest: IPurchaseRequisitionRequest = {
         createdDate: new Date(),

@@ -20,7 +20,7 @@ const VendorDebounceSelect: React.FC<IVendorDebounceSelectProps> = (props) => {
     if (res) {
       if (res.status === ApiResponseStatus.SUCCESS) {
         setVendors(res.data);
-        return res.data.map((vendorMaster) => ({ label: <>{vendorMaster.vendorID}</>, value: vendorMaster.vendorID }));
+        return res.data.map((vendorMaster) => ({ label: <>{vendorMaster.vendorName}</>, value: vendorMaster.vendorID }));
       }
     }
     return [];

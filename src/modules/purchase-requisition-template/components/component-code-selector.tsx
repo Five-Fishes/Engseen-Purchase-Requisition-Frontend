@@ -1,9 +1,9 @@
 import { getItemBySearch } from "@api/component.api";
 import { ApiResponseStatus } from "@constant/api-status.enum";
 import { IPurchaseRequisitionTemplateItem } from "@dto/i-purchase-requisition-template-item.dto";
-import { Select } from "antd";
+import DebounceSelect from '@module/shared/components/debounce-select/debounce-select';
 import { AxiosResponse } from "axios";
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
 interface IComponentCodeSelectorProps {
     selectedVendor: string | undefined,
@@ -14,6 +14,7 @@ interface IComponentCodeSelectorProps {
 const ComponentCodeSelector: React.FC<IComponentCodeSelectorProps> = (props) => {
 
     const { selectedVendor, selectedComponentCode, setSelectedComponentCode } = props;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [components, setComponents] = useState<IPurchaseRequisitionTemplateItem[]>([]);
 
     useEffect(() => {
@@ -23,8 +24,8 @@ const ComponentCodeSelector: React.FC<IComponentCodeSelectorProps> = (props) => 
         // eslint-disable-next-line
     }, [selectedVendor])
 
-    const getVendorsWrapper = async () => {
-        const res: AxiosResponse<IPurchaseRequisitionTemplateItem[]> = await getItemBySearch(null, selectedVendor);
+    const getVendorsWrapper = async (componentInput?: string) => {
+        const res: AxiosResponse<IPurchaseRequisitionTemplateItem[]> = await getItemBySearch(componentInput, selectedVendor);
         if (res) {
             if (res.status === ApiResponseStatus.SUCCESS) {
                 const uniqueComponentCode = new Set();
@@ -43,17 +44,29 @@ const ComponentCodeSelector: React.FC<IComponentCodeSelectorProps> = (props) => 
 
                 setComponents(uniqueComponents);
 
-                return uniqueComponents.map(component => ({ label: component.componentCode, value: component.id }))
+                return uniqueComponents.map(component => ({ label: component.componentName, value: component.id }))
             }
         }
         return [];
     }
 
-    return <><Select value={selectedComponentCode.trim().length === 0 ? undefined : selectedComponentCode } onChange={setSelectedComponentCode} style={{ width: '100%' }} placeholder="Please Select Component Code">
-        {components && components.map(component => {
-            return <Select.Option key={component.id} value={component.componentCode}>{component.componentCode}</Select.Option>
-        })}
-    </Select></>
+    return (
+        <>
+            <DebounceSelect
+                key="component-key"
+                value={selectedComponentCode.length === 0 ? undefined : {value: selectedComponentCode}}
+                showSearch
+                placeholder="Select Component"
+                fetchOptions={getVendorsWrapper}
+                onChange={(e: { label: ReactNode; value: string }) => {
+                    console.log(e.value);
+                    setSelectedComponentCode(e.value);
+                }}
+                style={{ width: '100%' }}
+                debounceTimeout={1000}
+            ></DebounceSelect>
+        </>
+    );
 }
 
 

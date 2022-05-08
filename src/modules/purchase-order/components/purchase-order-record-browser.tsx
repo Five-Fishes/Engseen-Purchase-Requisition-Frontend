@@ -40,8 +40,10 @@ const PurchaseOrderBrowser: React.FC<IPurchaseOrderProps> = (props) => {
                   }, 500);
                 }}
               >
-                {convertToLocalString(purchaseApprovalOrder.createdDate)}
-                <CheckCircleTwoTone hidden={!purchaseApprovalOrder.completed} twoToneColor="#52c41a" style={{ fontSize: '1.3em' }} />
+                <span style={{ fontSize: '12px' }}>
+                  {convertToLocalString(purchaseApprovalOrder.createdDate)}
+                  <CheckCircleTwoTone hidden={!purchaseApprovalOrder.completed} twoToneColor="#52c41a" style={{ fontSize: '1.3em', transform: 'translateY(-3px)' }} />
+                </span>
               </Button>
             );
           })

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { Col, Form, Input, Row, Button, InputNumber, Modal, Space, Divider, Radio } from 'antd';
+import { Col, Form, Input, Row, Button, InputNumber, Modal, Space, Divider } from 'antd';
 import Title from 'antd/lib/typography/Title';
 import readXlsxFile from 'read-excel-file';
 
@@ -17,12 +17,12 @@ import { ApiResponseStatus } from '@constant/api-status.enum';
 import { createPurchaseRequisitionTemplate, getPurchaseRequisitionTemplate, updatePurchaseRequisitionTemplate } from '@api/purchase-requisition-template.api';
 import { NotificationType } from '@constant/notification.enum';
 import { setLoading } from '@module/shared/reducers/app-reducers';
-import { bulkGetItemBySearch, getItemBySearch } from '@api/component.api';
+import { bulkGetItemBySearch } from '@api/component.api';
 import { IComponentSearch } from '@dto/i-component-search.dto';
 import VendorDebounceSelect from '../components/vendor-debounce-select';
 import ComponentCodeSelector from '../components/component-code-selector';
 
-interface IPurchaseRequisitionTemplateProps extends StateProps, DispatchProps { };
+interface IPurchaseRequisitionTemplateProps extends StateProps, DispatchProps {}
 
 const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProps> = (props: IPurchaseRequisitionTemplateProps) => {
   const [purchaseRequisitionTemplates, setPurchaseRequisitionTemplates] = useState<IPurchaseRequisitionTemplate[]>();
@@ -38,8 +38,6 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
   const [editTemplateNameModal, setEditTemplateNameModal] = useState<boolean>(false);
   const [newTemplateName, setNewTemplateName] = useState<string>('');
 
-  const [templateInsertItemSelect, setTemplateInsertItemSelect] = useState<boolean>(false);
-  const [insertItemOptions, setInsertItemOptions] = useState<IPurchaseRequisitionTemplateItem[]>();
   const [insertItemsForm] = Form.useForm();
 
   const [selectedVendor, setSelectedVendor] = useState<string>();
@@ -98,11 +96,12 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
   const uploadExcelFile = (): void => {
     if (excelFile !== undefined) {
       props.setLoading(true);
-      readXlsxFile(excelFile).then((rows) => {
-        // Convert to Array of JSON Object
-        setExcelData(rows);
-        popNotification('Success Upload Excel', NotificationType.success);
-      })
+      readXlsxFile(excelFile)
+        .then((rows) => {
+          // Convert to Array of JSON Object
+          setExcelData(rows);
+          popNotification('Success Upload Excel', NotificationType.success);
+        })
         .then(() => props.setLoading(false));
     }
   };
@@ -118,7 +117,7 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
       const apiResponse = await bulkGetItemBySearch(formattedExcelData);
 
       if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
-        apiResponse.data.forEach(item => insertExcelItemToTemplate(item));
+        apiResponse.data.forEach((item) => insertExcelItemToTemplate(item));
         popNotification('Success Load Component from File', NotificationType.success);
       }
     }
@@ -130,7 +129,9 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
       sequence: 0,
     };
     const insertIndex: number =
-      values.itemSequence === 0 || values.itemSequence > selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList?.length ? selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList?.length : values.itemSequence - 1;
+      values.itemSequence === 0 || values.itemSequence > selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList?.length
+        ? selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList?.length
+        : values.itemSequence - 1;
     selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList.splice(insertIndex, 0, itemToInsert);
     const sortedResult = updateTemplateItemsSequence(selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList);
     selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList = sortedResult;
@@ -141,34 +142,55 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
   /**
    * Excel data format is:
    * | ComponentCode | VendorId | PackagingSize |
-   * 
+   *
    * @param excelData raw excel rows
    * @returns request body for component search
    */
   const formatExcelData = (excelData: any[]) => {
     // TODO: [LU] Please add typing to data
-    return excelData.map(row => {
+    return excelData.map((row) => {
       return {
         componentCode: row[0],
         vendorId: row[1],
-        packagingSize: row[2]
-      } as IComponentSearch
-    })
-  }
-
-  const getItems = async (component: string, vendor: string, packingSize?: number) => {
-    const apiResponse = await getItemBySearch(component, vendor, packingSize);
-
-    if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
-      setInsertItemOptions(apiResponse.data);
-    }
+        packagingSize: row[2],
+      } as IComponentSearch;
+    });
   };
 
-  const addNewComponentAsTemplateItem = (values: any): void => {
+  const addNewComponentAsTemplateItem = async (values: any) => {
     if (Boolean(selectedPurchaseRequisitionTemplate.templateName)) {
-      getItems(selectedComponentCode, selectedVendor || '', values.packagingSize).then(() => {
-        setTemplateInsertItemSelect(true);
-      });
+      /**
+       * Temporary hack
+       * - Use bulk search api to get
+       * - Always get the first result, because it is always exact match
+       */
+      const { packagingSize, itemSequence } = values;
+      const componentSearchDTO: IComponentSearch = {
+        componentCode: selectedComponentCode,
+        vendorId: selectedVendor || '',
+        packagingSize: packagingSize,
+      };
+
+      try {
+        const apiResponse = await bulkGetItemBySearch([componentSearchDTO]);
+
+        if (apiResponse) {
+          if (apiResponse.status === ApiResponseStatus.SUCCESS) {
+            const templateItem = apiResponse.data[0];
+
+            insertItemToTemplate({
+              selectedItem: templateItem,
+              itemSquence: itemSequence,
+            });
+          } else {
+            popNotification(generateErrorMessage(apiResponse.status), NotificationType.error);
+          }
+        } else {
+          throw new Error('Unknown error');
+        }
+      } catch (error) {
+        popNotification(generateErrorMessage(error), NotificationType.error);
+      }
     } else {
       popNotification('Please Select a Template', NotificationType.error);
     }
@@ -178,23 +200,20 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
     console.log('Failed ', errorInfo);
   };
 
-  const closeTemplateInsertItemSelectModal = (): void => {
-    setTemplateInsertItemSelect(false);
-  };
-
   const insertItemToTemplate = (values: any): void => {
     const itemToInsert: IPurchaseRequisitionTemplateItem = {
       ...values.selectedItem,
       sequence: values.itemSequence,
     };
     const insertIndex: number =
-      values.itemSequence === 0 || values.itemSequence > selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList?.length ? selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList?.length : values.itemSequence - 1;
+      values.itemSequence === 0 || values.itemSequence > selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList?.length
+        ? selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList?.length
+        : values.itemSequence - 1;
     selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList.splice(insertIndex, 0, itemToInsert);
     const sortedResult = updateTemplateItemsSequence(selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList);
     selectedPurchaseRequisitionTemplate.purchaseRequisitionTemplateItemList = sortedResult;
     const deepCopy: IPurchaseRequisitionTemplate = CLONING_LIB.deepClone(selectedPurchaseRequisitionTemplate);
     setSelectedPurchaseRequisitionTemplate(deepCopy);
-    setTemplateInsertItemSelect(false);
     insertItemsForm.resetFields();
     popNotification('Success Add Component', NotificationType.success);
   };
@@ -210,34 +229,32 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
   const saveTemplate = () => {
     if (selectedPurchaseRequisitionTemplate.id) {
       updatePurchaseRequisitionTemplate(selectedPurchaseRequisitionTemplate)
-        .then(res => {
+        .then((res) => {
           setSelectedPurchaseRequisitionTemplate(res.data);
           popNotification('Success Update Template', NotificationType.success);
-          getPurchaseRequisitionTemplate()
-            .then(apiResponse => {
-              if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
-                setPurchaseRequisitionTemplates(apiResponse.data);
-              }
-            });
+          getPurchaseRequisitionTemplate().then((apiResponse) => {
+            if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
+              setPurchaseRequisitionTemplates(apiResponse.data);
+            }
+          });
         })
-        .catch(error => {
+        .catch((error) => {
           const errResponse = error.response;
           const errorMessage = errResponse.data ? errResponse.data : 'Request Failed';
           popNotification(errorMessage, NotificationType.error);
         });
     } else {
       createPurchaseRequisitionTemplate(selectedPurchaseRequisitionTemplate)
-        .then(res => {
+        .then((res) => {
           setSelectedPurchaseRequisitionTemplate(res.data);
           popNotification('Success Create Template', NotificationType.success);
-          getPurchaseRequisitionTemplate()
-            .then(apiResponse => {
-              if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
-                setPurchaseRequisitionTemplates(apiResponse.data);
-              }
-            });
+          getPurchaseRequisitionTemplate().then((apiResponse) => {
+            if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
+              setPurchaseRequisitionTemplates(apiResponse.data);
+            }
+          });
         })
-        .catch(error => {
+        .catch((error) => {
           const errResponse = error.response;
           const errorMessage = errResponse.data ? errResponse.data : 'Request Failed';
           popNotification(errorMessage, NotificationType.error);
@@ -248,7 +265,7 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
   return (
     <>
       <div className="d-flex flex-row">
-        <div className="container-fluid h-100" style={{ width: "max-content" }}>
+        <div className="container-fluid h-100" style={{ width: 'max-content' }}>
           <div className="d-flex flex-column justify-content-center">
             <Title level={4}>Purchase Requisition Template</Title>
           </div>
@@ -281,12 +298,13 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
 
         <Divider type="vertical" style={{ height: '100vh' }} className="mx-4" />
 
-        <div className="px-2" style={{ minWidth: "680px" }}>
+        <div className="px-2" style={{ minWidth: '680px' }}>
           <PurchaseRequisitionTemplateBrowser
             setSelectedTemplate={setSelectedPurchaseRequisitionTemplate}
             setLoading={props.setLoading}
             purchaseRequisitionTemplates={purchaseRequisitionTemplates ?? []}
-            setPurchaseRequisitionTemplates={setPurchaseRequisitionTemplates} />
+            setPurchaseRequisitionTemplates={setPurchaseRequisitionTemplates}
+          />
           <Divider />
           {/* Excel Upload */}
           <Row>
@@ -312,7 +330,7 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
             <Row>
               <ComponentCodeSelector selectedVendor={selectedVendor} selectedComponentCode={selectedComponentCode} setSelectedComponentCode={setSelectedComponentCode} />
             </Row>
-            <Form onFinish={addNewComponentAsTemplateItem} onFinishFailed={formValidationFailed}>
+            <Form layout="inline" onFinish={addNewComponentAsTemplateItem} onFinishFailed={formValidationFailed}>
               <Form.Item
                 className="input-group"
                 name="packagingSize"
@@ -327,6 +345,20 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
               >
                 <InputNumber type="number" className="w-100" key="packing-size-input" placeholder="Packing Size" />
               </Form.Item>
+              <Form.Item
+                className="input-group"
+                name="itemSequence"
+                rules={[
+                  { required: true, message: 'Enter item sequence' },
+                  {
+                    type: 'number',
+                    min: 0,
+                    message: 'Item sequence must be 0 or greater',
+                  },
+                ]}
+              >
+                <InputNumber type="number" className="w-50" key="item-sequence-input" placeholder="Item Sequence" />
+              </Form.Item>
               <Form.Item>
                 <Button className="input-group-btn float-end" key="load-database-button" type="primary" htmlType="submit">
                   Add Component
@@ -335,17 +367,10 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
             </Form>
           </div>
           <Divider />
-          <Button
-            key="save-template-button"
-            type="primary"
-            size="large"
-            className="float-end mb-2"
-            onClick={saveTemplate}
-          >
+          <Button key="save-template-button" type="primary" size="large" className="float-end mb-2" onClick={saveTemplate}>
             Save Template
           </Button>
         </div>
-
       </div>
       <Modal title="Edit Template Name" key="edit-templateName-modal" visible={editTemplateNameModal} footer={null} onCancel={closeTemplateNameModal}>
         <Form onFinish={editTemplateName}>
@@ -355,35 +380,6 @@ const PurchaseRequisitionTemplateList: React.FC<IPurchaseRequisitionTemplateProp
           <Form.Item className="text-center mt-3">
             <Space className="">
               <Button htmlType="button" onClick={closeTemplateNameModal}>
-                Cancel
-              </Button>
-              <Button htmlType="submit" type="primary">
-                Submit
-              </Button>
-            </Space>
-          </Form.Item>
-        </Form>
-      </Modal>
-      {/* Modal to Select Item Insert to Template */}
-      <Modal title="Select Item to Insert" key="template-item-select-modal" visible={templateInsertItemSelect} footer={null} onCancel={closeTemplateInsertItemSelectModal}>
-        <Form onFinish={insertItemToTemplate} form={insertItemsForm}>
-          <Form.Item label="Item Row" name="itemSequence">
-            <InputNumber type="number" placeholder="Row to insert" />
-          </Form.Item>
-          <Form.Item label="Items" name="selectedItem" rules={[{ required: true, message: 'Please select 1 item' }]}>
-            <Radio.Group>
-              <Space direction="vertical">
-                {insertItemOptions &&
-                  insertItemOptions.length > 0 &&
-                  insertItemOptions.map((item, index) => {
-                    return <Radio.Button key={index} id={`item-option-${index}`} value={item}>{`${item.componentName} - ${item.vendorName} ${item.packagingSize}`}</Radio.Button>;
-                  })}
-              </Space>
-            </Radio.Group>
-          </Form.Item>
-          <Form.Item className="text-center mt-3">
-            <Space className="">
-              <Button htmlType="button" onClick={closeTemplateInsertItemSelectModal}>
                 Cancel
               </Button>
               <Button htmlType="submit" type="primary">
@@ -407,3 +403,6 @@ type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = typeof mapDispatchToProps;
 
 export default connect(mapStateToProps, mapDispatchToProps)(PurchaseRequisitionTemplateList);
+function generateErrorMessage(error: unknown): string {
+  throw new Error('Function not implemented.');
+}

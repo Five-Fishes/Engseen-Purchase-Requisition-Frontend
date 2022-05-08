@@ -195,7 +195,7 @@ const PurchaseOrderPage: React.FC<IPurchaseOrderProps> = (props: IPurchaseOrderP
             }
           </PDFDownloadLink> */}
           <div className="mx-2 d-inline-flex border-top mt-4 w-100">
-            <div className="my-3 mb-2" style={{ alignContent: 'start' }}>
+            <div className="my-3 mb-2" style={{ alignContent: 'start', width: "max-content" }}>
               <PurchaseOrderBrowser
                 setSelectedPurchaseApprovalOrder={setSelectedPurchaseApprovalOrder}
                 purchaseApprovalOrders={filteredPurchaseApprovalOrders ?? []}
@@ -203,7 +203,7 @@ const PurchaseOrderPage: React.FC<IPurchaseOrderProps> = (props: IPurchaseOrderP
                 setLoading={props.setLoading}
               />
             </div>
-            <div className="my-2 mx-4 position-relative w-100">
+            <div className="my-2 mx-4 position-relative" style={{ width: "78%" }}>
               <span>
                 Submission Date: <b color="primary">{selectedPurchaseApprovalOrder ? convertToLocalString(selectedPurchaseApprovalOrder.createdDate) : ''}</b>
               </span>

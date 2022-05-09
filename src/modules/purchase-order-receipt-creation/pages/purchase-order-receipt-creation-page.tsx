@@ -144,11 +144,12 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
   };
 
   // TODO: [LU] Declaring component inside component is causing slow performance
+  // FIXME: [LU] Please do not use search result as filtering, should update the original list and trigger useEffect to search afterwards
   const checkPurchaseOrderReceiptCreation = () => {
     console.log('Popup Modal to show receiving items');
     console.log(PurchaseOrderReceiptItemStatus.CONFIRMED);
-    console.log(purchaseOrderItem);
-    const confirmedItems = CLONING_LIB.deepClone(purchaseOrderItem ?? []).filter((item) => item.status === PurchaseOrderReceiptItemStatus.CONFIRMED);
+    console.log(searchResult);
+    const confirmedItems = CLONING_LIB.deepClone(searchResult ?? []).filter((item) => item.status === PurchaseOrderReceiptItemStatus.CONFIRMED);
     console.log(confirmedItems);
     return (
       <Table dataSource={confirmedItems}>

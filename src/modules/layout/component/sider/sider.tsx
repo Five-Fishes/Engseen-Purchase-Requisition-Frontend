@@ -59,12 +59,12 @@ const AppSider: React.FC<IAppSider> = (props) => {
           </Menu.Item>
           <Menu.Item key="6" icon={<FileSyncOutlined />}>
             <Link className="router-link" to="/outstanding-purchase-order">
-              Outstanding Purchase Order
+              Outstanding PO
             </Link>
           </Menu.Item>
           <Menu.Item key="7" icon={<FileSyncOutlined />}>
             <Link className="router-link" to="/outstanding-purchase-order-by-vendor">
-              Outstanding Purchase Order By Vendor
+              Outstanding PO By Vendor
             </Link>
           </Menu.Item>
           <Menu.Item key="9" icon={<DatabaseOutlined />}>

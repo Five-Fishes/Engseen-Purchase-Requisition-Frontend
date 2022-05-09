@@ -9,10 +9,9 @@ import { IPurchaseOrderReceiptSearchCriteria } from '@dto/i-purchase-order-recei
 
 interface IPurchaseOrderReceiptSearchFormProps {
   performSearch: (searchCriteria: IPurchaseOrderReceiptSearchCriteria) => void;
-};
+}
 
 const PurchaseOrderReceiptSearchForm: React.FC<IPurchaseOrderReceiptSearchFormProps> = (props: IPurchaseOrderReceiptSearchFormProps) => {
-
   const { performSearch } = props;
   const [searchByField, setSearchByField] = useState<string>('');
   const [startGrnDateCriteria, setStartGrnDateCriteria] = useState<Date>();
@@ -24,7 +23,7 @@ const PurchaseOrderReceiptSearchForm: React.FC<IPurchaseOrderReceiptSearchFormPr
     if (startDateValue) {
       const startDateUTC = Date.UTC(startDateValue.getFullYear(), startDateValue.getMonth(), startDateValue.getDate(), 0, 0, 0);
       startDateValue = new Date(startDateUTC);
-    } 
+    }
     setStartGrnDateCriteria(startDateValue);
     let endDateValue = endDate === undefined ? endDate : new Date(endDate);
     if (endDateValue) {
@@ -47,9 +46,9 @@ const PurchaseOrderReceiptSearchForm: React.FC<IPurchaseOrderReceiptSearchFormPr
         return;
       }
       searchCriteria = {
-        "startGrnDate": startGrnDateCriteria.toISOString(),
-        "endGrnDate": endGrnDateCriteria.toISOString(),
-      }
+        startGrnDate: startGrnDateCriteria.toISOString(),
+        endGrnDate: endGrnDateCriteria.toISOString(),
+      };
     } else {
       const searchValue = values.keyword?.trim();
       if (searchValue == null || searchValue === '') {
@@ -58,7 +57,7 @@ const PurchaseOrderReceiptSearchForm: React.FC<IPurchaseOrderReceiptSearchFormPr
       }
       searchCriteria = {
         [searchByField]: searchValue,
-      }
+      };
     }
     console.log(searchCriteria);
     performSearch(searchCriteria);
@@ -73,14 +72,16 @@ const PurchaseOrderReceiptSearchForm: React.FC<IPurchaseOrderReceiptSearchFormPr
     setSearchByField('');
     setStartGrnDateCriteria(undefined);
     setEndGrnDateCriteria(undefined);
-  }
+  };
 
   return (
     <>
       <Form name="basic" layout="inline" form={form} onFinish={onFinish} onFinishFailed={onFinishFailed} autoComplete="off">
-        <Form.Item name="searchBy">
-          <Select key="search-by-select" value={searchByField} onChange={(value) => setSearchByField(value)} defaultValue={''} style={{ minWidth: "125px" }}>
-            <Select.Option disabled value={''}>Search By</Select.Option>
+        <Form.Item name="searchBy" initialValue={''}>
+          <Select key="search-by-select" value={searchByField} onChange={(value) => setSearchByField(value)} style={{ minWidth: '125px' }}>
+            <Select.Option disabled value={''}>
+              Search By
+            </Select.Option>
             <Select.Option value={'grnNo'}>GRN No</Select.Option>
             <Select.Option value={'grnDate'}>Receipt Date</Select.Option>
             <Select.Option value={'vendorID'}>Vendor</Select.Option>

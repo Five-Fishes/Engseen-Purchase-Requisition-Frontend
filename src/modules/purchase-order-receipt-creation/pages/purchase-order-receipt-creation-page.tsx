@@ -18,6 +18,7 @@ import { ITableColumnDisplaySettings } from '@dto/i-table-columns';
 import { IWindowSize, useWindowResized } from '@hook/window-resized.hook';
 import { popNotification } from '@module/shared/components/notification';
 import { setLoading } from '@module/shared/reducers/app-reducers';
+import { useQuery } from '@utils/api/query-params-hook';
 import CLONING_LIB from '@utils/cloning/cloning-lib-wrapper';
 import { getSearchText, SearchEngine } from '@utils/search/native-search';
 import { Button, Drawer, Input, Popover, Table } from 'antd';
@@ -46,17 +47,19 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
   const [tableColumnDisplaySettingsUpdateTime, setTableColumnDisplaySettingsUpdateTime] = useState<Date>(new Date());
   const [showTableDisplaySettings, setShowTableDisplaySettings] = useState<boolean>(false);
   const windowSize: IWindowSize = useWindowResized();
+  const queryParams = useQuery();
+  const queryGrnNo = queryParams.get('grnNo');
   const PURCHASE_ORDER_RECEIPT_CREATION_CONSTRUCTOR_WRAPPER_HEIGHT_CONSTRAINT: number =
     APP_HEADER_HEIGHT + APP_CONTENT_MARGIN + PURCHASE_ORDER_RECEIPT_CREATION_TITLE_HEIGHT + PURCHASE_ORDER_RECEIPT_CREATION_TOP_TOOLS_HEIGHT + PURCHASE_ORDER_RECEIPT_CREATION_BOTTOM_TOOLS_HEIGHT;
 
-  const { vendorId, grnNo } = props.match.params;
+  const { vendorId, grnNo } = props.match.params; // FIXME: [LU] remove the query params from here and use ```useQuery()``` hook instead
 
   useEffect(() => {
     (async () => {
       let apiResponse;
 
-      if (grnNo != null && grnNo.trim() !== '') {
-        apiResponse = await getGrnReceiptWithVendorOutstandingPO(vendorId, grnNo ?? '');
+      if (queryGrnNo && queryGrnNo != null && queryGrnNo.trim() !== '') {
+        apiResponse = await getGrnReceiptWithVendorOutstandingPO(vendorId, queryGrnNo ?? '');
       } else {
         apiResponse = await getOutstandingPurchaseOrder(vendorId);
       }
@@ -68,6 +71,7 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
         setSearchResult(searchResultDeepCopy);
       }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vendorId, grnNo]);
 
   useEffect(() => {
@@ -127,7 +131,7 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
       });
       const purchaseOrderReceiptHeader = {
         id: null,
-        grnNo: grnNo ?? '',
+        grnNo: queryGrnNo ?? '',
         grnDate: new Date(),
         vendorID: vendorId,
         poReceiptDtoList: purchaseOrderReceiptItems,
@@ -175,7 +179,7 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
 
         <div style={{ height: `${PURCHASE_ORDER_RECEIPT_CREATION_TOP_TOOLS_HEIGHT}px` }}>
           <div>
-            <PurchaseOrderReceiptHeaderInfo vendorId={vendorId} doNumber={doNumber} setDONumber={setDONumber} grnNo={grnNo} />
+            <PurchaseOrderReceiptHeaderInfo vendorId={vendorId} doNumber={doNumber} setDONumber={setDONumber} grnNo={queryGrnNo} />
           </div>
           <div className="d-flex float-end">
             <Input.Search placeholder="Search" onSearch={handleSearch} allowClear></Input.Search>

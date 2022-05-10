@@ -131,6 +131,12 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
       });
       const purchaseOrderReceiptHeader = {
         id: null,
+        /**
+         * TODO: [LU]
+         * - Set GRN
+         * - Set DO Number
+         * - Sert Invoice Number
+         */
         grnNo: queryGrnNo ?? '',
         grnDate: new Date(),
         vendorID: vendorId,

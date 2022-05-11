@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 interface IPurchaseOrderReceiptHeaderInfoProps {
   doNumber: string;
   setDONumber: (value: string) => void;
-  grnNo?: string;
+  grnNo: string | null;
   grnDate?: Date;
   vendorId: string;
   vendorName?: string;

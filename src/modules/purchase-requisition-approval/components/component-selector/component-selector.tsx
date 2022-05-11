@@ -23,7 +23,7 @@ const ComponentSelector: React.FC<IComponentSelectorProps> = (props) => {
       setComponents(res.data);
       return res.data.map((component) => {
         return {
-          label: <>{`${component.componentName} - ${component.vendorName}`}</>,
+          label: <>{`${component.componentName} [${component.componentCode}] - ${component.vendorName}`}</>,
           value: component.id,
         };
       });
@@ -43,7 +43,7 @@ const ComponentSelector: React.FC<IComponentSelectorProps> = (props) => {
 
   const onNoOfPacksChanged = (value: number) => {
     setNoOfPacks(value);
-  }
+  };
 
   return (
     <>
@@ -52,10 +52,10 @@ const ComponentSelector: React.FC<IComponentSelectorProps> = (props) => {
           <div className="col">
             <DebounceSelect
               showSearch
-              value={componentToAdd && { value: `${componentToAdd.componentName} - ${componentToAdd.vendorName}` }}
+              value={componentToAdd && { value: `${componentToAdd.componentName} [${componentToAdd.componentCode}] - ${componentToAdd.vendorName}` }}
               placeholder="Select Components"
               fetchOptions={getItemsWrapper}
-              onChange={(e: { value: string, label: ReactNode }) => {
+              onChange={(e: { value: string; label: ReactNode }) => {
                 const selectedComponent = components.find((component) => component.id === Number(e.value));
                 let approvalItem: IPurchaseRequisitionApprovalItem | undefined;
                 if (selectedComponent) {

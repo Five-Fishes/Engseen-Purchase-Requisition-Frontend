@@ -6,11 +6,7 @@ import { convertToLocalString } from '@utils/date-time/date-time-format';
 import { APP_HEADER_HEIGHT } from '@constant/display/header.constant';
 import { APP_CONTENT_MARGIN } from '@constant/display/content.constant';
 import { TABLE_PAGINATION_TOOLS_HEIGHT } from '@constant/display/table.constant';
-import {
-  PURCHASE_ORDER_RECEIPT_TABLE_HEADER_HEIGHT,
-  PURCHASE_ORDER_RECEIPT_TITLE_HEIGHT,
-  PURCHASE_ORDER_RECEIPT_TOP_TOOLS_HEIGHT,
-} from '@constant/display/purchase-order-receipt.constant';
+import { PURCHASE_ORDER_RECEIPT_TABLE_HEADER_HEIGHT, PURCHASE_ORDER_RECEIPT_TITLE_HEIGHT, PURCHASE_ORDER_RECEIPT_TOP_TOOLS_HEIGHT } from '@constant/display/purchase-order-receipt.constant';
 import { IWindowSize, useWindowResized } from '@hook/window-resized.hook';
 import { IPurchaseOrderReceiptHeader } from '@dto/i-purchase-order-receipt-header.dto';
 
@@ -20,14 +16,9 @@ interface IPurchaseOrderReceiptTableProps {
 
 const PurchaseOrderReceiptTable: React.FC<IPurchaseOrderReceiptTableProps> = (props) => {
   const PURCHASE_ORDER_RECEIPT_TABLE_HEIGHT_CONSTRAINT: number =
-    APP_HEADER_HEIGHT +
-    APP_CONTENT_MARGIN +
-    PURCHASE_ORDER_RECEIPT_TITLE_HEIGHT +
-    PURCHASE_ORDER_RECEIPT_TOP_TOOLS_HEIGHT +
-    PURCHASE_ORDER_RECEIPT_TABLE_HEADER_HEIGHT +
-    TABLE_PAGINATION_TOOLS_HEIGHT;
+    APP_HEADER_HEIGHT + APP_CONTENT_MARGIN + PURCHASE_ORDER_RECEIPT_TITLE_HEIGHT + PURCHASE_ORDER_RECEIPT_TOP_TOOLS_HEIGHT + PURCHASE_ORDER_RECEIPT_TABLE_HEADER_HEIGHT + TABLE_PAGINATION_TOOLS_HEIGHT;
   const windowSize: IWindowSize = useWindowResized();
-  
+
   const poReceiptItems = props.filteredItems === undefined ? [] : props.filteredItems;
 
   const PURCHASE_ORDER_RECEIPT_TABLE_COLUMN: ColumnsType<IPurchaseOrderReceiptHeader> = [
@@ -44,11 +35,7 @@ const PurchaseOrderReceiptTable: React.FC<IPurchaseOrderReceiptTableProps> = (pr
       key: 'receiptDate',
       align: 'center',
       width: '120px',
-      render: (text: string, record: IPurchaseOrderReceiptHeader) => (
-        <span>
-          {convertToLocalString(record.grnDate, true)}
-        </span>
-      ),
+      render: (text: string, record: IPurchaseOrderReceiptHeader) => <span>{convertToLocalString(record.grnDate, true)}</span>,
     },
     {
       title: 'Vendor',
@@ -90,10 +77,10 @@ const PurchaseOrderReceiptTable: React.FC<IPurchaseOrderReceiptTableProps> = (pr
     console.log('Purchase Receipt Header: ', purchaseOrderReceiptHeader);
     console.log('GRN No: ', purchaseOrderReceiptHeader.grnNo);
     // TODO: navigation for Open PO Receipt to Create PO Receipt with grnNo
-    window.location.href = `/purchase-order-receipt-creation?grnNo=${purchaseOrderReceiptHeader.grnNo}`;
+    window.location.href = `/purchase-order-receipt-creation/${purchaseOrderReceiptHeader.vendorID}?grnNo=${purchaseOrderReceiptHeader.grnNo}`;
     console.groupEnd();
   };
-  
+
   return (
     <>
       <Table

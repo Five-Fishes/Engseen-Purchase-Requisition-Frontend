@@ -11,6 +11,7 @@ interface IPurchaseOrderReceiptHeaderInfoProps {
   doNumber: string;
   setDONumber: (value: string) => void;
   grnNo: string | null;
+  setGrnNo: (grnNo: string) => void;
   grnDate?: Date;
   vendorId: string;
   vendorName?: string;
@@ -18,10 +19,7 @@ interface IPurchaseOrderReceiptHeaderInfoProps {
 
 const PurchaseOrderReceiptHeaderInfo: React.FC<IPurchaseOrderReceiptHeaderInfoProps> = (props) => {
   const [poReceiptHeader, setPOReceiptHeader] = useState<IPurchaseOrderReceiptHeader>();
-  const doNumber = props.doNumber;
-  const setDONumber = props.setDONumber;
-  const grnNo = props.grnNo;
-  const vendorId = props.vendorId;
+  const { doNumber, setDONumber, grnNo, setGrnNo, vendorId } = props;
 
   useEffect(() => {
     const getNewPOReceiptHeader = async (vendorId: string) => {
@@ -29,7 +27,9 @@ const PurchaseOrderReceiptHeaderInfo: React.FC<IPurchaseOrderReceiptHeaderInfoPr
 
       if (apiResponse && apiResponse.status === ApiResponseStatus.SUCCESS) {
         const deepCopy: IPurchaseOrderReceiptHeader = CLONING_LIB.deepClone(apiResponse.data);
+        console.log('createPurchaseOrderReceiptHeaderByVendorId >>: ', deepCopy);
         setPOReceiptHeader(deepCopy);
+        setGrnNo(deepCopy.grnNo);
       }
     };
 
@@ -47,7 +47,7 @@ const PurchaseOrderReceiptHeaderInfo: React.FC<IPurchaseOrderReceiptHeaderInfoPr
     } else {
       getNewPOReceiptHeader(vendorId);
     }
-  }, [grnNo, vendorId]);
+  }, [grnNo, setGrnNo, vendorId]);
 
   return (
     <>

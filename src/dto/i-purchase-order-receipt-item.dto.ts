@@ -2,6 +2,7 @@ import { PurchaseOrderReceiptItemStatus } from '@constant/purchase-order-receipt
 
 export interface IPurchaseOrderReceiptItem {
   id: number;
+  pid: number; // PODetail ID
   poNumber: string;
   purchaseOrderId?: number;
   itemCost?: number;
@@ -18,4 +19,6 @@ export interface IPurchaseOrderReceiptItem {
   receivingQuantity?: number;
   receivingQuantityPack?: number;
   status?: PurchaseOrderReceiptItemStatus;
+
+  unitCost?: number;
 }

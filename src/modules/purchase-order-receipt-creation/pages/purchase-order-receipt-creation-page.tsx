@@ -32,7 +32,7 @@ import generateIndex from '../components/request-constructor/request-constructor
 import PurchaseOrderReceiptCreationRequestRemarks from '../components/request-remark/request-remark';
 import PurchaseOrderReceiptCreationTableDisplaySettings from '../components/table-column-display-settings/table-column-display-settings';
 
-interface IPurchaseOrderReceiptCreationPageProps extends StateProps, DispatchProps, RouteComponentProps<{ vendorId: string; grnNo?: string }> {}
+interface IPurchaseOrderReceiptCreationPageProps extends StateProps, DispatchProps, RouteComponentProps<{ vendorId: string }> {}
 
 const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPageProps> = (props: IPurchaseOrderReceiptCreationPageProps) => {
   const [submissionInProgress, setSubmissionInProgress] = useState<boolean>(false);
@@ -48,18 +48,19 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
   const [showTableDisplaySettings, setShowTableDisplaySettings] = useState<boolean>(false);
   const windowSize: IWindowSize = useWindowResized();
   const queryParams = useQuery();
-  const queryGrnNo = queryParams.get('grnNo');
+  const [grnNo, setGrnNo] = useState('');
   const PURCHASE_ORDER_RECEIPT_CREATION_CONSTRUCTOR_WRAPPER_HEIGHT_CONSTRAINT: number =
     APP_HEADER_HEIGHT + APP_CONTENT_MARGIN + PURCHASE_ORDER_RECEIPT_CREATION_TITLE_HEIGHT + PURCHASE_ORDER_RECEIPT_CREATION_TOP_TOOLS_HEIGHT + PURCHASE_ORDER_RECEIPT_CREATION_BOTTOM_TOOLS_HEIGHT;
 
-  const { vendorId, grnNo } = props.match.params; // FIXME: [LU] remove the query params from here and use ```useQuery()``` hook instead
+  const { vendorId } = props.match.params;
 
   useEffect(() => {
     (async () => {
       let apiResponse;
 
-      if (queryGrnNo && queryGrnNo != null && queryGrnNo.trim() !== '') {
-        apiResponse = await getGrnReceiptWithVendorOutstandingPO(vendorId, queryGrnNo ?? '');
+      setGrnNo(queryParams.get('grnNo') || '');
+      if (grnNo && grnNo != null && grnNo.trim() !== '') {
+        apiResponse = await getGrnReceiptWithVendorOutstandingPO(vendorId, grnNo ?? '');
       } else {
         apiResponse = await getOutstandingPurchaseOrder(vendorId);
       }
@@ -72,7 +73,7 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [vendorId, grnNo]);
+  }, [vendorId]);
 
   useEffect(() => {
     const savedPurchaseOrderReceiptCreationTableDisplaySettings = localStorage.getItem('purchaseOrderReceiptCreationTableDisplaySettings');
@@ -126,18 +127,21 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
   const submitPurchaseOrderReceiptCreation = async () => {
     setSubmissionInProgress(true);
     if (purchaseOrderItem) {
-      const purchaseOrderReceiptItems: IPurchaseOrderReceiptItem[] = purchaseOrderItem.map((item) => {
-        return { ...item } as IPurchaseOrderReceiptItem;
-      });
+      const purchaseOrderReceiptItems: IPurchaseOrderReceiptItem[] = (searchResult || [])
+        .map((item) => {
+          return {
+            ...item,
+            pid: item.id,
+            unitCost: item.itemCost,
+          } as IPurchaseOrderReceiptItem;
+        })
+        .filter((item) => {
+          return item.receivingQuantity && item.receivingQuantity > 0;
+        });
       const purchaseOrderReceiptHeader = {
         id: null,
-        /**
-         * TODO: [LU]
-         * - Set GRN
-         * - Set DO Number
-         * - Sert Invoice Number
-         */
-        grnNo: queryGrnNo ?? '',
+        grnNo: grnNo ?? '',
+        doNumber: doNumber ?? '',
         grnDate: new Date(),
         vendorID: vendorId,
         poReceiptDtoList: purchaseOrderReceiptItems,
@@ -185,7 +189,7 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
 
         <div style={{ height: `${PURCHASE_ORDER_RECEIPT_CREATION_TOP_TOOLS_HEIGHT}px` }}>
           <div>
-            <PurchaseOrderReceiptHeaderInfo vendorId={vendorId} doNumber={doNumber} setDONumber={setDONumber} grnNo={queryGrnNo} />
+            <PurchaseOrderReceiptHeaderInfo vendorId={vendorId} doNumber={doNumber} setDONumber={setDONumber} grnNo={grnNo} setGrnNo={setGrnNo} />
           </div>
           <div className="d-flex float-end">
             <Input.Search placeholder="Search" onSearch={handleSearch} allowClear></Input.Search>

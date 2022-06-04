@@ -1,4 +1,4 @@
-import { getItemBySearch } from '@api/component.api';
+import { getItemBySearchComponentAndVendorId } from '@api/component.api';
 import { ApiResponseStatus } from '@constant/api-status.enum';
 import { IPurchaseRequisitionTemplateItem } from '@dto/i-purchase-requisition-template-item.dto';
 import DebounceSelect from '@module/shared/components/debounce-select/debounce-select';
@@ -24,7 +24,7 @@ const ComponentCodeSelector: React.FC<IComponentCodeSelectorProps> = (props) => 
   }, [selectedVendor]);
 
   const getVendorsWrapper = async (componentInput?: string) => {
-    const res: AxiosResponse<IPurchaseRequisitionTemplateItem[]> = await getItemBySearch(componentInput, selectedVendor);
+    const res: AxiosResponse<IPurchaseRequisitionTemplateItem[]> = await getItemBySearchComponentAndVendorId(componentInput, selectedVendor);
     if (res) {
       if (res.status === ApiResponseStatus.SUCCESS) {
         const uniqueComponentCode = new Set();

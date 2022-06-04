@@ -9,6 +9,16 @@ export async function getItemBySearch(component?: string | null, vendor?: string
   return await axios.get<IPurchaseRequisitionTemplateItem[]>(url);
 }
 
+export async function getItemBySearchComponentAndVendorId(component?: string | null, vendorId?: string | null) {
+  const url = QueryParamsBuilder.withUrl(`${COMPONENT}/${component}/vendor/${vendorId}`).addParams({}).build();
+  return await axios.get<IPurchaseRequisitionTemplateItem[]>(url);
+}
+
+export async function getItemBySearchComponentOrVendor(component?: string | null, vendor?: string | null) {
+  const url = QueryParamsBuilder.withUrl(`${COMPONENT}/search`).addParams({ component, vendor }).build();
+  return await axios.get<IPurchaseRequisitionTemplateItem[]>(url);
+}
+
 export async function bulkGetItemBySearch(componentSearch: IComponentSearch[]) {
   return await axios.post<IPurchaseRequisitionTemplateItem[]>(COMPONENT_SEARCH_BULK, componentSearch);
 }

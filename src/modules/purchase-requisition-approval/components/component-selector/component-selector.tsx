@@ -3,7 +3,7 @@ import { ReactNode, useState } from 'react';
 import moment from 'moment';
 import { Button, DatePicker, InputNumber } from 'antd';
 
-import { getItemBySearch } from '@api/component.api';
+import { getItemBySearchComponentOrVendor } from '@api/component.api';
 import { ApiResponseStatus } from '@constant/api-status.enum';
 import { IPurchaseRequisitionApprovalItem, mapTemplateItemToApprovalItem } from '@dto/i-purchase-requisition-approval-item.dto';
 import { IPurchaseRequisitionTemplateItem } from '@dto/i-purchase-requisition-template-item.dto';
@@ -17,7 +17,7 @@ const ComponentSelector: React.FC<IComponentSelectorProps> = (props) => {
   const getItemsWrapper = async (searchString: string) => {
     const componentCode = searchString;
     const vendorId = searchString;
-    const res = await getItemBySearch(componentCode, vendorId);
+    const res = await getItemBySearchComponentOrVendor(componentCode, vendorId);
 
     if (res && res.status === ApiResponseStatus.SUCCESS) {
       setComponents(res.data);

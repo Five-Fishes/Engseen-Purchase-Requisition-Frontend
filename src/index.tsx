@@ -11,8 +11,8 @@ import 'dotenv/config';
 import { setLoading } from '@module/shared/reducers/app-reducers';
 
 // TODO: Temporary Axios Setting
-const TIMEOUT = 1 * 60 * 1000;
-axios.defaults.timeout = TIMEOUT;
+// const TIMEOUT = 1 * 60 * 1000;
+// axios.defaults.timeout = TIMEOUT;
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 axios.defaults.validateStatus = (status) => status <= 500; // return all status
 axios.interceptors.request.use((req) => {

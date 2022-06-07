@@ -48,7 +48,7 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
   const [showTableDisplaySettings, setShowTableDisplaySettings] = useState<boolean>(false);
   const windowSize: IWindowSize = useWindowResized();
   const queryParams = useQuery();
-  const [grnNo, setGrnNo] = useState('');
+  const [grnNo, setGrnNo] = useState(queryParams.get('grnNo'));
   const PURCHASE_ORDER_RECEIPT_CREATION_CONSTRUCTOR_WRAPPER_HEIGHT_CONSTRAINT: number =
     APP_HEADER_HEIGHT + APP_CONTENT_MARGIN + PURCHASE_ORDER_RECEIPT_CREATION_TITLE_HEIGHT + PURCHASE_ORDER_RECEIPT_CREATION_TOP_TOOLS_HEIGHT + PURCHASE_ORDER_RECEIPT_CREATION_BOTTOM_TOOLS_HEIGHT;
 
@@ -58,9 +58,8 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
     (async () => {
       let apiResponse;
 
-      setGrnNo(queryParams.get('grnNo') || '');
       if (grnNo && grnNo != null && grnNo.trim() !== '') {
-        apiResponse = await getGrnReceiptWithVendorOutstandingPO(vendorId, grnNo ?? '');
+        apiResponse = await getGrnReceiptWithVendorOutstandingPO(vendorId, grnNo);
       } else {
         apiResponse = await getOutstandingPurchaseOrder(vendorId);
       }
@@ -128,6 +127,7 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
     setSubmissionInProgress(true);
     if (purchaseOrderItem) {
       const purchaseOrderReceiptItems: IPurchaseOrderReceiptItem[] = (searchResult || [])
+        .filter((item) => item.status === PurchaseOrderReceiptItemStatus.CONFIRMED)
         .map((item) => {
           return {
             ...item,

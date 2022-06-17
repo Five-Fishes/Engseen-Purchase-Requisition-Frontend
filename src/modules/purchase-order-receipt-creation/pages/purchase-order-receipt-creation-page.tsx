@@ -126,6 +126,11 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
 
   const submitPurchaseOrderReceiptCreation = async () => {
     setSubmissionInProgress(true);
+    if (doNumber.trim() === '') {
+      popNotification('Please Provide DO Number', NotificationType.warning);
+      setSubmissionInProgress(false);
+      return;
+    }
     if (purchaseOrderItem) {
       const purchaseOrderReceiptItems: IPurchaseOrderReceiptItem[] = (searchResult || [])
         .filter((item) => item.status === PurchaseOrderReceiptItemStatus.CONFIRMED)

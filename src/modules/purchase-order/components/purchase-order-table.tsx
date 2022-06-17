@@ -90,23 +90,22 @@ const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
 
     if (res) {
       if (res.status === ApiResponseStatus.SUCCESS) {
-        /** 
-         * 1. Load data as blob 
+        /**
+         * 1. Load data as blob
          * 2. Name the file
          * 3. provide file extension
          * */
         const blob: Blob = new Blob([res.data]);
-        const fileName: string = `Purchase Order - ${purchaseOrder.poNumber} - ${new Date(purchaseOrder.revisionDate).toDateString()}`;
+        const fileName: string = `${purchaseOrder.poNumber} ${purchaseOrder.vendorId}`;
         const fileExtension: string = 'pdf';
-    
+
         downloadBlobAsFileWithNameAndExtension(blob, fileName, fileExtension);
       } else {
-        popNotification(res.statusText, NotificationType.error);  
+        popNotification(res.statusText, NotificationType.error);
       }
     } else {
-      popNotification("Server Download PO PDF API error", NotificationType.error);  
+      popNotification('Server Download PO PDF API error', NotificationType.error);
     }
-
   };
 
   const downloadAllPO = async () => {
@@ -115,7 +114,7 @@ const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
     console.log('Purchase Approval Orders Id: ', currentPurchaseApprovalOrderRecord?.id);
     console.log('Purchase Orders List: ', currentPurchaseApprovalOrderRecord?.purchaseOrders);
     if (currentPurchaseApprovalOrderRecord && currentPurchaseApprovalOrderRecord.purchaseOrders) {
-      const downloadRequests: Promise<void>[] = currentPurchaseApprovalOrderRecord.purchaseOrders.map(purchaseOrder => downloadPO(purchaseOrder))
+      const downloadRequests: Promise<void>[] = currentPurchaseApprovalOrderRecord.purchaseOrders.map((purchaseOrder) => downloadPO(purchaseOrder));
       try {
         await Promise.all(downloadRequests);
       } catch (e: any) {
@@ -149,9 +148,9 @@ const PurchaseOrderTable: React.FC<IPurchaseOrderTableProps> = (props) => {
     console.log('Purchase Approval Orders Id: ', currentPurchaseApprovalOrderRecord?.id);
     console.log('Purchase Orders List: ', currentPurchaseApprovalOrderRecord?.purchaseOrders);
     if (currentPurchaseApprovalOrderRecord && currentPurchaseApprovalOrderRecord.purchaseOrders) {
-      currentPurchaseApprovalOrderRecord.purchaseOrders.forEach(purchaseOrder => {
+      currentPurchaseApprovalOrderRecord.purchaseOrders.forEach((purchaseOrder) => {
         emailPO(purchaseOrder);
-      })
+      });
     }
     console.groupEnd();
   };

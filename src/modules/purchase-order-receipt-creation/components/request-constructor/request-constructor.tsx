@@ -170,7 +170,7 @@ const PurchaseOrderReceiptCreationRequestConstructor: React.FC<IPurchaseOrderRec
         width="114px"
         dataIndex="status"
         render={(value: PurchaseOrderReceiptItemStatus, record: IPurchaseOrderItem, index: number) => (
-          <Button className={`po-receipt-status-${value.toLowerCase()}`} onClick={() => updatePurchaseOrderReceiptItemStatus(record)}>
+          <Button className={`po-receipt-status-${value.toLowerCase()}`} onClick={() => updatePurchaseOrderReceiptItemStatus(record)} disabled={value === PurchaseOrderReceiptItemStatus.RECEIVED}>
             {`${PurchaseOrderReceiptItemStatusDisplayText(value)}`}
           </Button>
         )}

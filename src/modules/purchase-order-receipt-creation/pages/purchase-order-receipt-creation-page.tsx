@@ -25,7 +25,7 @@ import { Button, Drawer, Input, Popover, Table } from 'antd';
 import Title from 'antd/lib/typography/Title';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, useHistory } from 'react-router-dom';
 import PurchaseOrderReceiptHeaderInfo from '../components/receipt-header-info/receipt-header-info';
 import PurchaseOrderReceiptCreationRequestConstructor from '../components/request-constructor/request-constructor';
 import generateIndex from '../components/request-constructor/request-constructor-indexer';
@@ -35,6 +35,7 @@ import PurchaseOrderReceiptCreationTableDisplaySettings from '../components/tabl
 interface IPurchaseOrderReceiptCreationPageProps extends StateProps, DispatchProps, RouteComponentProps<{ vendorId: string }> {}
 
 const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPageProps> = (props: IPurchaseOrderReceiptCreationPageProps) => {
+  const history = useHistory();
   const [submissionInProgress, setSubmissionInProgress] = useState<boolean>(false);
   const [purchaseOrderItem, setPurchaseOrderItem] = useState<IPurchaseOrderItem[]>();
   const [searchResult, setSearchResult] = useState<IPurchaseOrderItem[]>();
@@ -125,6 +126,11 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
 
   const submitPurchaseOrderReceiptCreation = async () => {
     setSubmissionInProgress(true);
+    if (doNumber.trim() === '') {
+      popNotification('Please Provide DO Number', NotificationType.warning);
+      setSubmissionInProgress(false);
+      return;
+    }
     if (purchaseOrderItem) {
       const purchaseOrderReceiptItems: IPurchaseOrderReceiptItem[] = (searchResult || [])
         .filter((item) => item.status === PurchaseOrderReceiptItemStatus.CONFIRMED)
@@ -176,6 +182,7 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
 
   const completePurchaseOrderReceiptCreation = () => {
     console.log('Done PO Receipt Creation');
+    history.push(`/purchase-order-receipt-record`);
   };
 
   return (

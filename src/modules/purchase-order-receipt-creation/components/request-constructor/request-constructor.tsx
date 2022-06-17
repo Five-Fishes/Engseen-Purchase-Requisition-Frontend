@@ -44,7 +44,7 @@ const PurchaseOrderReceiptCreationRequestConstructor: React.FC<IPurchaseOrderRec
     TABLE_HEADER_HEIGHT +
     TABLE_PAGINATION_TOOLS_HEIGHT;
 
-  const updatePurchaseOrderReceiptItemStatus: (item: IPurchaseOrderItem) => void = (item) => {
+  const updatePurchaseOrderReceiptItemStatus: (item: IPurchaseOrderItem, index: number) => void = (item, index) => {
     let udpatedValue: PurchaseOrderReceiptItemStatus;
     switch (item.status) {
       case PurchaseOrderReceiptItemStatus.PENDING:
@@ -58,22 +58,24 @@ const PurchaseOrderReceiptCreationRequestConstructor: React.FC<IPurchaseOrderRec
         break;
     }
     // TODO: Update Item Status
-    const updatedList = updateData(udpatedValue, item, 'status');
+    const updatedList = updateData(udpatedValue, item, index, 'status');
     updatePurchaseOrderReceiptItem(updatedList);
   };
 
-  const updateData: (value: any, record: IPurchaseOrderItem, key: string) => IPurchaseOrderItem[] = (value, record, key) => {
+  const updateData: (value: any, record: IPurchaseOrderItem, index: number, key: string) => IPurchaseOrderItem[] = (value, record, index, key) => {
     if (searchResult === undefined) {
       return [];
     }
-    const idToUpdate = record.id;
-    const updatedPurchaseOrderItemList = searchResult.map((item) => {
-      if (item.id === idToUpdate) {
-        (item as any)[key] = value;
-      }
-      return item;
-    });
-    const updatedPurchaseOrderItemListCopy = CLONING_LIB.deepClone(updatedPurchaseOrderItemList);
+    // const idToUpdate = record.id;
+    const cloned = CLONING_LIB.deepClone(searchResult);
+    (cloned[index] as any)[key] = value;
+    // const updatedPurchaseOrderItemList = searchResult.map((item) => {
+    //   if (item.id === idToUpdate) {
+    //     (item as any)[key] = value;
+    //   }
+    //   return item;
+    // });
+    const updatedPurchaseOrderItemListCopy = CLONING_LIB.deepClone(cloned);
     return updatedPurchaseOrderItemListCopy;
   };
 
@@ -107,7 +109,7 @@ const PurchaseOrderReceiptCreationRequestConstructor: React.FC<IPurchaseOrderRec
     }
 
     if (searchResult) {
-      const updatedList = updateData(valueToUpdate, record, key);
+      const updatedList = updateData(valueToUpdate, record, index, key);
       updatePurchaseOrderReceiptItem(updatedList);
     }
   };
@@ -170,7 +172,11 @@ const PurchaseOrderReceiptCreationRequestConstructor: React.FC<IPurchaseOrderRec
         width="114px"
         dataIndex="status"
         render={(value: PurchaseOrderReceiptItemStatus, record: IPurchaseOrderItem, index: number) => (
-          <Button className={`po-receipt-status-${value.toLowerCase()}`} onClick={() => updatePurchaseOrderReceiptItemStatus(record)} disabled={value === PurchaseOrderReceiptItemStatus.RECEIVED}>
+          <Button
+            className={`po-receipt-status-${value.toLowerCase()}`}
+            onClick={() => updatePurchaseOrderReceiptItemStatus(record, index)}
+            disabled={value === PurchaseOrderReceiptItemStatus.RECEIVED}
+          >
             {`${PurchaseOrderReceiptItemStatusDisplayText(value)}`}
           </Button>
         )}

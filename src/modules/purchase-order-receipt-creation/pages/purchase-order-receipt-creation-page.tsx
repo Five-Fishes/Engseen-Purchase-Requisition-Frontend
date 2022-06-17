@@ -126,6 +126,8 @@ const PurchaseOrderReceiptCreationPage: React.FC<IPurchaseOrderReceiptCreationPa
 
   const submitPurchaseOrderReceiptCreation = async () => {
     setSubmissionInProgress(true);
+
+    /** If DO Number is empty, stop user from submitting */
     if (doNumber.trim() === '') {
       popNotification('Please Provide DO Number', NotificationType.warning);
       setSubmissionInProgress(false);

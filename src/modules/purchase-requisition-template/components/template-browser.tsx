@@ -93,6 +93,18 @@ const PurchaseRequisitionTemplateBrowser: React.FC<IPurchaseRequisitionTemplateP
     }
   };
 
+  const selectTemplateEvent = (index: number, template: IPurchaseRequisitionTemplate) => {
+    props.setLoading && props.setLoading(true);
+    setSelectedIndex(index);
+    const sortedTemplateItemList = template.purchaseRequisitionTemplateItemList.sort((item1, item2) => item1.sequence - item2.sequence)
+    template.purchaseRequisitionTemplateItemList = sortedTemplateItemList;
+    const deepCopy: IPurchaseRequisitionTemplate = CLONING_LIB.deepClone(template);
+    props.setSelectedTemplate(deepCopy);
+    setTimeout(function () {
+      props.setLoading && props.setLoading(false);
+    }, 500)
+  }
+
   return (
     <>
       <Row>
@@ -129,15 +141,7 @@ const PurchaseRequisitionTemplateBrowser: React.FC<IPurchaseRequisitionTemplateP
                 shape="round"
                 className="m-1 selection-pile-button"
                 size="middle"
-                onClick={() => {
-                  props.setLoading && props.setLoading(true);
-                  setSelectedIndex(index);
-                  const deepCopy: IPurchaseRequisitionTemplate = CLONING_LIB.deepClone(template);
-                  props.setSelectedTemplate(deepCopy);
-                  setTimeout(function () {
-                    props.setLoading && props.setLoading(false);
-                  }, 500);
-                }}
+                onClick={() => selectTemplateEvent(index, template)}
               >
                 <Text ellipsis className={selectedIndex === index ? 'text-white' : 'text-dark'}>{template.templateName}</Text>
               </Button>

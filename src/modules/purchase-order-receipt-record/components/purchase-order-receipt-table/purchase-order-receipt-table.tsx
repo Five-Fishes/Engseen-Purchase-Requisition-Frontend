@@ -52,7 +52,7 @@ const PurchaseOrderReceiptTable: React.FC<IPurchaseOrderReceiptTableProps> = (pr
     },
     {
       title: 'DO NO.',
-      dataIndex: 'doNumber',
+      dataIndex: 'packingListNumber',
       key: 'doNumber',
       align: 'center',
       width: '115px',
